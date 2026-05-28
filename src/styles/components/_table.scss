@@ -1,0 +1,38 @@
+.table {
+  --bs-table-color: var(--ds-body);
+  --bs-table-bg: var(--ds-surface);
+  --bs-table-border-color: var(--ds-border);
+  --bs-table-striped-color: var(--ds-body);
+  --bs-table-striped-bg: var(--ds-neutral-50);
+  --bs-table-active-color: var(--ds-body);
+  --bs-table-active-bg: var(--ds-primary-soft);
+  --bs-table-hover-color: var(--ds-body);
+  --bs-table-hover-bg: var(--ds-neutral-100);
+
+  font-size: var(--ds-font-size-sm);
+  vertical-align: middle;
+}
+
+.table > :not(caption) > * > * {
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  border-bottom-color: var(--ds-border);
+}
+
+.table > thead {
+  --bs-table-color: var(--ds-neutral-500);
+
+  font-size: var(--ds-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.table > tfoot {
+  --bs-table-color: var(--ds-neutral-600);
+
+  font-weight: 600;
+}
+
+.table-sm > :not(caption) > * > * {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+}

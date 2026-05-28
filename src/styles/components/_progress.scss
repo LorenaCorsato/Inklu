@@ -1,0 +1,20 @@
+.progress {
+  --bs-progress-height: 1.5rem;
+  --bs-progress-bg: var(--ds-neutral-100);
+  --bs-progress-border-radius: var(--ds-radius-pill);
+  --bs-progress-bar-bg: var(--ds-primary);
+
+  overflow: hidden;
+}
+
+.progress-bar {
+  border-radius: inherit;
+}
+
+.progress-sm {
+  --bs-progress-height: 0.375rem;
+}
+
+.progress-lg {
+  --bs-progress-height: 1rem;
+}

@@ -1,0 +1,33 @@
+.badge {
+  --bs-badge-border-radius: var(--ds-radius-pill);
+  --bs-badge-font-weight: 600;
+  --bs-badge-padding-x: 0.625rem;
+  --bs-badge-padding-y: 0.3125rem;
+
+  letter-spacing: 0;
+}
+
+.badge-soft-primary {
+  background-color: var(--ds-primary-soft);
+  color: var(--ds-primary-hover);
+}
+
+.badge-soft-secondary {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+.badge-soft-success {
+  color: var(--ds-success);
+  background-color: var(--ds-success-soft);
+}
+
+.badge-soft-warning {
+  color: var(--ds-warning);
+  background-color: var(--ds-warning-soft);
+}
+
+.badge-soft-danger {
+  color: var(--ds-danger);
+  background-color: var(--ds-danger-soft);
+}

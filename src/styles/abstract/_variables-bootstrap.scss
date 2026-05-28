@@ -1,0 +1,61 @@
+// bootstrap variables overrides
+
+$primary: #6692fd;
+$secondary: #8d8d8d;
+$success: #40c880;
+$danger: #e65038;
+$warning: #ff7119;
+$info: #0085ff;
+$light: #fbfbfb;
+$dark: #14112a;
+
+$body-bg: #fbfbfb;
+$body-color: #14112a;
+$body-secondary-color: #8d8d8d;
+$border-color: #dfdfdf;
+$border-color-translucent: rgba(#14112a, 0.12);
+
+$font-family-base: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+$font-size-base: 0.875rem;
+$font-weight-base: 400;
+$line-height-base: 1.5;
+
+$border-radius-sm: 0.375rem;
+$border-radius: 0.75rem;
+$border-radius-lg: 1rem;
+$border-radius-xl: 1rem;
+$border-radius-pill: 50rem;
+
+$spacer: 1rem;
+$box-shadow-sm: 0 1px 4px rgba(#000000, 0.12);
+$box-shadow: 0 4px 6px rgba(#000000, 0.25);
+
+$btn-border-radius: 0.375rem;
+$btn-border-radius-sm: 0.375rem;
+$btn-border-radius-lg: 0.75rem;
+$btn-padding-y: 0.625rem;
+$btn-padding-x: 0.6875rem;
+$btn-font-size: 0.875rem;
+$btn-font-weight: 600;
+$btn-box-shadow: 0 4px 6px rgba(#000000, 0.25);
+$btn-focus-box-shadow: 0 0 0 0.25rem rgba(#6692fd, 0.25);
+
+$input-bg: #ffffff;
+$input-color: #14112a;
+$input-border-color: #dfdfdf;
+$input-border-radius: 0.75rem;
+$input-focus-border-color: #6692fd;
+$input-focus-box-shadow: 0 0 0 0.25rem rgba(#6692fd, 0.2);
+$input-placeholder-color: #8d8d8d;
+
+$card-bg: #ffffff;
+$card-border-color: #dfdfdf;
+$card-border-radius: 0.75rem;
+$card-spacer-y: 1rem;
+$card-spacer-x: 1rem;
+
+$modal-content-bg: #ffffff;
+$modal-content-border-color: #dfdfdf;
+$modal-content-border-radius: 0.75rem;
+$modal-backdrop-bg: #000000;
+$modal-backdrop-opacity: 0.4;

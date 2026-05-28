@@ -1,0 +1,96 @@
+.dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+
+  &::after {
+    border: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: auto;
+    transition: transform 0.2s ease;
+  }
+
+  &.show::after {
+    transform: rotate(-135deg);
+  }
+}
+
+.dropdown-menu {
+  --bs-dropdown-min-width: 12rem;
+  --bs-dropdown-padding-y: var(--ds-spacing-1);
+  --bs-dropdown-border-width: 0;
+  --bs-dropdown-border-radius: var(--ds-radius-md);
+  --bs-dropdown-box-shadow: var(--ds-shadow-md);
+  --bs-dropdown-link-color: var(--ds-neutral-700);
+  --bs-dropdown-link-hover-color: var(--ds-neutral-900);
+  --bs-dropdown-link-hover-bg: var(--ds-neutral-100);
+  --bs-dropdown-link-active-color: var(--ds-neutral-900);
+  --bs-dropdown-link-active-bg: var(--ds-primary-soft);
+  --bs-dropdown-link-disabled-color: var(--ds-neutral-500);
+  --bs-dropdown-item-padding-y: var(--ds-spacing-2);
+  --bs-dropdown-item-padding-x: var(--ds-spacing-4);
+  --bs-dropdown-header-color: var(--ds-neutral-500);
+
+  border: 1px solid var(--ds-border);
+  padding: var(--ds-spacing-1);
+  font-size: var(--ds-font-size-base);
+  animation: dropdownFadeIn 0.15s ease;
+
+  .dropdown-item {
+    border-radius: var(--ds-radius-sm);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--ds-spacing-2);
+    transition:
+      background-color 0.12s ease,
+      color 0.12s ease;
+
+    &:active {
+      background-color: var(--ds-primary-soft);
+    }
+
+    &:hover {
+      background-color: var(--ds-surface);
+    }
+  }
+
+  .dropdown-divider {
+    margin: var(--ds-spacing-1) 0;
+    opacity: 0.5;
+  }
+
+  .dropdown-header {
+    font-size: var(--ds-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  }
+}
+
+.dropdown-item-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--ds-neutral-500);
+}
+
+.dropdown-item:hover .dropdown-item-icon {
+  color: var(--ds-neutral-700);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

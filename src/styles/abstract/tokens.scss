@@ -1,0 +1,62 @@
+// Design System Tokens extraidos do arquivo Pencil da INKLU.
+:root {
+  --ds-primary: #6692fd;
+  --ds-primary-hover: #185fa5;
+  --ds-primary-soft: #0085ff1a;
+  --ds-secondary: #8d8d8d;
+  --ds-success: #24b467;
+  --ds-success-soft: #00ba341a;
+  --ds-danger: #e65038;
+  --ds-danger-soft: #ff3b3b1a;
+  --ds-warning: #ff7119;
+  --ds-warning-soft: #ff961b1a;
+  --ds-info: #0085ff;
+  --ds-body: #14112a;
+  --ds-muted: #8d8d8d;
+  --ds-surface: #ffffff;
+  --ds-background: #fbfbfb;
+  --ds-border: #dfdfdf;
+  --ds-border-subtle: #f1f5f9;
+  --ds-neutral-900: #111111;
+  --ds-neutral-700: #334155;
+  --ds-neutral-600: #475569;
+  --ds-neutral-500: #64748b;
+  --ds-neutral-100: #f8fafc;
+  --ds-neutral-50: #fbfbfb;
+  --ds-font-family-base: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ds-font-family-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ds-font-size-xs: 0.625rem;
+  --ds-font-size-sm: 0.75rem;
+  --ds-font-size-base: 0.875rem;
+  --ds-font-size-md: 1rem;
+  --ds-font-size-lg: 1.25rem;
+  --ds-font-size-xl: 1.5rem;
+  --ds-radius-sm: 6px;
+  --ds-radius-md: 12px;
+  --ds-radius-lg: 16px;
+  --ds-radius-pill: 999px;
+  --ds-spacing-1: 4px;
+  --ds-spacing-2: 8px;
+  --ds-spacing-3: 12px;
+  --ds-spacing-4: 16px;
+  --ds-spacing-5: 20px;
+  --ds-spacing-6: 24px;
+  --ds-shadow-sm: 0 1px 4px #0000001f;
+  --ds-shadow-md: 0 4px 6px #00000040;
+
+  --ds-btn-icon-primary: #6692fd;
+  --ds-btn-icon-secondary: #8d8d8d;
+  --ds-btn-icon-success: #24b467;
+  --ds-btn-icon-danger: #e65038;
+  --ds-btn-icon-warning: #ff7119;
+  --ds-btn-icon-info: #0085ff;
+  --ds-btn-icon-size-sm: 1rem;
+  --ds-btn-icon-size-md: 1.25rem;
+  --ds-btn-icon-size-lg: 1.5rem;
+}
+
+// Mapeamento para Bootstrap
+$ds-primary: var(--ds-primary);
+$ds-danger: var(--ds-danger);
+$ds-warning: var(--ds-warning);
+$ds-success: var(--ds-success);

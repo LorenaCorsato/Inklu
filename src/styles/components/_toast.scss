@@ -1,0 +1,17 @@
+.toast {
+  --bs-toast-bg: color-mix(in srgb, var(--ds-surface) 94%, transparent);
+  --bs-toast-border-color: var(--ds-border);
+  --bs-toast-border-radius: var(--ds-radius-md);
+  --bs-toast-box-shadow: var(--ds-shadow-md);
+  --bs-toast-color: var(--ds-body);
+  --bs-toast-header-bg: var(--ds-surface);
+  --bs-toast-header-color: var(--ds-body);
+  --bs-toast-header-border-color: var(--ds-border);
+
+  backdrop-filter: blur(8px);
+}
+
+.toast-header {
+  gap: var(--ds-spacing-2);
+  font-weight: 600;
+}

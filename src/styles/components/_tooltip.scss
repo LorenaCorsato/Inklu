@@ -1,0 +1,13 @@
+.tooltip {
+  --bs-tooltip-bg: var(--ds-body);
+  --bs-tooltip-color: var(--ds-surface);
+  --bs-tooltip-border-radius: var(--ds-radius-sm);
+  --bs-tooltip-font-size: var(--ds-font-size-xs);
+  --bs-tooltip-padding-x: var(--ds-spacing-2);
+  --bs-tooltip-padding-y: var(--ds-spacing-1);
+}
+
+.tooltip-inner {
+  font-weight: 600;
+  letter-spacing: 0;
+}
