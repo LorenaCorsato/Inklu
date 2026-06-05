@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 300px;
+  transition: width 0.3s ease;
+  
+  &.collapsed {
+    width: 80px;
+  }
+}
+
+nav {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.nav-active {
+  background-color: var(--ds-surface) !important;
+  border: 1px solid var(--ds-border) !important;
+  box-shadow: inset 0px -2.5px 0px 0px var(--ds-border) !important;
+  color: var(--ds-body) !important;
+
+  svg {
+    color: var(--ds-primary);
+  }
+}
+
+// Container do logo para manter alinhamento
+.logoContainer {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  .logo-wrapper {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    
+    &.hidden {
+      width: 0;
+      opacity: 0;
+      visibility: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    
+    img {
+      transition: all 0.3s ease;
+      min-width: 150px;
+    }
+  }
+  
+  .closeNavBar {
+    flex-shrink: 0;
+    margin-left: auto;
+    
+    svg {
+      transition: transform 0.3s ease;
+      display: block;
+      
+      &.rotated {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+// Estilos para o estado colapsado
+:host.collapsed {
+  .btn {
+    justify-content: center !important;
+    padding: 0.5rem !important;
+    
+    span {
+      display: none;
+    }
+  }
+  
+  .logoContainer {
+    justify-content: center !important;
+    
+    .logo-wrapper {
+      width: 0;
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .closeNavBar {
+      margin-left: 0;
+    }
+  }
+  
+  .buttonContainer span,
+  ul li a span {
+    display: none;
+  }
+}
+
+// Animações
+.btn, 
+.logo-wrapper,
+.closeNavBar svg {
+  transition: all 0.3s ease;
+}
+
+// Garantir alinhamento dos botões
+.btn {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  svg {
+    flex-shrink: 0;
+  }
+}

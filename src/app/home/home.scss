@@ -1,0 +1,285 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.home-page {
+  background-color: var(--ds-background);
+  height: 100%;
+  min-height: 0;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.home-title {
+  font-size: 1.625rem;
+  color: var(--ds-body);
+  font-family: var(--ds-font-family-base);
+}
+
+.home-subtitle {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-muted);
+}
+
+// ─── Metric Cards ────────────────────────────────────────────────────────────
+
+.metric-card {
+  background-color: var(--ds-surface);
+  border-color: var(--ds-border) !important;
+  border-radius: var(--ds-radius-md);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--ds-shadow-sm);
+    transform: translateY(-1px);
+  }
+}
+
+.metric-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--ds-radius-md);
+  flex-shrink: 0;
+
+  // Modifiers applied via [ngClass]
+  &.metric-icon--danger {
+    background-color: var(--ds-danger);
+  }
+
+  &.metric-icon--success {
+    background-color: var(--ds-success);
+  }
+
+  &.metric-icon--primary {
+    background-color: var(--ds-primary);
+  }
+}
+
+.metric-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-muted);
+  margin-bottom: 2px;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ds-body);
+  line-height: 1.1;
+}
+
+// ─── Panel Cards ─────────────────────────────────────────────────────────────
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-2);
+  background-color: var(--ds-surface);
+  border-bottom-color: var(--ds-border) !important;
+}
+
+// ─── Tasks ───────────────────────────────────────────────────────────────────
+
+.tasks-list {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.task-item {
+  border-color: var(--ds-border-subtle) !important;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+  }
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+.task-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--ds-radius-sm);
+  background-color: var(--ds-primary-soft);
+  flex-shrink: 0;
+}
+
+.task-title {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-body);
+}
+
+.task-description {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Priority badges
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: var(--ds-radius-pill);
+  padding: 3px 10px;
+  line-height: 1;
+
+  &.priority--alta {
+    background-color: var(--ds-danger-soft);
+    color: var(--ds-danger);
+
+    svg {
+      color: var(--ds-danger);
+    }
+  }
+
+  &.priority--médio {
+    background-color: var(--ds-warning-soft);
+    color: var(--ds-warning);
+
+    svg {
+      color: var(--ds-warning);
+    }
+  }
+
+  &.priority--baixa {
+    background-color: var(--ds-primary-soft);
+    color: var(--ds-primary);
+
+    svg {
+      color: var(--ds-primary);
+    }
+  }
+}
+
+// Due date chip
+.badge-due {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 500;
+  background-color: #f0f4ff;
+  color: var(--ds-primary);
+  border-radius: var(--ds-radius-sm);
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+// File chip
+.badge-file {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 500;
+  background-color: var(--ds-border-subtle);
+  color: var(--ds-neutral-600);
+  border-radius: var(--ds-radius-sm);
+  padding: 3px 8px;
+
+  svg {
+    color: var(--ds-muted);
+  }
+}
+
+// ─── Documents ───────────────────────────────────────────────────────────────
+
+.docs-list {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.doc-item {
+  border-color: var(--ds-border-subtle) !important;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+  }
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+.doc-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ds-radius-sm);
+  background-color: var(--ds-primary-soft);
+  flex-shrink: 0;
+}
+
+.doc-title {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-body);
+  margin-bottom: 2px;
+}
+
+.doc-meta {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-muted);
+  line-height: 1;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// ─── Ghost icon button ───────────────────────────────────────────────────────
+
+.btn-ghost-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-border-subtle);
+    color: var(--ds-body);
+  }
+
+  &:active {
+    background-color: var(--ds-border);
+  }
+}
+
+// ─── Layout helpers ──────────────────────────────────────────────────────────
+
+.min-height-0 {
+  min-height: 0;
+}
+
+.min-width-0 {
+  min-width: 0;
+}

@@ -1,0 +1,23 @@
+# Projeto Inklu
+
+O **Inklu** é uma aplicação web desenvolvida em Angular, focada na gestão educacional ou acompanhamento de estudantes. O sistema inclui seções como Início, Tarefas, Alunos, Calendário e Documentos, sugerindo um ambiente para organização de rotinas escolares, acadêmicas ou acompanhamento inclusivo.
+
+## Stack Tecnológico
+
+*   **Framework:** Angular 21 (utilizando componentes Standalone)
+*   **Linguagem:** TypeScript
+*   **Estilização:** SCSS (Sass) e Bootstrap 5.3 para a base de UI/grid
+*   **Testes:** Vitest (Testes Unitários) e suporte a JSdom
+*   **Gerenciador de Pacotes:** npm
+
+## Estrutura e Padrões
+
+*   A aplicação usa a estrutura padrão gerada pelo Angular CLI.
+*   O roteamento e as configurações principais estão baseados na abordagem mais recente do Angular (sem a necessidade estrita de NgModules, ex: `app.routes.ts`, `app.config.ts`).
+*   O idioma da interface é o Português (pt-BR).
+
+## Comandos Principais
+
+*   Iniciar o servidor de desenvolvimento: `npm start` ou `ng serve`
+*   Compilar o projeto: `npm run build` ou `ng build`
+*   Rodar testes: `npm test` ou `ng test` (via Vitest)

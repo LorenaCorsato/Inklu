@@ -1,0 +1,56 @@
+<nav class="p-2 d-flex flex-column h-screen justify-content-between">
+    <div class="mainContent w-100">
+        <div class="logoContainer d-flex w-100 flex-row justify-content-between align-items-center">
+            <div class="logo-wrapper" [class.hidden]="isCollapsed">
+                <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="img-fluid w-50" alt="Logo da Inklu">
+            </div>
+            <button (click)="toggleNavbar()" class="p-2 rounded border closeNavBar bg-white ratio ratio-1x1">
+                <svg lucideArrowLeftFromLine [size]="24" color="blue" [strokeWidth]="2" [class.rotated]="isCollapsed"></svg>
+            </button>
+        </div>
+
+        <ul class="d-flex flex-column justify-content-between m-0 px-0 pt-2 gap-2">
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none text-muted" [class.nav-active]="!isCollapsed" href="#">
+                    <svg lucideHome [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Inicio</span>
+                </a>
+            </li>
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none text-muted fs-6" href="#">
+                    <svg lucideCalendarCheck [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Tarefas</span>
+                </a>
+            </li>
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none text-muted fs-6" href="#">
+                    <svg lucideUser [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Alunos</span>
+                </a>
+            </li>
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none text-muted fs-6" href="#">
+                    <svg lucideCalendar [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Calendário</span>
+                </a>
+            </li>
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none text-muted fs-6" href="#">
+                    <svg lucideFileText [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Documentos</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="buttonContainer d-flex flex-column gap-2">
+        <button class="btn btn-primary">
+            <svg lucidePlus [size]="24" [strokeWidth]="2"></svg>
+            <span [class.hidden]="isCollapsed">Adicionar Documento</span>
+        </button>
+        <button class="btn btn-white text-muted">
+            <svg lucideSettings [size]="24" [strokeWidth]="2"></svg>
+            <span [class.hidden]="isCollapsed">Configurações</span>
+        </button>
+    </div>
+</nav>

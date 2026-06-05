@@ -1,0 +1,125 @@
+<div class="home-page d-flex flex-column h-100 p-2 overflow-auto">
+
+  <!-- Header -->
+  <div class="home-header mb-2">
+    <h1 class="home-title fw-bold mb-1">Olá Novamente, Professora Sara</h1>
+    <p class="home-subtitle text-muted mb-0">Comece o gerenciamento de seus alunos</p>
+  </div>
+
+  <!-- Metric Cards Row -->
+  <div class="row g-3 mb-2">
+    @for (metric of metrics; track metric.label) {
+      <div class="col-12 col-md-4">
+        <div class="card metric-card border h-100">
+          <div class="card-body d-flex align-items-center gap-3 p-3">
+            <div class="metric-icon-wrapper" [ngClass]="metric.iconClass">
+              @if (metric.icon === 'pending') {
+                <svg lucideCalendarClock [size]="28" color="white" [strokeWidth]="2"></svg>
+              }
+              @if (metric.icon === 'success') {
+                <svg lucideCheckCheck [size]="28" color="white" [strokeWidth]="2"></svg>
+              }
+              @if (metric.icon === 'primary') {
+                <svg lucideFiles [size]="28" color="white" [strokeWidth]="2"></svg>
+              }
+            </div>
+            <div>
+              <p class="metric-label text-muted mb-1">{{ metric.label }}</p>
+              <p class="metric-value fw-bold mb-0">{{ metric.value }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Content Row: Tasks + Recent Documents -->
+  <div class="row g-2 flex-grow-1 min-height-0">
+
+    <!-- Tasks Panel -->
+    <div class="col-12 col-lg-5 d-flex flex-column min-height-0">
+      <div class="card border rounded h-100 d-flex flex-column overflow-hidden">
+        <div class="card-header border-bottom px-3 py-3">
+          <span class="fw-semibold">Tarefas</span>
+          <a href="#" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
+        </div>
+        <div class="card-body p-0 overflow-auto tasks-list">
+          @for (task of tasks; track task.title + task.priority) {
+            <div class="task-item p-3 border-bottom">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <!-- Checkbox -->
+                <div class="task-checkbox">
+                  <svg lucideCheckCheck [size]="14" color="#6692fd" [strokeWidth]="2.5"></svg>
+                </div>
+                <!-- Priority Badge -->
+                <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+                  @if (task.priority === 'Alta') {
+                    <svg lucideTriangleAlert [size]="11" [strokeWidth]="2" class="me-1"></svg>
+                  }
+                  @if (task.priority === 'Médio') {
+                    <svg lucideDiamond [size]="11" [strokeWidth]="2" class="me-1"></svg>
+                  }
+                  @if (task.priority === 'Baixa') {
+                    <svg lucideChevronDown [size]="11" [strokeWidth]="2" class="me-1"></svg>
+                  }
+                  {{ task.priority }}
+                </span>
+                <!-- Due date -->
+                <span class="badge-due ms-auto">{{ task.dueLabel }}</span>
+              </div>
+              <p class="task-title fw-semibold mb-1">{{ task.title }}</p>
+              <p class="task-description text-muted small mb-2">{{ task.description }}</p>
+              <span class="badge-file">
+                <svg lucideFileText [size]="12" [strokeWidth]="2" class="me-1"></svg>
+                {{ task.fileName }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Documents Panel -->
+    <div class="col-12 col-lg-7 d-flex flex-column min-height-0">
+      <div class="card rounded border h-100 d-flex flex-column overflow-hidden">
+        <div class="card-header border-bottom px-3 py-3">
+          <span class="fw-semibold">Documentos adaptados recentemente</span>
+          <a href="#" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
+        </div>
+        <div class="card-body p-0 overflow-auto docs-list">
+          @for (doc of recentDocuments; track doc.title + doc.timeAgo) {
+            <div class="doc-item d-flex align-items-center gap-3 px-3 py-3 border-bottom">
+              <!-- File icon -->
+              <div class="doc-file-icon">
+                <svg lucideFileText [size]="22" color="#6692fd" [strokeWidth]="1.5"></svg>
+              </div>
+              <!-- Info -->
+              <div class="flex-grow-1 min-width-0">
+                <p class="doc-title fw-semibold mb-1 text-truncate">{{ doc.title }}</p>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                  <span class="doc-meta d-flex align-items-center gap-1 text-muted small">
+                    <svg lucideBookOpenText [size]="13" [strokeWidth]="2"></svg>
+                    {{ doc.subject }}
+                  </span>
+                  <span class="doc-meta d-flex align-items-center gap-1 text-muted small">
+                    <svg lucideClock3 [size]="13" [strokeWidth]="2"></svg>
+                    {{ doc.timeAgo }}
+                  </span>
+                  <span class="doc-meta d-flex align-items-center gap-1 text-muted small">
+                    <svg lucideUser [size]="13" [strokeWidth]="2"></svg>
+                    {{ doc.student }}
+                  </span>
+                </div>
+              </div>
+              <!-- Actions -->
+              <button class="btn-ghost-icon ms-auto flex-shrink-0" type="button">
+                <svg lucideEllipsisVertical [size]="18" [strokeWidth]="2"></svg>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

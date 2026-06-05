@@ -60,3 +60,19 @@ $ds-primary: var(--ds-primary);
 $ds-danger: var(--ds-danger);
 $ds-warning: var(--ds-warning);
 $ds-success: var(--ds-success);
+
+.ds-background {
+  background-color: var(--ds-background);
+}
+
+.ds-surface {
+  background-color: var(--ds-surface);
+}
+
+.ds-border {
+  border-color: var(--ds-border);
+}
+
+.ds-border-subtle {
+  border-color: var(--ds-border-subtle);
+}
