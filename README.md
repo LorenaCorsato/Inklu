@@ -43,14 +43,10 @@ npm run dev
 
 ## 5. Como rodar o Frontend (Angular)
 
-Abra um **segundo terminal** no VS Code (clicando no ícone de `+`), acesse a pasta do frontend, instale as dependências e rode a interface:
-
+Abra um **segundo terminal** no VS Code (clicando no ícone de `+`). Na raiz do projeto, basta instalar as dependências e rodar:
 ```bash
-cd frontend
 npm install
 ng s -o
-
 ```
-
 > ✅ **Sucesso:** O Angular vai compilar o projeto. Assim que terminar, acesse no seu navegador: `http://localhost:4200`
 
