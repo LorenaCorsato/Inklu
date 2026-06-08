@@ -15,7 +15,7 @@ Antes de começar, certifique-se de que sua máquina possui:
 ## 2. Clonar o repositório
 Abra o seu terminal, escolha a pasta onde deseja salvar o projeto e rode:
 ```bash
-git clone [https://github.com/LorenaCorsato/Inklu.git](https://github.com/LorenaCorsato/Inklu.git)
+git clone https://github.com/LorenaCorsato/Inklu.git
 cd Inklu
 
 ```
