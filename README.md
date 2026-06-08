@@ -1,59 +1,52 @@
-# Inklu
+## 📚 Documentação 
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.10.
+[🗒️ Documentação do Projeto](https://drive.google.com/drive/folders/1jK5MWw4MHqhwms5YI6WmAED73FlfaHfP?hl=pt-b)
 
-## Development server
+# ⚙️ Guia de Execução - Inklu
 
-To start a local development server, run:
+Este guia é para que todos os integrantes da equipe consigam rodar o projeto localmente em suas máquinas. Nossa stack utiliza Angular (Frontend) e Node.js + Express (Backend).
 
+## 1. Pré-requisitos
+Antes de começar, certifique-se de que sua máquina possui:
+* **Node.js**: Baixe obrigatoriamente a versão **LTS** (Long Term Support) no [site oficial](https://nodejs.org/).
+* **Git**: Para versionamento de código.
+* **VS Code**: Nosso editor padrão.
+
+## 2. Clonar o repositório
+Abra o seu terminal, escolha a pasta onde deseja salvar o projeto e rode:
 ```bash
-ng serve
+git clone [https://github.com/LorenaCorsato/Inklu.git](https://github.com/LorenaCorsato/Inklu.git)
+cd Inklu
+
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 3. Configurar as Chaves Secretas (.env)
 
-## Code scaffolding
+Nós não subimos senhas e chaves de API para o GitHub. Você precisará configurar seus arquivos ocultos de ambiente.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. Acesse a página do nosso projeto no **Notion**. Lá estão centralizadas as chaves de desenvolvimento do Supabase, Cloudflare R2 e OpenRouter.
+2. Na pasta `backend/`, faça uma cópia do arquivo `.env.example` e renomeie para `.env`. Cole as chaves do backend dentro dele.
+3. Na pasta `frontend/`, faça o mesmo: copie o `.env.example`, renomeie para `.env` e cole as chaves públicas (se houver).
 
-```bash
-ng generate component component-name
-```
+## 4. Como rodar o Backend (API Node.js)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Abra um terminal no VS Code e acesse a pasta do backend para instalar as dependências e ligar o servidor:
 
 ```bash
-ng build
+cd backend
+npm install
+npm run dev
+
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+> ✅ **Sucesso:** Se tudo der certo, o terminal avisará que o servidor está rodando em `http://localhost:3000`. Deixe este terminal aberto.
 
-## Running unit tests
+## 5. Como rodar o Frontend (Angular)
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
+Abra um **segundo terminal** no VS Code (clicando no ícone de `+`). Na raiz do projeto, basta instalar as dependências e rodar:
 ```bash
-ng test
+npm install
+ng s -o
 ```
+> ✅ **Sucesso:** O Angular vai compilar o projeto. Assim que terminar, acesse no seu navegador: `http://localhost:4200`
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
