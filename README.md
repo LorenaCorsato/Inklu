@@ -19,7 +19,7 @@ Desenvolvida como um projeto acadêmico para a disciplina de Engenharia de Softw
 
 ## ✔️ Conceito de pronto
 
-No Trello, o nosso "Conceito de Pronto" (Definition of Done) baseia-se em duas checklists obrigatórias presentes em cada cartão: Progresso e Critérios de Aceite.
+No Trello, o nosso "Conceito de Pronto" baseia-se em duas checklists obrigatórias presentes em cada cartão: Progresso e Critérios de Aceite.
 
 - A checklist de Progresso é utilizada pelo desenvolvedor para acompanhar as etapas técnicas já implementadas.
 
