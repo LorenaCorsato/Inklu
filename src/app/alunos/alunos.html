@@ -1,0 +1,70 @@
+<div class="alunos-breadcrumb mb-2 p-2 border-bottom d-flex align-items-center gap-2">
+  <p class="mb-0 text-muted">Alunos</p>
+</div>
+
+<div class="alunos-page d-flex flex-column h-100 p-2 overflow-auto">
+  <!-- Header -->
+  <div class="alunos-header d-flex align-items-center justify-content-between mb-3">
+    <h1 class="alunos-title fw-bold mb-0">Todos os Alunos</h1>
+    <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openModal()">
+      <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
+      Adicionar Aluno
+    </button>
+  </div>
+
+  <!-- Search Bar + View Toggle -->
+  <div class="search-toolbar mb-3 d-flex align-items-center gap-2">
+    <div class="search-wrapper flex-grow-1">
+      <div class="search-input-wrapper">
+        <svg lucideSearch [size]="18" class="search-icon" [strokeWidth]="2"></svg>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar Aluno"
+          [value]="searchTerm"
+          (input)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+    <div class="view-toggle d-flex align-items-center">
+      <button
+        class="view-toggle-btn"
+        [class.active]="viewMode === 'grid'"
+        type="button"
+        (click)="setViewMode('grid')"
+        title="Visualização em grade"
+      >
+        <svg lucideLayoutGrid [size]="18" [strokeWidth]="2"></svg>
+      </button>
+      <button
+        class="view-toggle-btn"
+        [class.active]="viewMode === 'list'"
+        type="button"
+        (click)="setViewMode('list')"
+        title="Visualização em lista"
+      >
+        <svg lucideList [size]="18" [strokeWidth]="2"></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Students Grid -->
+  <div [class.alunos-grid]="viewMode === 'grid'" [class.alunos-list]="viewMode === 'list'">
+    @for (aluno of filteredAlunos; track aluno.id) {
+      <app-card-aluno [aluno]="aluno"></app-card-aluno>
+    }
+  </div>
+
+  @if (filteredAlunos.length === 0) {
+    <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
+      <svg lucideSearch [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+      <p class="text-muted mt-3 mb-0">Nenhum aluno encontrado</p>
+    </div>
+  }
+</div>
+
+<app-modal-aluno
+  [isOpen]="isModalOpen"
+  (closed)="closeModal()"
+  (saved)="onAlunoSaved($event)">
+</app-modal-aluno>

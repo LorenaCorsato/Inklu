@@ -1,0 +1,59 @@
+<div class="card-aluno" (click)="onCardClick()">
+  <div class="card-aluno-foto">
+    @if (aluno.fotoUrl) {
+      <img [src]="aluno.fotoUrl" [alt]="aluno.nome" class="aluno-imagem" />
+    } @else {
+      <div class="aluno-placeholder">
+        <svg lucideUser [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+      </div>
+    }
+  </div>
+
+  <div class="card-aluno-info">
+    <div class="card-aluno-header">
+      <div class="card-aluno-ano">
+        <span class="ano-badge">{{ aluno.ano }}</span>
+      </div>
+      <div class="btn-options dropdown" (click)="$event.stopPropagation()">
+        <button
+          class="btn-options-btn"
+          type="button"
+          (click)="toggleOptionsMenu($event)"
+          [attr.aria-expanded]="isOptionsMenuOpen"
+          aria-haspopup="true"
+        >
+          <svg lucideEllipsisVertical [size]="16" [strokeWidth]="2"></svg>
+        </button>
+        @if (isOptionsMenuOpen) {
+          <div class="dropdown-menu dropdown-menu-end show">
+            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+              <svg lucidePencil class="dropdown-item-icon"></svg>
+              Editar
+            </button>
+            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+              <svg lucideTrash2 class="dropdown-item-icon"></svg>
+              Excluir
+            </button>
+            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+              <svg lucideShare2 class="dropdown-item-icon"></svg>
+              Compartilhar
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <h3 class="card-aluno-nome">{{ aluno.nome }}</h3>
+
+    <div class="card-aluno-detalhes">
+      <div class="detalhe-item">
+        <span class="detalhe-label">Deficiência</span>
+        <span class="detalhe-valor">{{ aluno.deficiencia }}</span>
+      </div>
+      <div class="detalhe-item">
+        <span class="detalhe-label">Gênero</span>
+        <span class="detalhe-valor">{{ aluno.genero }}</span>
+      </div>
+    </div>
+  </div>
+</div>

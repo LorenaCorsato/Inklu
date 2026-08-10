@@ -1,0 +1,144 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Adicionar Aluno</h2>
+        <button class="btn-close" type="button" (click)="close()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <!-- Nome Completo -->
+        <div class="form-group">
+          <label class="form-label">Nome Completo do Aluno</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Nome completo"
+            [(ngModel)]="form.nomeCompleto"
+          />
+        </div>
+
+        <!-- Foto -->
+        <div class="form-group form-group-foto">
+          <div class="foto-preview">
+            @if (previewUrl) {
+              <img [src]="previewUrl" alt="Foto do aluno" class="foto-imagem" />
+            } @else {
+              <div class="foto-placeholder">
+                <svg class="foto-placeholder-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+            }
+          </div>
+          <label class="btn-alterar-foto" for="foto-input">
+            Alterar Foto
+          </label>
+          <input
+            type="file"
+            id="foto-input"
+            accept="image/*"
+            class="hidden-input"
+            (change)="onFileChange($event)"
+          />
+        </div>
+
+        <!-- Data de Nascimento & Gênero -->
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">Data de Nascimento</label>
+            <input
+              type="date"
+              class="form-input"
+              [(ngModel)]="form.dataNascimento"
+            />
+          </div>
+          <div class="form-group form-group-half">
+            <label class="form-label">Gênero</label>
+            <div class="select-wrapper">
+              <select class="form-select" [(ngModel)]="form.genero">
+                <option value="" disabled selected>Selecione</option>
+                @for (genero of generos; track genero.value) {
+                  <option [value]="genero.value">{{ genero.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nome do Responsável & Telefone -->
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">Nome do Responsável</label>
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Nome completo"
+              [(ngModel)]="form.nomeResponsavel"
+            />
+          </div>
+          <div class="form-group form-group-half">
+            <label class="form-label">Telefone do Responsável</label>
+            <input
+              type="tel"
+              class="form-input"
+              placeholder="(00) 00000-0000"
+              [(ngModel)]="form.telefoneResponsavel"
+            />
+          </div>
+        </div>
+
+        <!-- Série / Ano & Turma / Sala -->
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">Série / Ano</label>
+            <div class="select-wrapper">
+              <select class="form-select" [(ngModel)]="form.serieAno">
+                <option value="" disabled selected>Selecione</option>
+                @for (serie of series; track serie.value) {
+                  <option [value]="serie.value">{{ serie.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-group form-group-half">
+            <label class="form-label">Turma / Sala</label>
+            <div class="select-wrapper">
+              <select class="form-select" [(ngModel)]="form.turmaSala">
+                <option value="" disabled selected>Selecione</option>
+                @for (turma of turmas; track turma.value) {
+                  <option [value]="turma.value">{{ turma.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diagnóstico -->
+        <div class="form-group">
+          <label class="form-label">Diagnóstico / Necessidades Especiais</label>
+          <div class="select-wrapper">
+            <select class="form-select" [(ngModel)]="form.diagnostico">
+              <option value="" disabled selected>Selecione</option>
+              @for (diag of diagnosticos; track diag.value) {
+                <option [value]="diag.value">{{ diag.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-cancelar" type="button" (click)="close()">
+          Cancelar
+        </button>
+        <button class="btn btn-salvar" type="button" (click)="save()">
+          Salvar Aluno
+        </button>
+      </div>
+    </div>
+  </div>
+}

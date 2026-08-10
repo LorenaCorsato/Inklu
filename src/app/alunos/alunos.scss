@@ -1,0 +1,210 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.alunos-page {
+  height: 100%;
+  min-height: 0;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.alunos-title {
+  font-size: 1.625rem;
+  color: var(--ds-body);
+  font-family: var(--ds-font-family-base);
+}
+
+.btn-add-aluno {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: white;
+  background-color: var(--ds-primary);
+  border: none;
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    background-color: var(--ds-primary-hover);
+    box-shadow: var(--ds-shadow-sm);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ─── Search Toolbar ──────────────────────────────────────────────────────────
+
+.search-toolbar {
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  max-width: 320px;
+}
+
+.view-toggle {
+  gap: 2px;
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  padding: 2px;
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  &.active {
+    background-color: var(--ds-primary-soft);
+    color: var(--ds-primary);
+  }
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--ds-spacing-3);
+  color: var(--ds-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3) var(--ds-spacing-2) 40px;
+  font-size: var(--ds-font-size-base);
+  font-family: var(--ds-font-family-base);
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: var(--ds-muted);
+  }
+
+  &:focus {
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 0 3px var(--ds-primary-soft);
+  }
+}
+
+// ─── Grid ────────────────────────────────────────────────────────────────────
+
+.alunos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--ds-spacing-4);
+}
+
+// ─── List ────────────────────────────────────────────────────────────────────
+
+.alunos-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+  width: 100%;
+}
+
+.alunos-list app-card-aluno {
+  display: block;
+  width: 100%;
+}
+
+// Card no modo lista
+.alunos-list app-card-aluno ::ng-deep .card-aluno {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  min-height: 140px;
+}
+
+// Foto maior
+.alunos-list app-card-aluno ::ng-deep .card-aluno-foto {
+  width: 140px;
+  min-width: 140px;
+  height: 140px;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+// Área das informações
+.alunos-list app-card-aluno ::ng-deep .card-aluno-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--ds-spacing-4) var(--ds-spacing-5);
+  min-width: 0;
+}
+
+// Cabeçalho
+.alunos-list app-card-aluno ::ng-deep .card-aluno-header {
+  margin-bottom: var(--ds-spacing-2);
+}
+
+// Nome
+.alunos-list app-card-aluno ::ng-deep .card-aluno-nome {
+  margin-bottom: var(--ds-spacing-3);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+// Detalhes
+.alunos-list app-card-aluno ::ng-deep .card-aluno-detalhes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-5);
+}
+
+// Menus/ações
+.alunos-list app-card-aluno ::ng-deep .card-aluno-acoes {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding: var(--ds-spacing-4);
+}
+
+// ─── Empty State ─────────────────────────────────────────────────────────────
+
+.empty-state {
+  min-height: 200px;
+}
+
+// ─── Layout helpers ──────────────────────────────────────────────────────────
+
+.min-height-0 {
+  min-height: 0;
+}
