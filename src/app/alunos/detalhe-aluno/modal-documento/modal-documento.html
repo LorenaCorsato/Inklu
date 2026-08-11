@@ -1,0 +1,91 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Adicionar Documento</h2>
+        <button class="btn-close" type="button" (click)="close()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <!-- Error Alert -->
+        @if (errorMessage) {
+          <div class="error-alert">
+            <svg lucideAlertTriangle [size]="16" [strokeWidth]="2"></svg>
+            <span class="error-alert-text">{{ errorMessage }}</span>
+            <button class="error-alert-close" type="button" (click)="clearError()">
+              <svg lucideX [size]="14" [strokeWidth]="2"></svg>
+            </button>
+          </div>
+        }
+
+        <!-- Drop Zone -->
+        <div
+          class="drop-zone"
+          [class.drop-zone--active]="isDragOver"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+          (click)="browseFiles()"
+        >
+          <div class="drop-zone-icon">
+            <svg lucideUploadCloud [size]="40" [strokeWidth]="1.5"></svg>
+          </div>
+          <p class="drop-zone-text">Drop your files here or <span class="drop-zone-link">browse</span></p>
+          <p class="drop-zone-hint">Max file size up to 1 GB</p>
+          <input
+            type="file"
+            id="doc-file-input"
+            class="hidden-input"
+            multiple
+            accept=".pdf,.zip,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg"
+            (change)="onFileSelect($event)"
+          />
+        </div>
+
+        <!-- File List -->
+        @if (files.length > 0) {
+          <div class="file-list">
+            @for (file of files; track file.name; let i = $index) {
+              <div class="file-item">
+                <div class="file-icon">
+                  <span class="file-icon-badge" [class.file-icon-badge--pdf]="file.type.includes('pdf')">
+                    {{ getFileIcon(file) }}
+                  </span>
+                </div>
+                <div class="file-info">
+                  <span class="file-name">{{ file.name }}</span>
+                  <span class="file-size">{{ formatSizeWithTotal(file) }}</span>
+                  @if (file.status === 'uploading') {
+                    <div class="file-progress">
+                      <div class="file-progress-bar" [style.width.%]="file.progress"></div>
+                    </div>
+                  }
+                </div>
+                <div class="file-actions">
+                  @if (file.status === 'done') {
+                    <button class="btn-icon-file btn-icon-file--delete" type="button" (click)="removeFile(i); $event.stopPropagation()">
+                      <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
+                    </button>
+                  } @else {
+                    <button class="btn-icon-file btn-icon-file--cancel" type="button" (click)="removeFile(i); $event.stopPropagation()">
+                      <svg lucideXCircle [size]="16" [strokeWidth]="2"></svg>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="d-flex justify-content-end gap-2">
+              <button class="btn btn-outline-danger" type="button">Cancelar</button>
+              <button class="btn btn-success" type="button">Salvar</button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
