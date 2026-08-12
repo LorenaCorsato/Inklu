@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList } from '@lucide/angular';
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
 import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
+import { AlunoService } from './aluno.service';
 
 @Component({
   selector: 'app-alunos',
@@ -94,6 +95,8 @@ export class Alunos {
 
   isModalOpen = false;
 
+  constructor(private alunoService: AlunoService) {}
+
   openModal() {
     this.isModalOpen = true;
   }
@@ -103,18 +106,49 @@ export class Alunos {
   }
 
   onAlunoSaved(alunoForm: AlunoForm) {
-    // Here you would typically call a service to save the student
-    console.log('Aluno salvo:', alunoForm);
-    // For demo purposes, add to the list
-    const newAluno: Aluno = {
-      id: this.alunos.length + 1,
-      nome: alunoForm.nomeCompleto,
-      ano: this.getSerieLabel(alunoForm.serieAno),
-      deficiencia: this.getDiagnosticoLabel(alunoForm.diagnostico),
+    console.log('Dados recebidos do modal:', alunoForm);
+
+    // 1. Mapeia os dados do modal para o formato esperado pelo backend/Supabase
+    const payloadBanco = {
+      nome_completo: alunoForm.nomeCompleto,
+      
+      // Correção: Trocamos o 'null' por 'undefined'
+      data_de_nascimento: alunoForm.dataNascimento ? alunoForm.dataNascimento : undefined, 
+      
       genero: this.getGeneroLabel(alunoForm.genero),
-      fotoUrl: alunoForm.fotoUrl || undefined,
+      serie: this.getSerieLabel(alunoForm.serieAno),
+      diagnostico: this.getDiagnosticoLabel(alunoForm.diagnostico),
+      
+      // Se você estiver enviando a foto, lembre-se que no banco a coluna chama 'foto'
+      foto: alunoForm.fotoUrl ? alunoForm.fotoUrl : undefined 
     };
-    this.alunos = [...this.alunos, newAluno];
+
+    // 2. Chama o serviço para enviar ao backend
+    this.alunoService.cadastrarAluno(payloadBanco).subscribe({
+      next: (respostaDoBanco: any) => {
+        console.log('Aluno cadastrado com sucesso!', respostaDoBanco);
+        
+        // 3. Atualiza a lista da tela com o aluno salvo
+        const alunoCriado = Array.isArray(respostaDoBanco) ? respostaDoBanco[0] : respostaDoBanco;
+
+        const newAluno: Aluno = {
+          id: alunoCriado.id,
+          nome: alunoCriado.nome_completo,
+          ano: alunoCriado.serie,
+          deficiencia: alunoCriado.diagnostico,
+          genero: alunoCriado.genero,
+          fotoUrl: alunoCriado.fotoUrl || undefined,
+        };
+        
+        this.alunos = [...this.alunos, newAluno];
+        this.closeModal();
+        alert('Cadastro realizado com sucesso!');
+      },
+      error: (erro: any) => {
+        console.error('Erro ao salvar no banco:', erro);
+        alert('Falha ao cadastrar aluno. Tente novamente.');
+      }
+    });
   }
 
   setViewMode(mode: 'grid' | 'list') {

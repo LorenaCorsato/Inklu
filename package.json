@@ -18,7 +18,10 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
     "@lucide/angular": "^1.17.0",
+    "@supabase/server": "^1.4.1",
+    "@supabase/supabase-js": "^2.112.3",
     "bootstrap": "^5.3.8",
+    "dotenv": "^17.4.2",
     "rxjs": "~7.8.0",
     "sass": "^1.100.0",
     "tslib": "^2.3.0"
