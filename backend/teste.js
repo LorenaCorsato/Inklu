@@ -1,4 +1,4 @@
-
+ //teste.js
 // Carrega as variáveis do arquivo .env
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
