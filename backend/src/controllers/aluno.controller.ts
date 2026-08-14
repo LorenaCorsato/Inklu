@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import type { Request, Response } from 'express';
+import { supabase } from '../config/supabase.js';
 
 export class AlunoController {
   async cadastrar(req: Request, res: Response): Promise<any> {

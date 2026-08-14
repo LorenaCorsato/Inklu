@@ -20,7 +20,7 @@ export interface Aluno {
 })
 export class AlunoService {
   // URL do backend Node.js
-  private apiUrl = 'https://fantastic-potato-r4g6xpqx54qj2wqv6-3000.app.github.dev/api/alunos';
+  private apiUrl = 'http://localhost:3000/api/alunos';
 
   constructor(private http: HttpClient) { }
 
