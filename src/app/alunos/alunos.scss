@@ -208,3 +208,22 @@
 .min-height-0 {
   min-height: 0;
 }
+// ─── Loading State ───────────────────────────────────────────────────────────
+
+.loading-state {
+  min-height: 200px;
+  flex: 1;
+}
+
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

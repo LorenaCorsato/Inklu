@@ -74,12 +74,20 @@ export class ModalAluno {
 
   previewUrl: string | null = null;
 
-  onFileChange(event: Event) {
+onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      this.form.fotoUrl = URL.createObjectURL(file);
-      this.previewUrl = this.form.fotoUrl;
+      const reader = new FileReader();
+
+      // Quando o arquivo terminar de ser lido, converte para Base64
+      reader.onload = () => {
+        this.form.fotoUrl = reader.result as string; // Resultado é data:image/...
+        this.previewUrl = this.form.fotoUrl;
+      };
+
+      // Lê o arquivo gerando uma URL em Base64
+      reader.readAsDataURL(file);
     }
   }
 

@@ -1,101 +1,57 @@
-import { Component, signal } from '@angular/core';
-import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList } from '@lucide/angular';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2 } from '@lucide/angular';
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
 import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
 import { AlunoService } from './aluno.service';
 
 @Component({
   selector: 'app-alunos',
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, CardAluno, ModalAluno],
+  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
-export class Alunos {
-  searchTerm: string = '';
+export class Alunos implements OnInit {
+  searchTerm = '';
   viewMode: 'grid' | 'list' = 'grid';
+  alunos: Aluno[] = [];
+  isModalOpen = false;
+  isLoading = true; // Variável de controle de carregamento
 
-  alunos: Aluno[] = [
-    {
-      id: 1,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=300&fit=crop'
-    },
-    {
-      id: 2,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=400&h=300&fit=crop'
-    },
-    {
-      id: 3,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=300&fit=crop'
-    },
-    {
-      id: 4,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
-    },
-    {
-      id: 5,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop'
-    },
-    {
-      id: 6,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop'
-    },
-    {
-      id: 7,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop'
-    },
-    {
-      id: 8,
-      nome: 'Alex Oliveira',
-      ano: '3º Ano',
-      deficiencia: 'Autismo',
-      genero: 'Masculino',
-      fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop'
-    }
-  ];
+  constructor(
+    private alunoService: AlunoService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const navigationEvent = event as NavigationEnd;
+
+        if (navigationEvent.urlAfterRedirects.startsWith('/alunos') && !navigationEvent.urlAfterRedirects.includes('/alunos/')) {
+          this.carregarAlunos();
+        }
+      });
+  }
+
+  ngOnInit(): void {
+    this.carregarAlunos();
+  }
 
   get filteredAlunos(): Aluno[] {
     if (!this.searchTerm.trim()) {
       return this.alunos;
     }
+
     const term = this.searchTerm.toLowerCase();
-    return this.alunos.filter(aluno =>
-      aluno.nome.toLowerCase().includes(term) ||
-      aluno.ano.toLowerCase().includes(term) ||
-      aluno.deficiencia.toLowerCase().includes(term)
+    return this.alunos.filter(
+      (aluno) =>
+        aluno.nome.toLowerCase().includes(term) ||
+        aluno.ano.toLowerCase().includes(term) ||
+        aluno.deficiencia.toLowerCase().includes(term)
     );
   }
-
-  isModalOpen = false;
-
-  constructor(private alunoService: AlunoService) {}
 
   openModal() {
     this.isModalOpen = true;
@@ -105,49 +61,45 @@ export class Alunos {
     this.isModalOpen = false;
   }
 
-  onAlunoSaved(alunoForm: AlunoForm) {
-    console.log('Dados recebidos do modal:', alunoForm);
+  carregarAlunos(): void {
+    this.isLoading = true;
 
-    // 1. Mapeia os dados do modal para o formato esperado pelo backend/Supabase
+    this.alunoService.listarAlunos().subscribe({
+      next: (alunosBanco) => {
+        this.alunos = alunosBanco.map((alunoBanco) => this.mapAlunoBancoParaTela(alunoBanco));
+        this.isLoading = false;
+        this.cdr.detectChanges(); 
+      },
+      error: (erro) => {
+        console.error('Erro ao carregar alunos do banco:', erro);
+        this.alunos = [];
+        this.isLoading = false;
+        this.cdr.detectChanges(); 
+        alert('Falha ao carregar os alunos.');
+      },
+    });
+  }
+
+  onAlunoSaved(alunoForm: AlunoForm) {
     const payloadBanco = {
       nome_completo: alunoForm.nomeCompleto,
-      
-      // Correção: Trocamos o 'null' por 'undefined'
-      data_de_nascimento: alunoForm.dataNascimento ? alunoForm.dataNascimento : undefined, 
-      
+      data_de_nascimento: alunoForm.dataNascimento ? alunoForm.dataNascimento : undefined,
       genero: this.getGeneroLabel(alunoForm.genero),
       serie: this.getSerieLabel(alunoForm.serieAno),
       diagnostico: this.getDiagnosticoLabel(alunoForm.diagnostico),
-      
-      // Se você estiver enviando a foto, lembre-se que no banco a coluna chama 'foto'
-      foto: alunoForm.fotoUrl ? alunoForm.fotoUrl : undefined 
+      foto: alunoForm.fotoUrl || undefined,
     };
 
-    // 2. Chama o serviço para enviar ao backend
     this.alunoService.cadastrarAluno(payloadBanco).subscribe({
-      next: (respostaDoBanco: any) => {
-        console.log('Aluno cadastrado com sucesso!', respostaDoBanco);
-        
-        // 3. Atualiza a lista da tela com o aluno salvo
-        const alunoCriado = Array.isArray(respostaDoBanco) ? respostaDoBanco[0] : respostaDoBanco;
-
-        const newAluno: Aluno = {
-          id: alunoCriado.id,
-          nome: alunoCriado.nome_completo,
-          ano: alunoCriado.serie,
-          deficiencia: alunoCriado.diagnostico,
-          genero: alunoCriado.genero,
-          fotoUrl: alunoCriado.fotoUrl || undefined,
-        };
-        
-        this.alunos = [...this.alunos, newAluno];
+      next: () => {
+        this.carregarAlunos();
         this.closeModal();
         alert('Cadastro realizado com sucesso!');
       },
       error: (erro: any) => {
         console.error('Erro ao salvar no banco:', erro);
         alert('Falha ao cadastrar aluno. Tente novamente.');
-      }
+      },
     });
   }
 
@@ -160,16 +112,27 @@ export class Alunos {
     this.searchTerm = target.value;
   }
 
+  private mapAlunoBancoParaTela(alunoBanco: any): Aluno {
+    return {
+      id: Number(alunoBanco.id ?? 0),
+      nome: alunoBanco.nome_completo ?? 'Aluno sem nome',
+      ano: alunoBanco.serie ?? 'Sem série',
+      deficiencia: alunoBanco.diagnostico ?? 'Sem diagnóstico',
+      genero: alunoBanco.genero ?? 'Não informado',
+      fotoUrl: alunoBanco.fotoUrl ?? alunoBanco.foto ?? undefined,
+    };
+  }
+
   private getSerieLabel(value: string): string {
-    return this.series.find(s => s.value === value)?.label || '';
+    return this.series.find((s) => s.value === value)?.label || '';
   }
 
   private getDiagnosticoLabel(value: string): string {
-    return this.diagnosticos.find(d => d.value === value)?.label || '';
+    return this.diagnosticos.find((d) => d.value === value)?.label || '';
   }
 
   private getGeneroLabel(value: string): string {
-    return this.generos.find(g => g.value === value)?.label || '';
+    return this.generos.find((g) => g.value === value)?.label || '';
   }
 
   private series = [
@@ -178,11 +141,15 @@ export class Alunos {
     { value: '3ano', label: '3º Ano' },
     { value: '4ano', label: '4º Ano' },
     { value: '5ano', label: '5º Ano' },
+    { value: '6ano', label: '6º Ano' },
+    { value: '7ano', label: '7º Ano' },
+    { value: '8ano', label: '8º Ano' },
+    { value: '9ano', label: '9º Ano' },
   ];
 
   private diagnosticos = [
-    { value: 'tdah', label: 'TDAH' },
-    { value: 'autismo', label: 'Autismo' },
+    { value: 'tdah', label: 'TDAH (Transtorno do Déficit de Atenção com Hiperatividade)' },
+    { value: 'autismo', label: 'TEA (Transtorno do Espectro Autista)' },
     { value: 'deficiencia-fisica', label: 'Deficiência Física' },
     { value: 'deficiencia-visual', label: 'Deficiência Visual' },
     { value: 'deficiencia-auditiva', label: 'Deficiência Auditiva' },

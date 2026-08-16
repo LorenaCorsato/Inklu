@@ -48,18 +48,27 @@
     </div>
   </div>
 
-  <!-- Students Grid -->
-  <div [class.alunos-grid]="viewMode === 'grid'" [class.alunos-list]="viewMode === 'list'">
-    @for (aluno of filteredAlunos; track aluno.id) {
-      <app-card-aluno [aluno]="aluno"></app-card-aluno>
-    }
-  </div>
-
-  @if (filteredAlunos.length === 0) {
-    <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
-      <svg lucideSearch [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
-      <p class="text-muted mt-3 mb-0">Nenhum aluno encontrado</p>
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-state d-flex flex-column align-items-center justify-content-center py-5">
+      <svg lucideLoader2 [size]="48" color="#8d8d8d" [strokeWidth]="1.5" class="spin-animation"></svg>
+      <p class="text-muted mt-3 mb-0">Carregando alunos...</p>
     </div>
+  } @else {
+    <!-- Students Grid -->
+    <div [class.alunos-grid]="viewMode === 'grid'" [class.alunos-list]="viewMode === 'list'">
+      @for (aluno of filteredAlunos; track aluno.id) {
+        <app-card-aluno [aluno]="aluno"></app-card-aluno>
+      }
+    </div>
+
+    <!-- Empty State -->
+    @if (filteredAlunos.length === 0) {
+      <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
+        <svg lucideSearch [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+        <p class="text-muted mt-3 mb-0">Nenhum aluno encontrado</p>
+      </div>
+    }
   }
 </div>
 
