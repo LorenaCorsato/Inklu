@@ -8,6 +8,12 @@
   border-radius: var(--ds-radius-md);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   cursor: pointer;
+  
+  /* --- NOVAS PROPRIEDADES PARA IGUALAR ALTURA --- */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Garante que o card ocupe toda a altura da célula do grid */
+  /* ---------------------------------------------- */
 
   &:hover {
     transform: scale(1.01);
@@ -16,10 +22,11 @@
 
 .card-aluno-foto {
   width: 100%;
-  height: 160px;
+  aspect-ratio: 1 / 1;
   border-radius: 12px 12px 0 0;
   overflow: hidden;
   background-color: var(--ds-neutral-100);
+  flex-shrink: 0; /* Impede que a imagem seja esmagada */
 }
 
 .aluno-imagem {
@@ -40,6 +47,12 @@
 
 .card-aluno-info {
   padding: var(--ds-spacing-3);
+  
+  /* --- NOVA PROPRIEDADE PARA EXPANDIR O CONTEÚDO --- */
+  flex: 1; /* Faz a área de info crescer para preencher o espaço vazio */
+  display: flex;
+  flex-direction: column;
+  /* ------------------------------------------------ */
 }
 
 .card-aluno-header {
@@ -104,6 +117,7 @@
   display: flex;
   gap: var(--ds-spacing-2);
   flex-wrap: wrap;
+  margin-top: auto; /* Empurra os detalhes para o final do card, mantendo o alinhamento na base */
 }
 
 .detalhe-item {
@@ -120,8 +134,40 @@
   letter-spacing: 0.5px;
 }
 
+// ... (todo o código anterior permanece igual até a parte dos detalhes)
+
+.card-aluno-detalhes {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.detalhe-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 80px;
+  flex: 1; /* Permite que o item cresça para ocupar o espaço disponível */
+  min-width: 0; /* ESSENCIAL: Permite que o conteúdo encolha abaixo do tamanho do texto para a elipse funcionar */
+}
+
+.detalhe-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap; /* Garante que o rótulo nunca quebre de linha */
+}
+
 .detalhe-valor {
   font-size: var(--ds-font-size-sm);
   font-weight: 500;
   color: var(--ds-neutral-600);
+  
+  /* --- NOVAS PROPRIEDADES PARA A ELIPSE --- */
+  white-space: nowrap;      /* Força o texto a ficar em uma única linha */
+  overflow: hidden;         /* Esconde o texto que ultrapassar a caixa */
+  text-overflow: ellipsis;  /* Adiciona os "..." no final */
+  /* --------------------------------------- */
 }

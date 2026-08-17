@@ -46,10 +46,14 @@
     <h3 class="card-aluno-nome">{{ aluno.nome }}</h3>
 
     <div class="card-aluno-detalhes">
-      <div class="detalhe-item">
-        <span class="detalhe-label">Deficiência</span>
-        <span class="detalhe-valor">{{ aluno.deficiencia }}</span>
-      </div>
+      <!-- Deficiência -->
+  <div class="detalhe-item">
+    <!-- Só exibe o label se não começar com "Deficiência" -->
+    <span class="detalhe-label">Deficiência</span>
+    
+    <!-- Exibe o nome já sem a palavra 'Deficiência' no início -->
+    <span class="detalhe-valor">{{ getDeficienciaDisplay() }}</span>
+  </div>
       <div class="detalhe-item">
         <span class="detalhe-label">Gênero</span>
         <span class="detalhe-valor">{{ aluno.genero }}</span>

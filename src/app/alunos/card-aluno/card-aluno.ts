@@ -1,6 +1,7 @@
 import { Component, Input, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2 } from '@lucide/angular';
+import { CommonModule } from '@angular/common'; // Importe o CommonModule para usar o *ngIf
 
 export interface Aluno {
   id: number;
@@ -13,7 +14,8 @@ export interface Aluno {
 
 @Component({
   selector: 'app-card-aluno',
-  imports: [LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2],
+  // Adicione o CommonModule nos imports para usar *ngIf
+  imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2],
   templateUrl: './card-aluno.html',
   styleUrl: './card-aluno.scss',
 })
@@ -50,5 +52,19 @@ export class CardAluno {
 
   closeOptionsMenu() {
     this.isOptionsMenuOpen = false;
+  }
+
+  // --- NOVAS FUNÇÕES AUXILIARES ---
+
+  // Verifica se o texto já contém a palavra "Deficiência" (ignorando maiúsculas/minúsculas)
+  shouldShowDeficienciaLabel(): boolean {
+    if (!this.aluno?.deficiencia) return false;
+    return !this.aluno.deficiencia.toLowerCase().startsWith('deficiência');
+  }
+
+  // Remove a palavra "Deficiência " do início do texto para exibir apenas o tipo
+  getDeficienciaDisplay(): string {
+    if (!this.aluno?.deficiencia) return '';
+    return this.aluno.deficiencia.replace(/^Deficiência\s*/i, '');
   }
 }

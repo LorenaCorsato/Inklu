@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideX } from '@lucide/angular';
+import { ModalCrop } from '../modal-crop/modal-crop';
 
 export interface AlunoForm {
   nomeCompleto: string;
@@ -16,7 +17,7 @@ export interface AlunoForm {
 
 @Component({
   selector: 'app-modal-aluno',
-  imports: [FormsModule, LucideX],
+  imports: [FormsModule, LucideX, ModalCrop],
   templateUrl: './modal-aluno.html',
   styleUrl: './modal-aluno.scss',
 })
@@ -24,6 +25,8 @@ export class ModalAluno {
   @Input() isOpen = false;
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<AlunoForm>();
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   get isFormValid(): boolean {
     return !!(
@@ -84,22 +87,38 @@ export class ModalAluno {
   };
 
   previewUrl: string | null = null;
+  isCropModalOpen = false;
+  tempImageSrc: string | null = null;
 
-onFileChange(event: Event) {
+  onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
       const reader = new FileReader();
 
-      // Quando o arquivo terminar de ser lido, converte para Base64
       reader.onload = () => {
-        this.form.fotoUrl = reader.result as string; // Resultado é data:image/...
-        this.previewUrl = this.form.fotoUrl;
+        this.tempImageSrc = reader.result as string;
+        this.isCropModalOpen = true;
+        input.value = '';
+        this.cdr.detectChanges();
       };
 
-      // Lê o arquivo gerando uma URL em Base64
       reader.readAsDataURL(file);
     }
+  }
+
+  onCropComplete(croppedImage: string) {
+    this.form.fotoUrl = croppedImage;
+    this.previewUrl = croppedImage;
+    this.isCropModalOpen = false;
+    this.tempImageSrc = null;
+    this.cdr.detectChanges();
+  }
+
+  onCropClosed() {
+    this.isCropModalOpen = false;
+    this.tempImageSrc = null;
+    this.cdr.detectChanges();
   }
 
   onBackdropClick(event: MouseEvent) {

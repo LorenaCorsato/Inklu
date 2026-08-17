@@ -149,4 +149,11 @@
       </div>
     </div>
   </div>
+
+  <app-modal-crop
+    [isOpen]="isCropModalOpen"
+    [imageSrc]="tempImageSrc"
+    (cropComplete)="onCropComplete($event)"
+    (closed)="onCropClosed()"
+  ></app-modal-crop>
 }
