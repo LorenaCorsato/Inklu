@@ -25,6 +25,18 @@ export class ModalAluno {
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<AlunoForm>();
 
+  get isFormValid(): boolean {
+    return !!(
+      this.form.nomeCompleto?.trim() &&
+      this.form.dataNascimento &&
+      this.form.genero &&
+      this.form.nomeResponsavel?.trim() &&
+      this.form.telefoneResponsavel?.trim() &&
+      this.form.serieAno &&
+      this.form.turmaSala &&
+      this.form.diagnostico
+    );
+  }
   generos = [
     { value: 'masculino', label: 'Masculino' },
     { value: 'feminino', label: 'Feminino' },
@@ -32,15 +44,14 @@ export class ModalAluno {
   ];
 
   series = [
-    { value: '1ano', label: '1º Ano' },
-    { value: '2ano', label: '2º Ano' },
-    { value: '3ano', label: '3º Ano' },
-    { value: '4ano', label: '4º Ano' },
-    { value: '5ano', label: '5º Ano' },
     { value: '6ano', label: '6º Ano' },
     { value: '7ano', label: '7º Ano' },
     { value: '8ano', label: '8º Ano' },
     { value: '9ano', label: '9º Ano' },
+    { value: '1ano', label: '1º Ano' },
+    { value: '2ano', label: '2º Ano' },
+    { value: '3ano', label: '3º Ano' },
+
   ];
 
   turmas = [
@@ -102,6 +113,10 @@ onFileChange(event: Event) {
   }
 
   save() {
+    if (!this.isFormValid) {
+      alert('Por favor, preencha todos os campos obrigatórios antes de salvar.');
+      return;
+    }
     this.saved.emit(this.form);
     this.resetForm();
     this.close();
@@ -120,5 +135,24 @@ onFileChange(event: Event) {
       diagnostico: '',
     };
     this.previewUrl = null;
+  }
+
+  aplicaMascaraTelefone(event: any) {
+    let valor = event.target.value.replace(/\D/g, ''); 
+    if (valor.length > 11) {
+      valor = valor.substring(0, 11);
+    }
+
+    let formato = valor;
+    if (valor.length > 2 && valor.length <= 6) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
+    } else if (valor.length > 6 && valor.length <= 10) { 
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
+    } else if (valor.length === 11) { 
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
+    }
+
+    event.target.value = formato;
+    this.form.telefoneResponsavel = formato;
   }
 }

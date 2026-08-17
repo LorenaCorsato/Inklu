@@ -46,7 +46,7 @@ export class AlunoController {
       console.error("  Erro interno do servidor:", err);       
       return res.status(500).json({ erro: 'Erro interno no servidor' });     
     }
-  } // <--- 1. ADICIONE ESTA CHAVE para fechar o método cadastrar
+  } 
 
   async listar(req: Request, res: Response): Promise<any> {     
     try {       
@@ -64,6 +64,6 @@ export class AlunoController {
     } catch (err) {       
       return res.status(500).json({ erro: 'Erro interno ao buscar alunos' });     
     }
-  } // <--- 2. ADICIONE ESTA CHAVE para fechar o método listar
+  } 
 
-} // <--- 3. ADICIONE ESTA CHAVE para fechar a classe AlunoController
+} 

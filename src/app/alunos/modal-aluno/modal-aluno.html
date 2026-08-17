@@ -82,10 +82,12 @@
           <div class="form-group form-group-half">
             <label class="form-label">Telefone do Responsável</label>
             <input
-              type="tel"
-              class="form-input"
-              placeholder="(00) 00000-0000"
-              [(ngModel)]="form.telefoneResponsavel"
+            type="tel"
+            class="form-input"
+            placeholder="(00) 00000-0000"
+            [(ngModel)]="form.telefoneResponsavel"
+            (input)="aplicaMascaraTelefone($event)" 
+            maxlength="15"
             />
           </div>
         </div>
@@ -135,8 +137,14 @@
         <button class="btn btn-cancelar" type="button" (click)="close()">
           Cancelar
         </button>
-        <button class="btn btn-salvar" type="button" (click)="save()">
-          Salvar Aluno
+        <button 
+          class="btn btn-salvar" 
+          type="button" 
+          (click)="save()"
+          [disabled]="!isFormValid"
+          [style.opacity]="!isFormValid ? '0.5' : '1'"
+          [style.cursor]="!isFormValid ? 'not-allowed' : 'pointer'"
+        >          Salvar Aluno
         </button>
       </div>
     </div>
