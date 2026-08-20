@@ -6,7 +6,7 @@
   <!-- Header -->
   <div class="alunos-header d-flex align-items-center justify-content-between mb-3">
     <h1 class="alunos-title fw-bold mb-0">Todos os Alunos</h1>
-    <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openModal()">
+    <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openAdicionarAluno()">
       <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
       Adicionar Aluno
     </button>
@@ -71,9 +71,3 @@
     }
   }
 </div>
-
-<app-modal-aluno
-  [isOpen]="isModalOpen"
-  (closed)="closeModal()"
-  (saved)="onAlunoSaved($event)">
-</app-modal-aluno>
