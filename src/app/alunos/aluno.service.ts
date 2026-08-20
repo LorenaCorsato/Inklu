@@ -8,7 +8,7 @@ export interface Aluno {
   serie?: string;
   data_de_nascimento?: string;
   genero?: string;
-  diagnostico?: string;
+  diagnostico?: string | { diagnostico: string; descricao: string }[];
   foto?: string;
   fotoUrl?: string;
   preferencias?: string;

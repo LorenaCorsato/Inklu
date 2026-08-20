@@ -3,12 +3,11 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2 } from '@lucide/angular';
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
-import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
 import { AlunoService } from './aluno.service';
 
 @Component({
   selector: 'app-alunos',
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno],
+  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
@@ -16,8 +15,7 @@ export class Alunos implements OnInit {
   searchTerm = '';
   viewMode: 'grid' | 'list' = 'grid';
   alunos: Aluno[] = [];
-  isModalOpen = false;
-  isLoading = true; // Variável de controle de carregamento
+  isLoading = true;
 
   constructor(
     private alunoService: AlunoService,
@@ -53,12 +51,8 @@ export class Alunos implements OnInit {
     );
   }
 
-  openModal() {
-    this.isModalOpen = true;
-  }
-
-  closeModal() {
-    this.isModalOpen = false;
+  openAdicionarAluno() {
+    this.router.navigate(['/alunos/adicionar']);
   }
 
   carregarAlunos(): void {
@@ -76,29 +70,6 @@ export class Alunos implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges(); 
         alert('Falha ao carregar os alunos.');
-      },
-    });
-  }
-
-  onAlunoSaved(alunoForm: AlunoForm) {
-    const payloadBanco = {
-      nome_completo: alunoForm.nomeCompleto,
-      data_de_nascimento: alunoForm.dataNascimento ? alunoForm.dataNascimento : undefined,
-      genero: this.getGeneroLabel(alunoForm.genero),
-      serie: this.getSerieLabel(alunoForm.serieAno),
-      diagnostico: this.getDiagnosticoLabel(alunoForm.diagnostico),
-      foto: alunoForm.fotoUrl || undefined,
-    };
-
-    this.alunoService.cadastrarAluno(payloadBanco).subscribe({
-      next: () => {
-        this.carregarAlunos();
-        this.closeModal();
-        alert('Cadastro realizado com sucesso!');
-      },
-      error: (erro: any) => {
-        console.error('Erro ao salvar no banco:', erro);
-        alert('Falha ao cadastrar aluno. Tente novamente.');
       },
     });
   }
@@ -122,44 +93,4 @@ export class Alunos implements OnInit {
       fotoUrl: alunoBanco.fotoUrl ?? alunoBanco.foto ?? undefined,
     };
   }
-
-  private getSerieLabel(value: string): string {
-    return this.series.find((s) => s.value === value)?.label || '';
-  }
-
-  private getDiagnosticoLabel(value: string): string {
-    return this.diagnosticos.find((d) => d.value === value)?.label || '';
-  }
-
-  private getGeneroLabel(value: string): string {
-    return this.generos.find((g) => g.value === value)?.label || '';
-  }
-
-  private series = [
-    { value: '1ano', label: '1º Ano' },
-    { value: '2ano', label: '2º Ano' },
-    { value: '3ano', label: '3º Ano' },
-    { value: '4ano', label: '4º Ano' },
-    { value: '5ano', label: '5º Ano' },
-    { value: '6ano', label: '6º Ano' },
-    { value: '7ano', label: '7º Ano' },
-    { value: '8ano', label: '8º Ano' },
-    { value: '9ano', label: '9º Ano' },
-  ];
-
-  private diagnosticos = [
-    { value: 'tdah', label: 'TDAH (Transtorno do Déficit de Atenção com Hiperatividade)' },
-    { value: 'autismo', label: 'TEA (Transtorno do Espectro Autista)' },
-    { value: 'deficiencia-fisica', label: 'Deficiência Física' },
-    { value: 'deficiencia-visual', label: 'Deficiência Visual' },
-    { value: 'deficiencia-auditiva', label: 'Deficiência Auditiva' },
-    { value: 'intelectual', label: 'Deficiência Intelectual' },
-    { value: 'outro', label: 'Outro' },
-  ];
-
-  private generos = [
-    { value: 'masculino', label: 'Masculino' },
-    { value: 'feminino', label: 'Feminino' },
-    { value: 'outro', label: 'Outro' },
-  ];
 }
