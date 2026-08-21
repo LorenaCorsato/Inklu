@@ -17,7 +17,7 @@ export class Alunos implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
   alunos: Aluno[] = [];
   
-  // Mantemos as suas variáveis de controle do modal e carregamento
+  // Nossas variáveis
   isModalOpen = false;
   alunoEmEdicao: Aluno | null = null;
   isLoading = true; 
@@ -55,6 +55,12 @@ export class Alunos implements OnInit {
         aluno.deficiencia.toLowerCase().includes(term)
     );
   }
+
+  // --- MUDANÇA DA BRANCH DEV AQUI ---
+  openAdicionarAluno() {
+    this.router.navigate(['/alunos/adicionar']);
+  }
+  // ----------------------------------
 
   openModal() {
     this.alunoEmEdicao = null;
@@ -125,9 +131,6 @@ export class Alunos implements OnInit {
           alert('Falha ao cadastrar aluno.');
         },
       });
-    } else {
-      console.error('Não foi possível atualizar o aluno: ID não encontrado.', this.alunoEmEdicao);
-      alert('Não foi possível atualizar este aluno porque o ID não foi encontrado.');
     }
   }
 
@@ -172,8 +175,6 @@ export class Alunos implements OnInit {
       originalData: alunoBanco,
     };
   }
-
-  // --- Funções Auxiliares Restauradas ---
 
   private getSerieLabel(value: string): string {
     return this.series.find((s) => s.value === value)?.label || '';

@@ -6,8 +6,8 @@
   <!-- Header -->
   <div class="alunos-header d-flex align-items-center justify-content-between mb-3">
     <h1 class="alunos-title fw-bold mb-0">Todos os Alunos</h1>
-    <!-- O clique do botão foi corrigido de volta para openModal() -->
-    <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openModal()">
+    <!-- O clique do botão usa a função da branch dev (openAdicionarAluno) -->
+    <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openAdicionarAluno()">
       <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
       Adicionar Aluno
     </button>
@@ -77,7 +77,7 @@
   }
 </div>
 
-<!-- Modal mantido na versão da sua branch -->
+<!-- Mantemos o Modal para a Edição -->
 <app-modal-aluno
   [isOpen]="isModalOpen"
   [alunoEdicao]="alunoEmEdicao"
