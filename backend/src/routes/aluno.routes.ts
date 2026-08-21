@@ -8,5 +8,6 @@ const alunoController = new AlunoController();
 router.post('/', alunoController.cadastrar);
 router.get('/', alunoController.listar);
 router.put('/:id', alunoController.atualizar);
+router.delete('/:id', alunoController.excluir);
 
 export default router;

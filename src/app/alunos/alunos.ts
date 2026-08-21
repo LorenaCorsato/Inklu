@@ -130,6 +130,27 @@ export class Alunos implements OnInit {
     }
   }
 
+  onExcluirAluno(aluno: Aluno) {
+    const confirmacao = confirm(`Tem certeza que deseja excluir o aluno(a) ${aluno.nome}?`);
+
+    if (confirmacao) {
+      this.isLoading = true;
+
+      this.alunoService.excluirAluno(aluno.id).subscribe({
+        next: () => {
+          alert('Aluno excluído com sucesso!');
+          this.carregarAlunos();
+        },
+        error: (erro) => {
+          console.error('Erro ao excluir aluno:', erro);
+          alert('Falha ao excluir o aluno.');
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+      });
+    }
+  }
+
   setViewMode(mode: 'grid' | 'list') {
     this.viewMode = mode;
   }

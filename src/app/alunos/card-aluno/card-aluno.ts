@@ -22,6 +22,7 @@ export interface Aluno {
 export class CardAluno {
   @Input({ required: true }) aluno!: Aluno;
   @Output() editar = new EventEmitter<Aluno>(); 
+  @Output() excluir = new EventEmitter<Aluno>();
   
   isOptionsMenuOpen = false;
 
@@ -50,6 +51,12 @@ export class CardAluno {
   onEditarClick(event: Event) {
     event.stopPropagation();
     this.editar.emit(this.aluno); 
+    this.closeOptionsMenu();
+  }
+
+  onExcluirClick(event: Event) {
+    event.stopPropagation();
+    this.excluir.emit(this.aluno);
     this.closeOptionsMenu();
   }
 

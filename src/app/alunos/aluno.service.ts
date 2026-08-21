@@ -35,4 +35,8 @@ export class AlunoService {
   atualizarAluno(id: any, aluno: any): Observable<any> { // <--- Alterado para any
     return this.http.put(`${this.apiUrl}/${id}`, aluno);
   }
+
+  excluirAluno(id: any): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

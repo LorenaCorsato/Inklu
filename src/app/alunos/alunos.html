@@ -58,7 +58,11 @@
     <!-- Students Grid -->
     <div [class.alunos-grid]="viewMode === 'grid'" [class.alunos-list]="viewMode === 'list'">
       @for (aluno of filteredAlunos; track aluno.id) {
-        <app-card-aluno [aluno]="aluno" (editar)="abrirModalEdicao($event)"></app-card-aluno>
+        <app-card-aluno
+          [aluno]="aluno"
+          (editar)="abrirModalEdicao($event)"
+          (excluir)="onExcluirAluno($event)">
+        </app-card-aluno>
       }
     </div>
 

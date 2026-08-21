@@ -101,6 +101,7 @@ export class AlunoController {
       const { data, error } = await supabase         
         .from('aluno')         
         .select('*')         
+        .neq('status', 2)
         .order('data_de_criacao', { ascending: false });       
         
       if (error) {         
@@ -113,5 +114,26 @@ export class AlunoController {
       return res.status(500).json({ erro: 'Erro interno ao buscar alunos' });     
     }
   } 
+
+  async excluir(req: Request, res: Response): Promise<any> {
+    try {
+      const id = req.params.id;
+
+      const { data, error } = await supabase
+        .from('aluno')
+        .update({ status: 2 })
+        .eq('id', id)
+        .select();
+
+      if (error) {
+        return res.status(400).json({ erro: error.message });
+      }
+
+      return res.status(200).json({ mensagem: 'Aluno inativado com sucesso', data });
+    } catch (err) {
+      console.error('Erro ao excluir:', err);
+      return res.status(500).json({ erro: 'Erro interno ao excluir aluno' });
+    }
+  }
 
 } 
