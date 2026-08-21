@@ -9,5 +9,5 @@ router.post('/', alunoController.cadastrar);
 router.get('/', alunoController.listar);
 router.put('/:id', alunoController.atualizar);
 router.delete('/:id', alunoController.excluir);
-
+router.get('/:id', alunoController.buscarPorId);
 export default router;

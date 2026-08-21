@@ -5,12 +5,10 @@ import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2 }
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
 import { AlunoService } from './aluno.service';
 
-// Importação do modal que estava faltando:
 import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
 
 @Component({
   selector: 'app-alunos',
-  // O ModalAluno inserido corretamente nos imports do Component:
   imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
@@ -20,7 +18,6 @@ export class Alunos implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
   alunos: Aluno[] = [];
   
-  // Nossas variáveis
   isModalOpen = false;
   alunoEmEdicao: Aluno | null = null;
   isLoading = true; 
@@ -44,7 +41,25 @@ export class Alunos implements OnInit {
   ngOnInit(): void {
     this.carregarAlunos();
   }
+formatarDiagnostico(diagnosticoDb: any): string {
+    if (!diagnosticoDb) return 'Não informado';
 
+    try {
+      const listaDiagnosticos = typeof diagnosticoDb === 'string' 
+        ? JSON.parse(diagnosticoDb) 
+        : diagnosticoDb;
+
+      if (Array.isArray(listaDiagnosticos) && listaDiagnosticos.length > 0) {
+        const nomes = listaDiagnosticos.map((item: any) => item.diagnóstico || item.diagnostico);
+        
+        return nomes.join(', '); 
+      }
+      
+      return 'Não informado';
+    } catch (error) {
+      return typeof diagnosticoDb === 'string' ? diagnosticoDb : 'Diagnóstico inválido';
+    }
+  }
   get filteredAlunos(): Aluno[] {
     if (!this.searchTerm.trim()) {
       return this.alunos;
@@ -106,7 +121,8 @@ export class Alunos implements OnInit {
       serie: this.getSerieLabel(alunoForm.serieAno),
       diagnostico: this.getDiagnosticoLabel(alunoForm.diagnostico),
       foto: alunoForm.fotoUrl || undefined,
-    };
+      status: alunoForm.status ?? 1   
+     };
 
     const alunoId = this.alunoEmEdicao?.id ?? alunoForm.id;
 
@@ -172,7 +188,7 @@ export class Alunos implements OnInit {
       id: alunoBanco.id, 
       nome: alunoBanco.nome_completo ?? 'Aluno sem nome',
       ano: alunoBanco.serie ?? 'Sem série',
-      deficiencia: alunoBanco.diagnostico ?? 'Sem diagnóstico',
+    deficiencia: this.formatarDiagnostico(alunoBanco.diagnostico),
       genero: alunoBanco.genero ?? 'Não informado',
       fotoUrl: alunoBanco.fotoUrl ?? alunoBanco.foto ?? undefined,
       originalData: alunoBanco,

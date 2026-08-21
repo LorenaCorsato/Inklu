@@ -5,7 +5,7 @@ export class AlunoController {
   async cadastrar(req: Request, res: Response): Promise<any> {     
     try {       
       const dadosAluno = req.body;       
-      
+      dadosAluno.status = dadosAluno.status || 1;
       if (dadosAluno.foto && dadosAluno.foto.startsWith('data:image')) {         
         const base64Data = dadosAluno.foto.replace(/^data:image\/\w+;base64,/, "");         
         const fotoBuffer = Buffer.from(base64Data, 'base64');                  
@@ -48,13 +48,11 @@ export class AlunoController {
     }
   } 
 
-  // Adicione este método dentro da classe AlunoController
   async atualizar(req: Request, res: Response): Promise<any> {
     try {
-      const id = req.params.id; // Pega o ID da URL
+      const id = req.params.id; 
       const dadosAluno = req.body;
 
-      // Se enviou uma foto nova em Base64
       if (dadosAluno.foto && dadosAluno.foto.startsWith('data:image')) {
         const base64Data = dadosAluno.foto.replace(/^data:image\/\w+;base64,/, "");
         const fotoBuffer = Buffer.from(base64Data, 'base64');
@@ -78,7 +76,6 @@ export class AlunoController {
         dadosAluno.foto = publicUrlData.publicUrl;
       }
 
-      // Faz o UPDATE no banco
       const { data, error } = await supabase
         .from('aluno')
         .update(dadosAluno)
@@ -133,6 +130,33 @@ export class AlunoController {
     } catch (err) {
       console.error('Erro ao excluir:', err);
       return res.status(500).json({ erro: 'Erro interno ao excluir aluno' });
+    }
+  }
+
+  async buscarPorId(req: Request, res: Response): Promise<any> {
+    try {
+      const id = req.params.id;
+
+      const { data, error } = await supabase
+        .from('aluno')
+        .select('*')
+        .eq('id', id)
+        .single(); 
+
+      if (error) {
+        console.error("Erro ao buscar aluno por ID no Supabase:", error);
+        return res.status(400).json({ erro: error.message });
+      }
+
+      if (!data) {
+        return res.status(404).json({ erro: 'Aluno não encontrado' });
+      }
+
+      return res.status(200).json(data);
+
+    } catch (err) {
+      console.error("Erro interno ao buscar aluno por ID:", err);
+      return res.status(500).json({ erro: 'Erro interno ao buscar detalhes do aluno' });
     }
   }
 

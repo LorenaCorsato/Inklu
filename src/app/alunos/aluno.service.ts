@@ -39,4 +39,7 @@ export class AlunoService {
   excluirAluno(id: any): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  buscarAlunoPorId(id: string) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);  }
 }

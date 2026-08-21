@@ -68,44 +68,49 @@
 
   <!-- Main Content -->
   <div class="detalhe-content p-3">
+    
     <!-- Stats Cards -->
     <div class="detalhe-stats-grid mb-3">
       <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
-          <span class="detalhe-stat-label">Turma</span>
+          <span class="detalhe-stat-label">Turma/Série</span>
           <svg lucideGraduationCap></svg>
         </div>
-        <span class="detalhe-stat-value">2° ano A</span>
+        <span class="detalhe-stat-value">{{ aluno.ano || 'Não informada' }}</span>
       </div>
       <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
           <span class="detalhe-stat-label">Deficiência</span>
           <svg lucideAccessibility></svg>
         </div>
-        <span class="detalhe-stat-value">Autismo</span>
+        <span class="detalhe-stat-value">{{ aluno.deficiencia }}</span>
       </div>
       <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
-          <span class="detalhe-stat-label">Idade</span>
+          <span class="detalhe-stat-label">Nascimento</span>
           <svg lucideCalendar></svg>
         </div>
-        <span class="detalhe-stat-value">9 Anos</span>
+        <span class="detalhe-stat-value text-truncate" style="font-size: 1.1rem;">
+          {{ alunoOriginal?.data_de_nascimento ? (alunoOriginal?.data_de_nascimento | date:'dd/MM/yyyy') : 'Não informada' }}
+        </span>
       </div>
       <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
-          <span class="detalhe-stat-label">Média de notas</span>
-          <svg lucideTrendingUp [size]="18" [strokeWidth]="2"></svg>
+          <span class="detalhe-stat-label">Gênero</span>
+          <svg lucideUser></svg>
         </div>
-        <span class="detalhe-stat-value">Alta</span>
+        <span class="detalhe-stat-value">{{ aluno.genero | titlecase }}</span>
       </div>
     </div>
 
     <!-- Two Column Layout -->
     <div class="detalhe-info-columns mb-3">
+      
       <!-- Left Column: Dados Escolares -->
       <div class="detalhe-card">
         <span class="detalhe-card-fieldset-label">Dados Escolares</span>
         <div class="detalhe-card-body">
+          
           <!-- Preferências -->
           <div class="detalhe-section mb-3">
             <h3 class="detalhe-section-title">Preferências</h3>
@@ -116,18 +121,24 @@
             </div>
           </div>
 
-          <!-- Responsável Escolar -->
+          <!-- Diagnósticos Detalhados -->
           <div class="detalhe-section mb-3">
-            <h3 class="detalhe-section-title">Responsável Escolar</h3>
-            <div class="detalhe-responsaveis-escolar d-flex flex-row gap-2">
-              <div class="detalhe-pessoa-chip d-flex align-items-center gap-2">
-                <div class="detalhe-pessoa-avatar"></div>
-                <span>Prof. Angela</span>
-              </div>
-              <div class="detalhe-pessoa-chip d-flex align-items-center gap-2">
-                <div class="detalhe-pessoa-avatar"></div>
-                <span>Prof. Tiago</span>
-              </div>
+            <h3 class="detalhe-section-title d-flex align-items-center gap-2">
+              <svg lucideAccessibility [size]="18"></svg> Diagnósticos
+            </h3>
+            <div class="d-flex flex-column gap-2 mt-2">
+              @for (diag of diagnosticosLista; track diag) {
+                <div class="p-3 border rounded bg-light">
+                  <h6 class="fw-bold text-primary mb-1">
+                    {{ diag['diagnóstico'] || diag.diagnostico || 'Não especificado' }}
+                  </h6>
+                  <p class="mb-0 text-muted small" style="white-space: pre-wrap;">
+                    {{ diag.descricao || 'Nenhuma descrição fornecida.' }}
+                  </p>
+                </div>
+              } @empty {
+                <p class="text-muted small">Nenhum diagnóstico detalhado registrado.</p>
+              }
             </div>
           </div>
 
@@ -140,6 +151,7 @@
               <li>Não utilizar desenhos com muitas cores</li>
             </ul>
           </div>
+
         </div>
       </div>
 
@@ -148,23 +160,18 @@
         <span class="detalhe-card-fieldset-label">Dados dos Responsáveis</span>
         <div class="detalhe-card-body">
           <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
-            <!-- Pai -->
+            
+            <!-- Responsável Cadastrado -->
             <div class="detalhe-responsavel-card">
-              <span class="detalhe-responsavel-label">Pai Paterno</span>
-              <h4 class="detalhe-responsavel-nome">João</h4>
-              <p class="detalhe-responsavel-contato">(11) 1234 - 5678</p>
-              <p class="detalhe-responsavel-contato">example@email.com</p>
+              <span class="detalhe-responsavel-label">Responsável Principal</span>
+              <h4 class="detalhe-responsavel-nome">{{ alunoOriginal?.nome_responsavel || 'Não informado' }}</h4>
+              <p class="detalhe-responsavel-contato">{{ alunoOriginal?.telefone_responsavel || 'Sem telefone' }}</p>
             </div>
-            <!-- Mãe -->
-            <div class="detalhe-responsavel-card">
-              <span class="detalhe-responsavel-label">Mãe Paterna</span>
-              <h4 class="detalhe-responsavel-nome">Mãe</h4>
-              <p class="detalhe-responsavel-contato">(11) 1234 - 5678</p>
-              <p class="detalhe-responsavel-contato">example@email.com</p>
-            </div>
+
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- Arquivos Section -->
@@ -172,6 +179,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
         <div class="arquivos-toolbar d-flex align-items-center gap-2">
+          
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
@@ -194,6 +202,7 @@
 
             @if (isFilterOpen) {
               <div class="filter-menu">
+                
                 <!-- Materias -->
                 <div class="filter-section">
                   <span class="filter-section-label">Matérias</span>
