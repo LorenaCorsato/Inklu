@@ -26,10 +26,11 @@
         </button>
         @if (isOptionsMenuOpen) {
           <div class="dropdown-menu dropdown-menu-end show">
-            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
-              <svg lucidePencil class="dropdown-item-icon"></svg>
-              Editar
-            </button>
+           <!-- Mude a tag do botão de editar para isto: -->
+<button class="dropdown-item" type="button" (click)="onEditarClick($event)">
+  <svg lucidePencil class="dropdown-item-icon"></svg>
+  Editar
+</button>
             <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
               <svg lucideTrash2 class="dropdown-item-icon"></svg>
               Excluir

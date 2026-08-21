@@ -17,7 +17,8 @@ export class Alunos implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
   alunos: Aluno[] = [];
   isModalOpen = false;
-  isLoading = true; // Variável de controle de carregamento
+  alunoEmEdicao: Aluno | null = null;
+  isLoading = true; 
 
   constructor(
     private alunoService: AlunoService,
@@ -54,6 +55,12 @@ export class Alunos implements OnInit {
   }
 
   openModal() {
+    this.alunoEmEdicao = null;
+    this.isModalOpen = true;
+  }
+
+  abrirModalEdicao(aluno: Aluno) {
+    this.alunoEmEdicao = aluno;
     this.isModalOpen = true;
   }
 
@@ -90,17 +97,37 @@ export class Alunos implements OnInit {
       foto: alunoForm.fotoUrl || undefined,
     };
 
-    this.alunoService.cadastrarAluno(payloadBanco).subscribe({
-      next: () => {
-        this.carregarAlunos();
-        this.closeModal();
-        alert('Cadastro realizado com sucesso!');
-      },
-      error: (erro: any) => {
-        console.error('Erro ao salvar no banco:', erro);
-        alert('Falha ao cadastrar aluno. Tente novamente.');
-      },
-    });
+    const alunoId = this.alunoEmEdicao?.id ?? alunoForm.id;
+
+    // <--- CORREÇÃO APLICADA AQUI: Aceita IDs textuais corretamente
+    if (alunoId !== undefined && alunoId !== null && alunoId !== '') {
+      this.alunoService.atualizarAluno(alunoId, payloadBanco).subscribe({
+        next: () => {
+          this.carregarAlunos();
+          this.closeModal();
+          alert('Aluno atualizado com sucesso!');
+        },
+        error: (erro: any) => {
+          console.error('Erro ao atualizar no banco:', erro);
+          alert('Falha ao atualizar aluno.');
+        },
+      });
+    } else if (!this.alunoEmEdicao) {
+      this.alunoService.cadastrarAluno(payloadBanco).subscribe({
+        next: () => {
+          this.carregarAlunos();
+          this.closeModal();
+          alert('Cadastro realizado com sucesso!');
+        },
+        error: (erro: any) => {
+          console.error('Erro ao salvar no banco:', erro);
+          alert('Falha ao cadastrar aluno.');
+        },
+      });
+    } else {
+      console.error('Não foi possível atualizar o aluno: ID não encontrado.', this.alunoEmEdicao);
+      alert('Não foi possível atualizar este aluno porque o ID não foi encontrado.');
+    }
   }
 
   setViewMode(mode: 'grid' | 'list') {
@@ -114,12 +141,13 @@ export class Alunos implements OnInit {
 
   private mapAlunoBancoParaTela(alunoBanco: any): Aluno {
     return {
-      id: Number(alunoBanco.id ?? 0),
+      id: alunoBanco.id, // <--- CORREÇÃO APLICADA AQUI: Removido o Number()
       nome: alunoBanco.nome_completo ?? 'Aluno sem nome',
       ano: alunoBanco.serie ?? 'Sem série',
       deficiencia: alunoBanco.diagnostico ?? 'Sem diagnóstico',
       genero: alunoBanco.genero ?? 'Não informado',
       fotoUrl: alunoBanco.fotoUrl ?? alunoBanco.foto ?? undefined,
+      originalData: alunoBanco,
     };
   }
 

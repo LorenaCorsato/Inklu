@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Aluno {
-  id?: number;
+  id?: any; // <--- Alterado para any
   nome_completo?: string;
   serie?: string;
   data_de_nascimento?: string;
@@ -30,5 +30,9 @@ export class AlunoService {
 
   cadastrarAluno(aluno: Aluno): Observable<any> {
     return this.http.post(this.apiUrl, aluno);
+  }
+
+  atualizarAluno(id: any, aluno: any): Observable<any> { // <--- Alterado para any
+    return this.http.put(`${this.apiUrl}/${id}`, aluno);
   }
 }
