@@ -1,26 +1,29 @@
-import { Component, Input, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2 } from '@lucide/angular';
-import { CommonModule } from '@angular/common'; // Importe o CommonModule para usar o *ngIf
+import { CommonModule } from '@angular/common'; 
+import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 
 export interface Aluno {
-  id: number;
+  id: any; // <--- Alterado para any
   nome: string;
   ano: string;
   deficiencia: string;
   genero: string;
   fotoUrl?: string;
+  originalData?: any; 
 }
 
 @Component({
   selector: 'app-card-aluno',
-  // Adicione o CommonModule nos imports para usar *ngIf
   imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2],
   templateUrl: './card-aluno.html',
   styleUrl: './card-aluno.scss',
 })
 export class CardAluno {
   @Input({ required: true }) aluno!: Aluno;
+  @Output() editar = new EventEmitter<Aluno>(); 
+  @Output() excluir = new EventEmitter<Aluno>();
+  
   isOptionsMenuOpen = false;
 
   private readonly onDocumentClick: (event: Event) => void;
@@ -45,6 +48,18 @@ export class CardAluno {
     this.router.navigate(['/alunos', this.aluno.id]);
   }
 
+  onEditarClick(event: Event) {
+    event.stopPropagation();
+    this.editar.emit(this.aluno); 
+    this.closeOptionsMenu();
+  }
+
+  onExcluirClick(event: Event) {
+    event.stopPropagation();
+    this.excluir.emit(this.aluno);
+    this.closeOptionsMenu();
+  }
+
   toggleOptionsMenu(event: Event) {
     event.stopPropagation();
     this.isOptionsMenuOpen = !this.isOptionsMenuOpen;
@@ -54,15 +69,11 @@ export class CardAluno {
     this.isOptionsMenuOpen = false;
   }
 
-  // --- NOVAS FUNÇÕES AUXILIARES ---
-
-  // Verifica se o texto já contém a palavra "Deficiência" (ignorando maiúsculas/minúsculas)
   shouldShowDeficienciaLabel(): boolean {
     if (!this.aluno?.deficiencia) return false;
     return !this.aluno.deficiencia.toLowerCase().startsWith('deficiência');
   }
 
-  // Remove a palavra "Deficiência " do início do texto para exibir apenas o tipo
   getDeficienciaDisplay(): string {
     if (!this.aluno?.deficiencia) return '';
     return this.aluno.deficiencia.replace(/^Deficiência\s*/i, '');

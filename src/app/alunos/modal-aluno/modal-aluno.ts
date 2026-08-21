@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideX } from '@lucide/angular';
 import { ModalCrop } from '../modal-crop/modal-crop';
 
 export interface AlunoForm {
+  id?: any; // <--- Alterado para any
   nomeCompleto: string;
   fotoUrl: string | null;
   dataNascimento: string;
@@ -21,12 +22,39 @@ export interface AlunoForm {
   templateUrl: './modal-aluno.html',
   styleUrl: './modal-aluno.scss',
 })
-export class ModalAluno {
+export class ModalAluno implements OnChanges {
   @Input() isOpen = false;
+  @Input() alunoEdicao: any = null;
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<AlunoForm>();
 
+  isEditMode = false;
+
   constructor(private cdr: ChangeDetectorRef) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isOpen'] && this.isOpen) {
+      if (this.alunoEdicao) {
+        this.isEditMode = true;
+        this.form = {
+          id: this.alunoEdicao.id, 
+          nomeCompleto: this.alunoEdicao.nome,
+          fotoUrl: this.alunoEdicao.fotoUrl || null,
+          serieAno: this.series.find(s => s.label === this.alunoEdicao.ano)?.value || '',
+          diagnostico: this.diagnosticos.find(d => d.label === this.alunoEdicao.deficiencia)?.value || '',
+          genero: this.generos.find(g => g.label === this.alunoEdicao.genero)?.value || '',
+          dataNascimento: this.alunoEdicao.originalData?.data_de_nascimento || '',
+          nomeResponsavel: this.alunoEdicao.originalData?.nome_responsavel || '',
+          telefoneResponsavel: this.alunoEdicao.originalData?.telefone_responsavel || '',
+          turmaSala: this.alunoEdicao.originalData?.turma || '',
+        };
+        this.previewUrl = this.form.fotoUrl;
+      } else {
+        this.isEditMode = false;
+        this.resetForm();
+      }
+    }
+  }
 
   get isFormValid(): boolean {
     return !!(
@@ -40,6 +68,7 @@ export class ModalAluno {
       this.form.diagnostico
     );
   }
+
   generos = [
     { value: 'masculino', label: 'Masculino' },
     { value: 'feminino', label: 'Feminino' },
@@ -54,7 +83,6 @@ export class ModalAluno {
     { value: '1ano', label: '1º Ano' },
     { value: '2ano', label: '2º Ano' },
     { value: '3ano', label: '3º Ano' },
-
   ];
 
   turmas = [
@@ -75,6 +103,7 @@ export class ModalAluno {
   ];
 
   form: AlunoForm = {
+    id: undefined,
     nomeCompleto: '',
     fotoUrl: null,
     dataNascimento: '',
@@ -143,6 +172,7 @@ export class ModalAluno {
 
   private resetForm() {
     this.form = {
+      id: undefined, 
       nomeCompleto: '',
       fotoUrl: null,
       dataNascimento: '',

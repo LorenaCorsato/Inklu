@@ -3,7 +3,7 @@
     <div class="modal-container">
       <!-- Header -->
       <div class="modal-header">
-        <h2 class="modal-title">Adicionar Aluno</h2>
+        <h2 class="modal-title">{{ isEditMode ? 'Editar Aluno' : 'Adicionar Aluno' }}</h2>
         <button class="btn-close" type="button" (click)="close()">
           <svg lucideX [size]="20" [strokeWidth]="2"></svg>
         </button>
@@ -144,7 +144,7 @@
           [disabled]="!isFormValid"
           [style.opacity]="!isFormValid ? '0.5' : '1'"
           [style.cursor]="!isFormValid ? 'not-allowed' : 'pointer'"
-        >          Salvar Aluno
+        >          {{ isEditMode ? 'Atualizar Aluno' : 'Salvar Aluno' }}
         </button>
       </div>
     </div>

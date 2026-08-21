@@ -6,6 +6,7 @@
   <!-- Header -->
   <div class="alunos-header d-flex align-items-center justify-content-between mb-3">
     <h1 class="alunos-title fw-bold mb-0">Todos os Alunos</h1>
+    <!-- O clique do botão usa a função da branch dev (openAdicionarAluno) -->
     <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openAdicionarAluno()">
       <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
       Adicionar Aluno
@@ -58,7 +59,11 @@
     <!-- Students Grid -->
     <div [class.alunos-grid]="viewMode === 'grid'" [class.alunos-list]="viewMode === 'list'">
       @for (aluno of filteredAlunos; track aluno.id) {
-        <app-card-aluno [aluno]="aluno"></app-card-aluno>
+        <app-card-aluno
+          [aluno]="aluno"
+          (editar)="abrirModalEdicao($event)"
+          (excluir)="onExcluirAluno($event)">
+        </app-card-aluno>
       }
     </div>
 
@@ -71,3 +76,11 @@
     }
   }
 </div>
+
+<!-- Mantemos o Modal para a Edição -->
+<app-modal-aluno
+  [isOpen]="isModalOpen"
+  [alunoEdicao]="alunoEmEdicao"
+  (closed)="closeModal()"
+  (saved)="onAlunoSaved($event)">
+</app-modal-aluno>
