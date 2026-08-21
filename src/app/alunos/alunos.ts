@@ -3,12 +3,11 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2 } from '@lucide/angular';
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
-import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
 import { AlunoService } from './aluno.service';
 
 @Component({
   selector: 'app-alunos',
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno],
+  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
