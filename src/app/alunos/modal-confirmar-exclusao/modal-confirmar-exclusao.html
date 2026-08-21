@@ -1,0 +1,38 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-header-icon">
+          <svg lucideAlertTriangle [size]="24" [strokeWidth]="2"></svg>
+        </div>
+        <button class="btn-close" type="button" (click)="close()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <h2 class="modal-title">Deseja Inativar o aluno {{ alunoNome }}?</h2>
+        <p class="modal-subtitle">Não será possivel:</p>
+        <ul class="modal-list">
+          <li>Atualizar dados do Aluno</li>
+          <li>Criar Novas Atividades e Avaliações</li>
+          <li>Criar Novos Responsáveis</li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <div class="modal-actions">
+          <button class="btn btn-manter" type="button" (click)="close()">
+            Não, manter
+          </button>
+          <button class="btn btn-deletar" type="button" (click)="confirmar()">
+            Sim, Inativar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

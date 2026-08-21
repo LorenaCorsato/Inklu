@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2 } from '@lucide/angular';
+import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2 } from '@lucide/angular';
 import { CommonModule } from '@angular/common'; 
 import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 
@@ -15,7 +15,7 @@ export interface Aluno {
 
 @Component({
   selector: 'app-card-aluno',
-  imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideTrash2, LucideShare2],
+  imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2],
   templateUrl: './card-aluno.html',
   styleUrl: './card-aluno.scss',
 })
