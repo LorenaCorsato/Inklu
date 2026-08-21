@@ -84,3 +84,11 @@
   (closed)="closeModal()"
   (saved)="onAlunoSaved($event)">
 </app-modal-aluno>
+
+<!-- Modal de Confirmação de Exclusão -->
+<app-modal-confirmar-exclusao
+  [isOpen]="isConfirmModalOpen"
+  [alunoNome]="alunoParaExcluir?.nome || ''"
+  (confirmed)="onConfirmarExclusao($event)"
+  (closed)="fecharModalConfirmacao()">
+</app-modal-confirmar-exclusao>

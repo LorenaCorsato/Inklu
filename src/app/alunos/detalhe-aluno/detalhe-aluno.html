@@ -1,7 +1,7 @@
 <div class="detalhe-aluno-page d-flex flex-column h-100 overflow-auto">
   <!-- Breadcrumb -->
   <div class="alunos-breadcrumb mb-2 p-2 border-bottom d-flex align-items-center gap-2">
-    <button class="btn btn-ghost-icon p-0" type="button" (click)="voltar()">
+    <button class="btn btn-ghost-icon p-0 px-2" type="button" (click)="voltar()">
       <svg lucideArrowLeft [size]="20" stroke-width="2"></svg>
     </button>
     <p class="mb-0 text-muted">Alunos</p>
@@ -37,7 +37,7 @@
         </button>
         <div class="buttonOptions dropdown">
           <button
-            class="btn btn-primary-outline"
+            class="btn btn-primary-outline px-2"
             type="button"
             (click)="toggleOptionsMenu($event)"
             [attr.aria-expanded]="isOptionsMenuOpen"
@@ -52,8 +52,8 @@
               Editar
             </button>
             <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
-              <svg lucideTrash2 class="dropdown-item-icon"></svg>
-              Excluir
+              <svg lucideUserRoundX class="dropdown-item-icon"></svg>
+              Inativar
             </button>
             <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
               <svg lucideShare2 class="dropdown-item-icon"></svg>
@@ -275,7 +275,7 @@
                 <td>{{ arquivo.alteracao }}</td>
                 <td>{{ arquivo.materia }}</td>
                 <td>
-                  <button class="btn btn-ghost-icon" type="button">
+                  <button class="btn btn-ghost-icon px-3" type="button">
                     <svg lucideMoreVertical [size]="16" [strokeWidth]="2"></svg>
                   </button>
                 </td>

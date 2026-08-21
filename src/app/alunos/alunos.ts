@@ -6,10 +6,12 @@ import { CardAluno, Aluno } from './card-aluno/card-aluno';
 import { AlunoService } from './aluno.service';
 
 import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
+import { ModalConfirmarExclusao } from './modal-confirmar-exclusao/modal-confirmar-exclusao';
 
 @Component({
   selector: 'app-alunos',
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno],
+  // O ModalAluno inserido corretamente nos imports do Component:
+  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno, ModalConfirmarExclusao],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
@@ -21,6 +23,8 @@ export class Alunos implements OnInit {
   isModalOpen = false;
   alunoEmEdicao: Aluno | null = null;
   isLoading = true; 
+  isConfirmModalOpen = false;
+  alunoParaExcluir: Aluno | null = null;
 
   constructor(
     private alunoService: AlunoService,
@@ -86,8 +90,7 @@ formatarDiagnostico(diagnosticoDb: any): string {
   }
 
   abrirModalEdicao(aluno: Aluno) {
-    this.alunoEmEdicao = aluno;
-    this.isModalOpen = true;
+    this.router.navigate(['/alunos', aluno.id, 'editar']);
   }
 
   closeModal() {
@@ -154,24 +157,47 @@ formatarDiagnostico(diagnosticoDb: any): string {
   }
 
   onExcluirAluno(aluno: Aluno) {
-    const confirmacao = confirm(`Tem certeza que deseja excluir o aluno(a) ${aluno.nome}?`);
+    const deveMostrarModal = localStorage.getItem('naoMostrarModalExclusao') !== 'true';
 
-    if (confirmacao) {
-      this.isLoading = true;
-
-      this.alunoService.excluirAluno(aluno.id).subscribe({
-        next: () => {
-          alert('Aluno excluído com sucesso!');
-          this.carregarAlunos();
-        },
-        error: (erro) => {
-          console.error('Erro ao excluir aluno:', erro);
-          alert('Falha ao excluir o aluno.');
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        },
-      });
+    if (deveMostrarModal) {
+      this.alunoParaExcluir = aluno;
+      this.isConfirmModalOpen = true;
+    } else {
+      this.executarExclusao(aluno);
     }
+  }
+
+  onConfirmarExclusao(naoMostrarNovamente: boolean) {
+    if (naoMostrarNovamente) {
+      localStorage.setItem('naoMostrarModalExclusao', 'true');
+    }
+
+    if (this.alunoParaExcluir) {
+      this.executarExclusao(this.alunoParaExcluir);
+    }
+
+    this.fecharModalConfirmacao();
+  }
+
+  fecharModalConfirmacao() {
+    this.isConfirmModalOpen = false;
+    this.alunoParaExcluir = null;
+  }
+
+  private executarExclusao(aluno: Aluno) {
+    this.isLoading = true;
+
+    this.alunoService.excluirAluno(aluno.id).subscribe({
+      next: () => {
+        this.carregarAlunos();
+      },
+      error: (erro) => {
+        console.error('Erro ao excluir aluno:', erro);
+        alert('Falha ao excluir o aluno.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   setViewMode(mode: 'grid' | 'list') {
