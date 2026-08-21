@@ -16,6 +16,8 @@ export class Alunos implements OnInit {
   searchTerm = '';
   viewMode: 'grid' | 'list' = 'grid';
   alunos: Aluno[] = [];
+  
+  // Mantemos as suas variáveis de controle do modal e carregamento
   isModalOpen = false;
   alunoEmEdicao: Aluno | null = null;
   isLoading = true; 
@@ -99,7 +101,6 @@ export class Alunos implements OnInit {
 
     const alunoId = this.alunoEmEdicao?.id ?? alunoForm.id;
 
-    // <--- CORREÇÃO APLICADA AQUI: Aceita IDs textuais corretamente
     if (alunoId !== undefined && alunoId !== null && alunoId !== '') {
       this.alunoService.atualizarAluno(alunoId, payloadBanco).subscribe({
         next: () => {
@@ -162,7 +163,7 @@ export class Alunos implements OnInit {
 
   private mapAlunoBancoParaTela(alunoBanco: any): Aluno {
     return {
-      id: alunoBanco.id, // <--- CORREÇÃO APLICADA AQUI: Removido o Number()
+      id: alunoBanco.id, 
       nome: alunoBanco.nome_completo ?? 'Aluno sem nome',
       ano: alunoBanco.serie ?? 'Sem série',
       deficiencia: alunoBanco.diagnostico ?? 'Sem diagnóstico',
@@ -171,6 +172,8 @@ export class Alunos implements OnInit {
       originalData: alunoBanco,
     };
   }
+
+  // --- Funções Auxiliares Restauradas ---
 
   private getSerieLabel(value: string): string {
     return this.series.find((s) => s.value === value)?.label || '';
