@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,7 @@ import {
 } from '@lucide/angular';
 import { Aluno } from '../card-aluno/card-aluno';
 import { ModalDocumento } from './modal-documento/modal-documento';
+import { AlunoService } from '../aluno.service';
 
 export interface Arquivo {
   data: string;
@@ -107,7 +108,13 @@ export class DetalheAluno {
 
   private readonly onDocumentClick: (event: Event) => void;
 
-  constructor(private route: ActivatedRoute, private router: Router, private elementRef: ElementRef) {
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private elementRef: ElementRef,
+    private alunoService: AlunoService,
+    private cdr: ChangeDetectorRef 
+) {
     this.onDocumentClick = (event: Event) => {
       if (this.isOptionsMenuOpen && !this.elementRef.nativeElement.contains(event.target)) {
         this.isOptionsMenuOpen = false;
@@ -118,14 +125,72 @@ export class DetalheAluno {
     };
   }
 
+ alunoOriginal: any = null;
+  diagnosticosLista: Array<{diagnóstico?: string, diagnostico?: string, descricao: string}> = [];
+  isLoading = true;
+
   ngOnInit() {
     document.addEventListener('click', this.onDocumentClick, true);
     this.route.paramMap.subscribe(params => {
-      const id = Number(params.get('id'));
-      this.aluno = this.getAlunoById(id);
+      const id = params.get('id'); 
+      if (id) {
+        this.carregarAluno(id);
+      }
     });
   }
 
+carregarAluno(id: string) {
+    this.isLoading = true;
+    
+    this.alunoService.buscarAlunoPorId(id).subscribe({
+      next: (dados) => {
+
+        const alunoDb = Array.isArray(dados) ? dados[0] : dados;
+        this.alunoOriginal = alunoDb;
+
+        this.processarDiagnosticos(alunoDb.diagnostico);
+
+        this.aluno = {
+          id: alunoDb.id,
+          nome: alunoDb.nome_completo ?? 'Sem nome',
+          ano: alunoDb.serie ?? 'Sem série',
+          deficiencia: this.diagnosticosLista.length > 0 
+            ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes') 
+            : 'Não informado',
+          genero: alunoDb.genero ?? 'Não informado',
+          fotoUrl: alunoDb.fotoUrl ?? alunoDb.foto ?? undefined,
+          originalData: alunoDb
+        };
+
+
+        this.isLoading = false;
+        
+        this.cdr.detectChanges(); 
+      },
+      error: (err) => {
+        console.error('Erro ao buscar aluno:', err);
+        this.isLoading = false;
+        alert('Erro ao carregar os dados do aluno.');
+        this.voltar(); 
+      }
+    });
+  }
+
+  processarDiagnosticos(diagnosticoDb: any) {
+    if (!diagnosticoDb) {
+      this.diagnosticosLista = [];
+      return;
+    }
+    
+    try {
+      this.diagnosticosLista = typeof diagnosticoDb === 'string' 
+        ? JSON.parse(diagnosticoDb) 
+        : diagnosticoDb;
+    } catch (e) {
+      console.error('Erro ao ler diagnósticos:', e);
+      this.diagnosticosLista = [];
+    }
+  }
   ngOnDestroy() {
     document.removeEventListener('click', this.onDocumentClick, true);
   }
@@ -184,17 +249,4 @@ export class DetalheAluno {
     this.isDocumentoModalOpen = false;
   }
 
-  private getAlunoById(id: number): Aluno | null {
-    const alunos: Aluno[] = [
-      { id: 1, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=300&fit=crop' },
-      { id: 2, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=400&h=300&fit=crop' },
-      { id: 3, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=300&fit=crop' },
-      { id: 4, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop' },
-      { id: 5, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop' },
-      { id: 6, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop' },
-      { id: 7, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop' },
-      { id: 8, nome: 'Alex Oliveira', ano: '3º Ano', deficiencia: 'Autismo', genero: 'Masculino', fotoUrl: 'https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=400&h=300&fit=crop' },
-    ];
-    return alunos.find(a => a.id === id) ?? null;
-  }
 }

@@ -14,6 +14,7 @@ export interface AlunoForm {
   serieAno: string;
   turmaSala: string;
   diagnostico: string;
+  status?: number; 
 }
 
 @Component({
@@ -47,6 +48,8 @@ export class ModalAluno implements OnChanges {
           nomeResponsavel: this.alunoEdicao.originalData?.nome_responsavel || '',
           telefoneResponsavel: this.alunoEdicao.originalData?.telefone_responsavel || '',
           turmaSala: this.alunoEdicao.originalData?.turma || '',
+          status: 1, 
+          
         };
         this.previewUrl = this.form.fotoUrl;
       } else {
@@ -182,6 +185,7 @@ export class ModalAluno implements OnChanges {
       serieAno: '',
       turmaSala: '',
       diagnostico: '',
+      status: 1,
     };
     this.previewUrl = null;
   }
