@@ -5,9 +5,13 @@ import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2 }
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
 import { AlunoService } from './aluno.service';
 
+// Importação do modal que estava faltando:
+import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
+
 @Component({
   selector: 'app-alunos',
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno],
+  // O ModalAluno inserido corretamente nos imports do Component:
+  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
