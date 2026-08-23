@@ -1,0 +1,184 @@
+// ─── Modal Overlay ──────────────────────────────────────────────────────────
+.crop-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.2s ease;
+  padding: var(--ds-spacing-4, 16px);
+}
+
+// ─── Modal Container ────────────────────────────────────────────────────────
+.crop-modal-container {
+  background-color: var(--ds-surface, #ffffff);
+  border-radius: var(--ds-radius-lg, 12px);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.25s ease;
+  overflow: hidden;
+}
+
+// ─── Modal Header ───────────────────────────────────────────────────────────
+.crop-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-4, 16px) var(--ds-spacing-5, 20px);
+  border-bottom: 1px solid var(--ds-border-subtle, #e2e8f0);
+}
+
+.crop-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2, 8px);
+}
+
+.crop-header-icon {
+  color: var(--ds-primary, #4f46e5);
+}
+
+.crop-modal-title {
+  font-size: var(--ds-font-size-base, 16px);
+  font-weight: 700;
+  color: var(--ds-body, #1e293b);
+  margin: 0;
+}
+
+.btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--ds-radius-sm, 6px);
+  color: var(--ds-muted, #64748b);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-neutral-100, #f1f5f9);
+    color: var(--ds-body, #1e293b);
+  }
+}
+
+// ─── Instruction ────────────────────────────────────────────────────────────
+.crop-instruction {
+  margin: 0;
+  padding: 12px 20px 0 20px;
+  font-size: var(--ds-font-size-sm, 14px);
+  color: var(--ds-muted, #64748b);
+  text-align: center;
+
+  strong {
+    color: var(--ds-body, #1e293b);
+  }
+}
+
+// ─── Modal Body & Cropper Container ─────────────────────────────────────────
+.crop-modal-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.crop-cropper-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #0f172a;
+  border-radius: var(--ds-radius-md, 8px);
+  padding: 12px;
+  overflow: hidden;
+
+  img-cropper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    canvas {
+      border-radius: 4px;
+      max-width: 100%;
+      height: auto !important;
+    }
+  }
+}
+
+// ─── Modal Footer ───────────────────────────────────────────────────────────
+.crop-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--ds-border-subtle, #e2e8f0);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--ds-radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+  color: var(--ds-body, #1e293b);
+  background-color: var(--ds-surface, #ffffff);
+  border: 1px solid var(--ds-border, #cbd5e1);
+
+  &:hover {
+    background-color: var(--ds-neutral-100, #f1f5f9);
+  }
+}
+
+.btn-salvar {
+  color: white;
+  background-color: var(--ds-primary, #4f46e5);
+  border: 1px solid var(--ds-primary, #4f46e5);
+
+  &:hover {
+    background-color: var(--ds-primary-hover, #4338ca);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ─── Animations ─────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

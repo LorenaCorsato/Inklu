@@ -1,0 +1,43 @@
+@if (isOpen) {
+  <div class="crop-modal-overlay" (click)="onBackdropClick($event)">
+    <div class="crop-modal-container">
+      <!-- Header -->
+      <div class="crop-modal-header">
+        <div class="crop-title-group">
+          <svg lucideCrop [size]="20" class="crop-header-icon"></svg>
+          <h2 class="crop-modal-title">Cortar Foto do Aluno</h2>
+        </div>
+        <button class="btn-close" type="button" (click)="close()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <!-- Instruction -->
+      <p class="crop-instruction">
+        Ajuste a área de corte na proporção <strong>1:1 (quadrada)</strong>.
+      </p>
+
+      <!-- Viewport Body -->
+      <div class="crop-modal-body">
+        <div class="crop-cropper-container">
+          <img-cropper
+            #cropper
+            [image]="data"
+            [settings]="cropperSettings"
+          ></img-cropper>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="crop-modal-footer">
+        <button class="btn btn-cancelar" type="button" (click)="close()">
+          Cancelar
+        </button>
+        <button class="btn btn-salvar" type="button" (click)="applyCrop()">
+          <svg lucideCheck [size]="18" style="margin-right: 6px;"></svg>
+          Aplicar Corte
+        </button>
+      </div>
+    </div>
+  </div>
+}

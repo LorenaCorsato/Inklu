@@ -33,11 +33,6 @@
   transition:
     box-shadow 0.2s ease,
     transform 0.2s ease;
-
-  &:hover {
-    box-shadow: var(--ds-shadow-sm);
-    transform: translateY(-1px);
-  }
 }
 
 .metric-icon-wrapper {

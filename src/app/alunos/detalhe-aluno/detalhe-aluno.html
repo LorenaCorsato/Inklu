@@ -1,0 +1,315 @@
+<div class="detalhe-aluno-page d-flex flex-column h-100 overflow-auto">
+  <!-- Breadcrumb -->
+  <div class="alunos-breadcrumb mb-2 p-2 border-bottom d-flex align-items-center gap-2">
+    <button class="btn btn-ghost-icon p-0 px-2" type="button" (click)="voltar()">
+      <svg lucideArrowLeft [size]="20" stroke-width="2"></svg>
+    </button>
+    <p class="mb-0 text-muted">Alunos</p>
+  </div>
+
+  @if (isLoading) {
+  <div class="loading-state d-flex flex-column align-items-center justify-content-center py-5">
+    <svg lucideLoader2 [size]="48" color="#8d8d8d" [strokeWidth]="1.5" class="spin-animation"></svg>
+    <p class="text-muted mt-3 mb-0">Carregando dados do aluno...</p>
+  </div>
+  } @else if (aluno) {
+  <!-- Banner Header -->
+  <div class="detalhe-banner"></div>
+
+  <!-- Profile Section -->
+  <div class="detalhe-profile-section">
+    <div class="detalhe-profile-header d-flex align-items-end justify-content-between px-4">
+      <div class="detalhe-profile-info d-flex align-items-end gap-3">
+        <div class="detalhe-foto-wrapper">
+          @if (aluno.fotoUrl) {
+          <img [src]="aluno.fotoUrl" [alt]="aluno.nome" class="detalhe-foto" />
+          } @else {
+          <div class="detalhe-foto-placeholder">
+            <svg lucideUser [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+          </div>
+          }
+        </div>
+        <h1 class="detalhe-title fw-bold mb-0">{{ aluno.nome }}</h1>
+      </div>
+      <div class="detalhe-actions d-flex gap-2">
+        <button class="btn btn-success p-x-2 d-flex align-items-center gap-2" type="button" (click)="openDocumentoModal()">
+            <svg lucideFilePlus [size]="16" [strokeWidth]="2"></svg>
+          Adicionar Documento
+        </button>
+        <button class="btn btn-primary p-x-2 d-flex align-items-center gap-2" type="button">
+          <svg lucideDownload [size]="16" [strokeWidth]="2"></svg>
+          Exportar
+        </button>
+        <div class="buttonOptions dropdown">
+          <button
+            class="btn btn-primary-outline px-2"
+            type="button"
+            (click)="toggleOptionsMenu($event)"
+            [attr.aria-expanded]="isOptionsMenuOpen"
+            aria-haspopup="true"
+          >
+            <svg lucideMoreVertical></svg>
+          </button>
+          @if (isOptionsMenuOpen) {
+          <div class="dropdown-menu dropdown-menu-end show">
+            <button class="dropdown-item" type="button" (click)="editarAluno(); closeOptionsMenu()">
+              <svg lucidePencil class="dropdown-item-icon"></svg>
+              Editar
+            </button>
+            <button class="dropdown-item" type="button" (click)="inativarAluno(); closeOptionsMenu()">
+              <svg lucideUserRoundX class="dropdown-item-icon"></svg>
+              Inativar
+            </button>
+            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+              <svg lucideShare2 class="dropdown-item-icon"></svg>
+              Compartilhar
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="detalhe-content p-3">
+    
+    <!-- Stats Cards -->
+    <div class="detalhe-stats-grid mb-3">
+      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
+          <span class="detalhe-stat-label">Turma/Série</span>
+          <svg lucideGraduationCap></svg>
+        </div>
+        <span class="detalhe-stat-value">{{ aluno.ano || 'Não informada' }}</span>
+      </div>
+      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
+          <span class="detalhe-stat-label">Deficiência</span>
+          <svg lucideAccessibility></svg>
+        </div>
+        <span class="detalhe-stat-value">{{ aluno.deficiencia }}</span>
+      </div>
+      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
+          <span class="detalhe-stat-label">Nascimento</span>
+          <svg lucideCalendar></svg>
+        </div>
+        <span class="detalhe-stat-value text-truncate" style="font-size: 1.1rem;">
+          {{ alunoOriginal?.data_de_nascimento ? (alunoOriginal?.data_de_nascimento | date:'dd/MM/yyyy') : 'Não informada' }}
+        </span>
+      </div>
+      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
+          <span class="detalhe-stat-label">Gênero</span>
+          <svg lucideUser></svg>
+        </div>
+        <span class="detalhe-stat-value">{{ aluno.genero | titlecase }}</span>
+      </div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="detalhe-info-columns mb-3">
+      
+      <!-- Left Column: Dados Escolares -->
+      <div class="detalhe-card">
+        <span class="detalhe-card-fieldset-label">Dados Escolares</span>
+        <div class="detalhe-card-body">
+          
+          <!-- Preferências -->
+          <div class="detalhe-section mb-3">
+            <h3 class="detalhe-section-title">Preferências</h3>
+            <div class="detalhe-tags d-flex flex-wrap gap-2">
+              <span class="detalhe-tag">Dinossauros</span>
+              <span class="detalhe-tag">Música POP</span>
+              <span class="detalhe-tag">Desenhos animados</span>
+            </div>
+          </div>
+
+          <!-- Diagnósticos Detalhados -->
+          <div class="detalhe-section mb-3">
+            <h3 class="detalhe-section-title d-flex align-items-center gap-2">
+              <svg lucideAccessibility [size]="18"></svg> Diagnósticos
+            </h3>
+            <div class="d-flex flex-column gap-2 mt-2">
+              @for (diag of diagnosticosLista; track diag) {
+                <div class="p-3 border rounded bg-light">
+                  <h6 class="fw-bold text-primary mb-1">
+                    {{ diag['diagnóstico'] || diag.diagnostico || 'Não especificado' }}
+                  </h6>
+                  <p class="mb-0 text-muted small" style="white-space: pre-wrap;">
+                    {{ diag.descricao || 'Nenhuma descrição fornecida.' }}
+                  </p>
+                </div>
+              } @empty {
+                <p class="text-muted small">Nenhum diagnóstico detalhado registrado.</p>
+              }
+            </div>
+          </div>
+
+          <!-- Informações -->
+          <div class="detalhe-section">
+            <h3 class="detalhe-section-title">Informações</h3>
+            <ul class="detalhe-info-list">
+              <li>Utilizar jogos com música para aplicar atividades</li>
+              <li>Gosta do caderno com dinossauros</li>
+              <li>Não utilizar desenhos com muitas cores</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Column: Dados dos Responsáveis -->
+      <div class="detalhe-card">
+        <span class="detalhe-card-fieldset-label">Dados dos Responsáveis</span>
+        <div class="detalhe-card-body">
+          <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
+            
+            <!-- Responsável Cadastrado -->
+            <div class="detalhe-responsavel-card">
+              <span class="detalhe-responsavel-label">Responsável Principal</span>
+              <h4 class="detalhe-responsavel-nome">{{ alunoOriginal?.nome_responsavel || 'Não informado' }}</h4>
+              <p class="detalhe-responsavel-contato">{{ alunoOriginal?.telefone_responsavel || 'Sem telefone' }}</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Arquivos Section -->
+    <div class="detalhe-arquivos-section">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
+        <div class="arquivos-toolbar d-flex align-items-center gap-2">
+          
+          <!-- Search -->
+          <div class="searchbar d-flex align-items-center">
+            <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
+          </div>
+
+          <!-- Filter Dropdown -->
+          <div class="filter-dropdown">
+            <button
+              class="btn btn-filter d-flex align-items-center gap-2"
+              type="button"
+              [class.btn-filter--active]="hasActiveFilters"
+              (click)="toggleFilter($event)"
+            >
+              <svg lucideFilter [size]="16" [strokeWidth]="2"></svg>
+              Filtro
+              @if (hasActiveFilters) {
+                <span class="filter-badge">{{ selectedMaterias.size }}</span>
+              }
+            </button>
+
+            @if (isFilterOpen) {
+              <div class="filter-menu">
+                
+                <!-- Materias -->
+                <div class="filter-section">
+                  <span class="filter-section-label">Matérias</span>
+                  <div class="filter-options">
+                    @for (materia of materias; track materia) {
+                      <label class="filter-option" (click)="$event.stopPropagation()">
+                        <input
+                          type="checkbox"
+                          [checked]="isMateriaSelected(materia)"
+                          (change)="toggleMateria(materia)"
+                          class="filter-checkbox"
+                        />
+                        <span class="filter-check-icon">
+                          @if (isMateriaSelected(materia)) {
+                            <svg lucideCheck [size]="12" [strokeWidth]="3"></svg>
+                          }
+                        </span>
+                        <span class="filter-option-label">{{ materia }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+
+                <!-- Date Range -->
+                <div class="filter-section">
+                  <span class="filter-section-label">Período</span>
+                  <div class="filter-date-row">
+                    <div class="filter-date-field">
+                      <label class="filter-date-label">De</label>
+                      <input type="date" class="filter-date-input" [(ngModel)]="dateFrom" (click)="$event.stopPropagation()" />
+                    </div>
+                    <div class="filter-date-field">
+                      <label class="filter-date-label">Até</label>
+                      <input type="date" class="filter-date-input" [(ngModel)]="dateTo" (click)="$event.stopPropagation()" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Clear -->
+                @if (hasActiveFilters) {
+                  <div class="filter-footer">
+                    <button class="btn-filter-clear" type="button" (click)="clearFilters(); $event.stopPropagation()">
+                      <svg lucideX [size]="14" [strokeWidth]="2"></svg>
+                      Limpar filtros
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table detalhe-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Nome</th>
+              <th>Alteração</th>
+              <th>Matéria</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (arquivo of filteredArquivos; track arquivo.nome) {
+              <tr>
+                <td>{{ formatDate(arquivo.data) }}</td>
+                <td>{{ arquivo.nome }}</td>
+                <td>{{ arquivo.alteracao }}</td>
+                <td>{{ arquivo.materia }}</td>
+                <td>
+                  <button class="btn btn-ghost-icon px-3" type="button">
+                    <svg lucideMoreVertical [size]="16" [strokeWidth]="2"></svg>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center text-muted py-4">Nenhum arquivo encontrado</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  } @else {
+  <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
+    <svg lucideUser [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+    <p class="text-muted mt-3 mb-0">Aluno não encontrado</p>
+    <button class="btn btn-primary mt-3" type="button" (click)="voltar()">
+      Voltar para Alunos
+    </button>
+  </div>
+  }
+
+  <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />
+  <app-modal-confirmar-exclusao
+    [isOpen]="isConfirmModalOpen"
+    [alunoNome]="aluno?.nome || ''"
+    (confirmed)="confirmarInativacao($event)"
+    (closed)="fecharModalConfirmacao()"
+  />
+</div>

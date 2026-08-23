@@ -1,0 +1,242 @@
+// ─── Modal Overlay ──────────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.2s ease;
+  padding: var(--ds-spacing-4);
+}
+
+// ─── Modal Container ────────────────────────────────────────────────────────
+.modal-container {
+  background-color: var(--ds-surface);
+  border-radius: var(--ds-radius-lg);
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.25s ease;
+}
+
+// ─── Modal Header ───────────────────────────────────────────────────────────
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-5) var(--ds-spacing-6) 0;
+}
+
+.modal-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ds-radius-sm);
+  background-color: #fef3cd;
+  color: #856404;
+}
+
+.btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+}
+
+// ─── Modal Body ─────────────────────────────────────────────────────────────
+.modal-body {
+  padding: var(--ds-spacing-4) var(--ds-spacing-6);
+}
+
+.modal-title {
+  font-size: var(--ds-font-size-lg);
+  font-weight: 700;
+  color: var(--ds-body);
+  margin: 0 0 var(--ds-spacing-3);
+}
+
+.modal-subtitle {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-muted);
+  margin: 0 0 var(--ds-spacing-3);
+}
+
+.modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    position: relative;
+    padding-left: var(--ds-spacing-5);
+    font-size: var(--ds-font-size-base);
+    color: var(--ds-body);
+    margin-bottom: var(--ds-spacing-2);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--ds-muted);
+    }
+  }
+}
+
+// ─── Modal Footer ───────────────────────────────────────────────────────────
+.modal-footer {
+  display: flex;
+  align-items: center;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-4) var(--ds-spacing-6);
+  border-top: 1px solid var(--ds-border-subtle);
+}
+
+// ─── Checkbox ───────────────────────────────────────────────────────────────
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--ds-border);
+  border-radius: 4px;
+  background-color: var(--ds-surface);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+
+  &.checked {
+    background-color: var(--ds-primary);
+    border-color: var(--ds-primary);
+    color: white;
+  }
+}
+
+.checkbox-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-muted);
+  white-space: nowrap;
+}
+
+// ─── Modal Actions ──────────────────────────────────────────────────────────
+.modal-actions {
+  display: flex;
+  gap: var(--ds-spacing-3);
+  width: 100%;
+}
+
+.btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-manter {
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-neutral-500);
+  }
+}
+
+.btn-deletar {
+  color: white;
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+
+  &:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    box-shadow: var(--ds-shadow-sm);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ─── Animations ─────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ─── Responsive ─────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .modal-container {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

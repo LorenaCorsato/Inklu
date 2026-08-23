@@ -2,7 +2,7 @@
   --bs-btn-border-radius: var(--ds-radius-sm);
   --bs-btn-font-weight: 600;
   --bs-btn-padding-x: 1.4rem;
-  --bs-btn-padding-y: 1rem;
+  --bs-btn-padding-y: 0.5rem;
 
   display: inline-flex;
   align-items: center;
@@ -52,7 +52,7 @@
   --bs-btn-active-color: #ffffff;
   --bs-btn-active-bg: var(--ds-primary-hover);
   --bs-btn-active-border-color: var(--ds-primary-hover);
-  
+
   &:disabled,
   &.disabled {
     background-color: var(--ds-primary);
