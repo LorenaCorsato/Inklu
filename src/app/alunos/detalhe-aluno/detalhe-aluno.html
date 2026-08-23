@@ -7,7 +7,12 @@
     <p class="mb-0 text-muted">Alunos</p>
   </div>
 
-  @if (aluno) {
+  @if (isLoading) {
+  <div class="loading-state d-flex flex-column align-items-center justify-content-center py-5">
+    <svg lucideLoader2 [size]="48" color="#8d8d8d" [strokeWidth]="1.5" class="spin-animation"></svg>
+    <p class="text-muted mt-3 mb-0">Carregando dados do aluno...</p>
+  </div>
+  } @else if (aluno) {
   <!-- Banner Header -->
   <div class="detalhe-banner"></div>
 
@@ -47,11 +52,11 @@
           </button>
           @if (isOptionsMenuOpen) {
           <div class="dropdown-menu dropdown-menu-end show">
-            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+            <button class="dropdown-item" type="button" (click)="editarAluno(); closeOptionsMenu()">
               <svg lucidePencil class="dropdown-item-icon"></svg>
               Editar
             </button>
-            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+            <button class="dropdown-item" type="button" (click)="inativarAluno(); closeOptionsMenu()">
               <svg lucideUserRoundX class="dropdown-item-icon"></svg>
               Inativar
             </button>
@@ -301,4 +306,10 @@
   }
 
   <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />
+  <app-modal-confirmar-exclusao
+    [isOpen]="isConfirmModalOpen"
+    [alunoNome]="aluno?.nome || ''"
+    (confirmed)="confirmarInativacao($event)"
+    (closed)="fecharModalConfirmacao()"
+  />
 </div>

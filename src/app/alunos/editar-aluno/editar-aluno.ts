@@ -216,6 +216,7 @@ export class EditarAluno implements OnInit {
       genero: this.getGeneroLabel(this.form.genero),
       serie: this.getSerieLabel(this.form.serieAno),
       diagnostico: diagnosticosFormatados,
+      descricao_diagnostico: JSON.stringify(diagnosticosFormatados),
       foto: this.form.fotoUrl || undefined,
     };
 

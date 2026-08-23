@@ -10,6 +10,7 @@ import {
   LucideGraduationCap,
   LucideAccessibility,
   LucideCalendar,
+  LucideLoader2,
   LucideTrendingUp,
   LucidePencil,
   LucideUserRoundX,
@@ -22,6 +23,7 @@ import {
 import { Aluno } from '../card-aluno/card-aluno';
 import { ModalDocumento } from './modal-documento/modal-documento';
 import { AlunoService } from '../aluno.service';
+import { ModalConfirmarExclusao } from '../modal-confirmar-exclusao/modal-confirmar-exclusao';
 
 export interface Arquivo {
   data: string;
@@ -42,6 +44,7 @@ export interface Arquivo {
     LucideGraduationCap,
     LucideAccessibility,
     LucideCalendar,
+    LucideLoader2,
     LucideTrendingUp,
     LucidePencil,
     LucideUserRoundX,
@@ -51,6 +54,7 @@ export interface Arquivo {
     LucideX,
     LucideCheck,
     ModalDocumento,
+    ModalConfirmarExclusao,
   ],
   templateUrl: './detalhe-aluno.html',
   styleUrl: './detalhe-aluno.scss',
@@ -59,6 +63,7 @@ export class DetalheAluno {
   aluno: Aluno | null = null;
   isOptionsMenuOpen = false;
   isDocumentoModalOpen = false;
+  isConfirmModalOpen = false;
 
   searchQuery = '';
   isFilterOpen = false;
@@ -206,6 +211,51 @@ carregarAluno(id: string) {
 
   closeOptionsMenu() {
     this.isOptionsMenuOpen = false;
+  }
+
+  editarAluno() {
+    if (this.aluno?.id !== undefined && this.aluno.id !== null) {
+      this.router.navigate(['/alunos', this.aluno.id, 'editar']);
+    }
+  }
+
+  inativarAluno() {
+    if (!this.aluno?.id) return;
+
+    const deveMostrarModal = localStorage.getItem('naoMostrarModalExclusao') !== 'true';
+    if (deveMostrarModal) {
+      this.isConfirmModalOpen = true;
+    } else {
+      this.executarInativacao();
+    }
+  }
+
+  confirmarInativacao(naoMostrarNovamente: boolean) {
+    if (naoMostrarNovamente) {
+      localStorage.setItem('naoMostrarModalExclusao', 'true');
+    }
+
+    this.fecharModalConfirmacao();
+    this.executarInativacao();
+  }
+
+  fecharModalConfirmacao() {
+    this.isConfirmModalOpen = false;
+  }
+
+  private executarInativacao() {
+    if (!this.aluno?.id) return;
+
+    this.alunoService.excluirAluno(this.aluno.id).subscribe({
+      next: () => {
+        alert('Aluno inativado com sucesso!');
+        this.router.navigate(['/alunos']);
+      },
+      error: (erro) => {
+        console.error('Erro ao inativar aluno:', erro);
+        alert('Falha ao inativar o aluno.');
+      },
+    });
   }
 
   toggleFilter(event: Event) {
