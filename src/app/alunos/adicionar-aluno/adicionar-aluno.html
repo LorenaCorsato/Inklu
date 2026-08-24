@@ -118,36 +118,81 @@
       </div>
     }
 
-    <!-- Step 2: Informações do Responsável -->
+<!-- Step 2: Informações do Responsável -->
     @if (currentStep === 2) {
       <div class="step-content card-step p-4">
-        <h2 class="step-title mb-4">Informações do Responsável</h2>
-
-        <div class="form-row">
-          <div class="form-group form-group-half">
-            <label class="form-label">Nome do Responsável</label>
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Nome completo"
-              [(ngModel)]="form.nomeResponsavel"
-            />
-          </div>
-          <div class="form-group form-group-half">
-            <label class="form-label">Telefone do Responsável</label>
-            <input
-              type="tel"
-              class="form-input"
-              placeholder="(00) 00000-0000"
-              [(ngModel)]="form.telefoneResponsavel"
-              (input)="aplicaMascaraTelefone($event)"
-              maxlength="15"
-            />
-          </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="step-title mb-0">Informações dos Responsáveis</h2>
+          <button type="button" class="btn btn-outline" style="border: 1px solid #ccc; padding: 5px 15px;" (click)="adicionarResponsavel()">
+            + Adicionar Responsável
+          </button>
         </div>
+
+        @for (resp of form.responsaveis; track $index; let i = $index) {
+          <div class="responsavel-block mb-4 p-3 border rounded position-relative">
+            
+            <div class="d-flex justify-content-between mb-3">
+              <h5 class="m-0 text-muted">Responsável {{ i + 1 }}</h5>
+              @if (form.responsaveis.length > 1) {
+                <button type="button" class="btn btn-ghost-icon p-0 text-danger" (click)="removerResponsavel(i)">
+                  <svg lucideTrash2 [size]="20" stroke-width="2"></svg>
+                </button>
+              }
+            </div>
+
+            <div class="form-row">
+              <div class="form-group form-group-half">
+                <label class="form-label">Nome do Responsável *</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Nome completo"
+                  [(ngModel)]="form.responsaveis[i].nome"
+                />
+              </div>
+
+              <div class="form-group form-group-half">
+                <label class="form-label">Parentesco *</label>
+                <div class="select-wrapper">
+                  <select class="form-select" [(ngModel)]="form.responsaveis[i].parentesco">
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="Mãe">Mãe</option>
+                    <option value="Pai">Pai</option>
+                    <option value="Avó/Avô">Avó/Avô</option>
+                    <option value="Tia/Tio">Tia/Tio</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group form-group-half">
+                <label class="form-label">E-mail</label>
+                <input
+                  type="email"
+                  class="form-input"
+                  placeholder="email@exemplo.com"
+                  [(ngModel)]="form.responsaveis[i].email"
+                />
+              </div>
+
+              <div class="form-group form-group-half">
+                <label class="form-label">Telefone *</label>
+                <input
+                  type="tel"
+                  class="form-input"
+                  placeholder="(00) 00000-0000"
+                  [(ngModel)]="form.responsaveis[i].telefone"
+                  (input)="aplicaMascaraTelefone($event, i)"
+                  maxlength="15"
+                />
+              </div>
+            </div>
+          </div>
+        }
       </div>
     }
-
     <!-- Step 3: Sintomas -->
     @if (currentStep === 3) {
       <div class="step-content card-step p-4">
