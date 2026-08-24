@@ -68,7 +68,7 @@
 
   <!-- Main Content -->
   <div class="detalhe-content p-3">
-    
+
     <!-- Stats Cards -->
     <div class="detalhe-stats-grid mb-3">
       <div class="detalhe-stat-card">
@@ -105,12 +105,12 @@
 
     <!-- Two Column Layout -->
     <div class="detalhe-info-columns mb-3">
-      
+
       <!-- Left Column: Dados Escolares -->
       <div class="detalhe-card">
         <span class="detalhe-card-fieldset-label">Dados Escolares</span>
         <div class="detalhe-card-body">
-          
+
           <!-- Preferências -->
           <div class="detalhe-section mb-3">
             <h3 class="detalhe-section-title">Preferências</h3>
@@ -160,7 +160,7 @@
         <span class="detalhe-card-fieldset-label">Dados dos Responsáveis</span>
         <div class="detalhe-card-body">
           <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
-            
+
             <!-- Responsável Cadastrado -->
             <div class="detalhe-responsavel-card">
               <span class="detalhe-responsavel-label">Responsável Principal</span>
@@ -179,7 +179,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
         <div class="arquivos-toolbar d-flex align-items-center gap-2">
-          
+
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
@@ -202,7 +202,7 @@
 
             @if (isFilterOpen) {
               <div class="filter-menu">
-                
+
                 <!-- Materias -->
                 <div class="filter-section">
                   <span class="filter-section-label">Matérias</span>
@@ -291,13 +291,7 @@
     </div>
   </div>
   } @else {
-  <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
-    <svg lucideUser [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
-    <p class="text-muted mt-3 mb-0">Aluno não encontrado</p>
-    <button class="btn btn-primary mt-3" type="button" (click)="voltar()">
-      Voltar para Alunos
-    </button>
-  </div>
+  <div></div>
   }
 
   <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />

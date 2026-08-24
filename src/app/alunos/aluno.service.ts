@@ -14,6 +14,7 @@ export interface Aluno {
   preferencias?: string;
   interesses?: string;
   estrategias_de_ensino?: string;
+  status?: number; // 1 = ativo, 0 = inativo
 }
 
 @Injectable({

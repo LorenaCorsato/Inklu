@@ -18,6 +18,7 @@ import { ModalConfirmarExclusao } from './modal-confirmar-exclusao/modal-confirm
 export class Alunos implements OnInit {
   searchTerm = '';
   viewMode: 'grid' | 'list' = 'grid';
+  activeTab: 'ativos' | 'inativos' = 'ativos';
   alunos: Aluno[] = [];
   
   isModalOpen = false;
@@ -65,17 +66,20 @@ formatarDiagnostico(diagnosticoDb: any): string {
     }
   }
   get filteredAlunos(): Aluno[] {
-    if (!this.searchTerm.trim()) {
-      return this.alunos;
+    const statusFilter = this.activeTab === 'ativos' ? 1 : 2;
+    let alunosFiltrados = this.alunos.filter((aluno) => aluno.status === statusFilter);
+
+    if (this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase();
+      alunosFiltrados = alunosFiltrados.filter(
+        (aluno) =>
+          aluno.nome.toLowerCase().includes(term) ||
+          aluno.ano.toLowerCase().includes(term) ||
+          aluno.deficiencia.toLowerCase().includes(term)
+      );
     }
 
-    const term = this.searchTerm.toLowerCase();
-    return this.alunos.filter(
-      (aluno) =>
-        aluno.nome.toLowerCase().includes(term) ||
-        aluno.ano.toLowerCase().includes(term) ||
-        aluno.deficiencia.toLowerCase().includes(term)
-    );
+    return alunosFiltrados;
   }
 
   // --- MUDANÇA DA BRANCH DEV AQUI ---
@@ -204,6 +208,10 @@ formatarDiagnostico(diagnosticoDb: any): string {
     this.viewMode = mode;
   }
 
+  setActiveTab(tab: 'ativos' | 'inativos') {
+    this.activeTab = tab;
+  }
+
   onSearchChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.searchTerm = target.value;
@@ -214,10 +222,11 @@ formatarDiagnostico(diagnosticoDb: any): string {
       id: alunoBanco.id, 
       nome: alunoBanco.nome_completo ?? 'Aluno sem nome',
       ano: alunoBanco.serie ?? 'Sem série',
-    deficiencia: this.formatarDiagnostico(alunoBanco.diagnostico),
+      deficiencia: this.formatarDiagnostico(alunoBanco.diagnostico),
       genero: alunoBanco.genero ?? 'Não informado',
       fotoUrl: alunoBanco.fotoUrl ?? alunoBanco.foto ?? undefined,
       originalData: alunoBanco,
+      status: alunoBanco.status ?? 1,
     };
   }
 
