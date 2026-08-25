@@ -10,16 +10,23 @@ export interface DiagnosticoItem {
   descricao: string;
 }
 
+export interface ResponsavelItem {
+  id?: string;
+  nome: string;
+  parentesco: string;
+  email: string;
+  telefone: string;
+}
+
 export interface AlunoForm {
   nomeCompleto: string;
   fotoUrl: string | null;
   dataNascimento: string;
   genero: string;
-  nomeResponsavel: string;
-  telefoneResponsavel: string;
   serieAno: string;
   turmaSala: string;
   diagnosticos: DiagnosticoItem[];
+  responsaveis: ResponsavelItem[];
 }
 
 @Component({
@@ -72,11 +79,10 @@ export class EditarAluno implements OnInit {
     fotoUrl: null,
     dataNascimento: '',
     genero: '',
-    nomeResponsavel: '',
-    telefoneResponsavel: '',
     serieAno: '',
     turmaSala: '',
     diagnosticos: [],
+    responsaveis: [],
   };
 
   previewUrl: string | null = null;
@@ -127,6 +133,20 @@ export class EditarAluno implements OnInit {
     this.form.fotoUrl = aluno.foto || null;
     this.previewUrl = aluno.fotoUrl ?? aluno.foto ?? null;
 
+    // Popula Responsáveis (Baseado no Join do backend)
+    if (aluno.responsaveis && aluno.responsaveis.length > 0) {
+      this.form.responsaveis = aluno.responsaveis.map((r: any) => ({
+        id: r.id,
+        nome: r.nome,
+        parentesco: r.parentesco,
+        email: r.email,
+        telefone: r.telefone
+      }));
+    } else {
+      // Fallback para 1 vazio se não vier do banco
+      this.form.responsaveis = [{ nome: '', parentesco: '', email: '', telefone: '' }];
+    }
+
     if (aluno.diagnostico) {
       try {
         const listaDiagnosticos = typeof aluno.diagnostico === 'string'
@@ -151,13 +171,45 @@ export class EditarAluno implements OnInit {
       this.form.nomeCompleto?.trim() &&
       this.form.dataNascimento &&
       this.form.genero &&
-      this.form.nomeResponsavel?.trim() &&
-      this.form.telefoneResponsavel?.trim() &&
       this.form.serieAno &&
       this.form.turmaSala &&
+      this.form.responsaveis.every(r => r.nome?.trim() && r.parentesco && r.telefone?.trim()) &&
       this.form.diagnosticos.length > 0
     );
   }
+
+  // --- MÉTODOS DE RESPONSÁVEIS ---
+  adicionarResponsavel() {
+    if (this.form.responsaveis.length < 2) {
+      this.form.responsaveis.push({ nome: '', parentesco: '', email: '', telefone: '' });
+    }
+  }
+
+  removerResponsavel(index: number) {
+    if (this.form.responsaveis.length > 1) {
+      this.form.responsaveis.splice(index, 1);
+    }
+  }
+
+  aplicaMascaraTelefone(event: any, index: number) {
+    let valor = event.target.value.replace(/\D/g, '');
+    if (valor.length > 11) {
+      valor = valor.substring(0, 11);
+    }
+
+    let formato = valor;
+    if (valor.length > 2 && valor.length <= 6) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
+    } else if (valor.length > 6 && valor.length <= 10) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
+    } else if (valor.length === 11) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
+    }
+
+    event.target.value = formato;
+    this.form.responsaveis[index].telefone = formato;
+  }
+  // ------------------------------
 
   get availableDiagnosticos() {
     const usedValues = this.form.diagnosticos.map(d => d.diagnostico);
@@ -216,7 +268,9 @@ export class EditarAluno implements OnInit {
       genero: this.getGeneroLabel(this.form.genero),
       serie: this.getSerieLabel(this.form.serieAno),
       diagnostico: diagnosticosFormatados,
+      descricao_diagnostico: JSON.stringify(diagnosticosFormatados),
       foto: this.form.fotoUrl || undefined,
+      responsaveis: this.form.responsaveis
     };
 
     this.alunoService.atualizarAluno(this.alunoId, payloadBanco).subscribe({
@@ -258,25 +312,6 @@ export class EditarAluno implements OnInit {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
-  }
-
-  aplicaMascaraTelefone(event: any) {
-    let valor = event.target.value.replace(/\D/g, '');
-    if (valor.length > 11) {
-      valor = valor.substring(0, 11);
-    }
-
-    let formato = valor;
-    if (valor.length > 2 && valor.length <= 6) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
-    } else if (valor.length > 6 && valor.length <= 10) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
-    } else if (valor.length === 11) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
-    }
-
-    event.target.value = formato;
-    this.form.telefoneResponsavel = formato;
   }
 
   private getGeneroValue(label: string): string {

@@ -68,7 +68,7 @@
 
   <!-- Main Content -->
   <div class="detalhe-content p-3">
-
+    
     <!-- Stats Cards -->
     <div class="detalhe-stats-grid mb-3">
       <div class="detalhe-stat-card">
@@ -85,13 +85,13 @@
         </div>
         <span class="detalhe-stat-value">{{ aluno.deficiencia }}</span>
       </div>
-      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
-          <span class="detalhe-stat-label">Nascimento</span>
+          <span class="detalhe-stat-label">Idade</span>
           <svg lucideCalendar></svg>
         </div>
         <span class="detalhe-stat-value text-truncate" style="font-size: 1.1rem;">
-          {{ alunoOriginal?.data_de_nascimento ? (alunoOriginal?.data_de_nascimento | date:'dd/MM/yyyy') : 'Não informada' }}
+          {{ calcularIdade(alunoOriginal?.data_de_nascimento) }}
         </span>
       </div>
       <div class="detalhe-stat-card">
@@ -105,12 +105,12 @@
 
     <!-- Two Column Layout -->
     <div class="detalhe-info-columns mb-3">
-
+      
       <!-- Left Column: Dados Escolares -->
       <div class="detalhe-card">
         <span class="detalhe-card-fieldset-label">Dados Escolares</span>
         <div class="detalhe-card-body">
-
+          
           <!-- Preferências -->
           <div class="detalhe-section mb-3">
             <h3 class="detalhe-section-title">Preferências</h3>
@@ -160,26 +160,34 @@
         <span class="detalhe-card-fieldset-label">Dados dos Responsáveis</span>
         <div class="detalhe-card-body">
           <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
-
-            <!-- Responsável Cadastrado -->
-            <div class="detalhe-responsavel-card">
-              <span class="detalhe-responsavel-label">Responsável Principal</span>
-              <h4 class="detalhe-responsavel-nome">{{ alunoOriginal?.nome_responsavel || 'Não informado' }}</h4>
-              <p class="detalhe-responsavel-contato">{{ alunoOriginal?.telefone_responsavel || 'Sem telefone' }}</p>
-            </div>
+            
+            @for (resp of alunoOriginal?.responsaveis; track resp) {
+              <div class="detalhe-responsavel-card">
+                <span class="detalhe-responsavel-label text-primary fw-bold">{{ resp.parentesco || 'Responsável' }}</span>
+                <h4 class="detalhe-responsavel-nome">{{ resp.nome }}</h4>
+                @if (resp.telefone) {
+                  <p class="detalhe-responsavel-contato mb-1">{{ resp.telefone }}</p>
+                }
+                @if (resp.email) {
+                  <p class="detalhe-responsavel-contato mb-0">{{ resp.email }}</p>
+                }
+              </div>
+            } @empty {
+              <p class="text-muted small">Nenhum responsável cadastrado.</p>
+            }
 
           </div>
         </div>
       </div>
 
-    </div>
+    </div> 
 
     <!-- Arquivos Section -->
     <div class="detalhe-arquivos-section">
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
         <div class="arquivos-toolbar d-flex align-items-center gap-2">
-
+          
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
@@ -202,7 +210,7 @@
 
             @if (isFilterOpen) {
               <div class="filter-menu">
-
+                
                 <!-- Materias -->
                 <div class="filter-section">
                   <span class="filter-section-label">Matérias</span>
@@ -288,10 +296,16 @@
           </tbody>
         </table>
       </div>
-    </div>
+    </div> 
   </div>
   } @else {
-  <div></div>
+  <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
+    <svg lucideUser [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+    <p class="text-muted mt-3 mb-0">Aluno não encontrado</p>
+    <button class="btn btn-primary mt-3" type="button" (click)="voltar()">
+      Voltar para Alunos
+    </button>
+  </div>
   }
 
   <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />

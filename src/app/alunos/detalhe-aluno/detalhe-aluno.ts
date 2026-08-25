@@ -240,6 +240,23 @@ carregarAluno(id: string) {
     const d = new Date(dateStr);
     return d.toLocaleDateString('pt-BR');
   }
+  calcularIdade(dataNascimento: string | null | undefined): string {
+    if (!dataNascimento) return 'Não informada';
+
+    const hoje = new Date();
+    const nascimento = new Date(dataNascimento);
+    
+    if (isNaN(nascimento.getTime())) return 'Data inválida';
+
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const diferencaMeses = hoje.getMonth() - nascimento.getMonth();
+
+    if (diferencaMeses < 0 || (diferencaMeses === 0 && hoje.getDate() < nascimento.getDate())) {
+      idade--;
+    }
+
+    return `${idade} anos`;
+  }
 
   openDocumentoModal() {
     this.isDocumentoModalOpen = true;

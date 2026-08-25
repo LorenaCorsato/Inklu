@@ -10,16 +10,22 @@ export interface DiagnosticoItem {
   descricao: string;
 }
 
+export interface ResponsavelItem {
+  nome: string;
+  parentesco: string;
+  email: string;
+  telefone: string;
+}
+
 export interface AlunoForm {
   nomeCompleto: string;
   fotoUrl: string | null;
   dataNascimento: string;
   genero: string;
-  nomeResponsavel: string;
-  telefoneResponsavel: string;
   serieAno: string;
   turmaSala: string;
   diagnosticos: DiagnosticoItem[];
+  responsaveis: ResponsavelItem[];
 }
 
 @Component({
@@ -71,11 +77,11 @@ export class AdicionarAluno {
     fotoUrl: null,
     dataNascimento: '',
     genero: '',
-    nomeResponsavel: '',
-    telefoneResponsavel: '',
     serieAno: '',
     turmaSala: '',
     diagnosticos: [],
+    // Inicia com 1 responsável vazio obrigatório
+    responsaveis: [{ nome: '', parentesco: '', email: '', telefone: '' }], 
   };
 
   previewUrl: string | null = null;
@@ -99,9 +105,9 @@ export class AdicionarAluno {
       );
     }
     if (this.currentStep === 2) {
-      return !!(
-        this.form.nomeResponsavel?.trim() &&
-        this.form.telefoneResponsavel?.trim()
+      // Valida se todos os responsáveis preencheram os campos mínimos
+      return this.form.responsaveis.every(r => 
+        r.nome?.trim() && r.parentesco && r.telefone?.trim()
       );
     }
     if (this.currentStep === 3) {
@@ -115,13 +121,44 @@ export class AdicionarAluno {
       this.form.nomeCompleto?.trim() &&
       this.form.dataNascimento &&
       this.form.genero &&
-      this.form.nomeResponsavel?.trim() &&
-      this.form.telefoneResponsavel?.trim() &&
       this.form.serieAno &&
       this.form.turmaSala &&
+      this.form.responsaveis.every(r => r.nome?.trim() && r.parentesco && r.telefone?.trim()) &&
       this.form.diagnosticos.length > 0
     );
   }
+
+  // --- MÉTODOS DE RESPONSÁVEIS ---
+  adicionarResponsavel() {
+   if (this.form.responsaveis.length < 2) {
+      this.form.responsaveis.push({ nome: '', parentesco: '', email: '', telefone: '' });
+    }
+  }
+  removerResponsavel(index: number) {
+    if (this.form.responsaveis.length > 1) {
+      this.form.responsaveis.splice(index, 1);
+    }
+  }
+
+  aplicaMascaraTelefone(event: any, index: number) {
+    let valor = event.target.value.replace(/\D/g, '');
+    if (valor.length > 11) {
+      valor = valor.substring(0, 11);
+    }
+
+    let formato = valor;
+    if (valor.length > 2 && valor.length <= 6) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
+    } else if (valor.length > 6 && valor.length <= 10) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
+    } else if (valor.length === 11) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
+    }
+
+    event.target.value = formato;
+    this.form.responsaveis[index].telefone = formato; // Atualiza no índice correto
+  }
+  // ------------------------------
 
   get availableDiagnosticos() {
     const usedValues = this.form.diagnosticos.map(d => d.diagnostico);
@@ -192,7 +229,9 @@ export class AdicionarAluno {
       genero: this.getGeneroLabel(this.form.genero),
       serie: this.getSerieLabel(this.form.serieAno),
       diagnostico: diagnosticosFormatados,
+      descricao_diagnostico: JSON.stringify(diagnosticosFormatados),
       foto: this.form.fotoUrl || undefined,
+      responsaveis: this.form.responsaveis // Enviando o array para o backend processar
     };
 
     this.alunoService.cadastrarAluno(payloadBanco).subscribe({
@@ -234,25 +273,6 @@ export class AdicionarAluno {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
-  }
-
-  aplicaMascaraTelefone(event: any) {
-    let valor = event.target.value.replace(/\D/g, '');
-    if (valor.length > 11) {
-      valor = valor.substring(0, 11);
-    }
-
-    let formato = valor;
-    if (valor.length > 2 && valor.length <= 6) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
-    } else if (valor.length > 6 && valor.length <= 10) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
-    } else if (valor.length === 11) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
-    }
-
-    event.target.value = formato;
-    this.form.telefoneResponsavel = formato;
   }
 
   private getGeneroLabel(value: string): string {
