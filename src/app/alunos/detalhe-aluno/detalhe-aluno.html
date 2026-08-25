@@ -85,13 +85,13 @@
         </div>
         <span class="detalhe-stat-value">{{ aluno.deficiencia }}</span>
       </div>
-      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
-          <span class="detalhe-stat-label">Nascimento</span>
+          <span class="detalhe-stat-label">Idade</span>
           <svg lucideCalendar></svg>
         </div>
         <span class="detalhe-stat-value text-truncate" style="font-size: 1.1rem;">
-          {{ alunoOriginal?.data_de_nascimento ? (alunoOriginal?.data_de_nascimento | date:'dd/MM/yyyy') : 'Não informada' }}
+          {{ calcularIdade(alunoOriginal?.data_de_nascimento) }}
         </span>
       </div>
       <div class="detalhe-stat-card">
@@ -161,18 +161,26 @@
         <div class="detalhe-card-body">
           <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
             
-            <!-- Responsável Cadastrado -->
-            <div class="detalhe-responsavel-card">
-              <span class="detalhe-responsavel-label">Responsável Principal</span>
-              <h4 class="detalhe-responsavel-nome">{{ alunoOriginal?.nome_responsavel || 'Não informado' }}</h4>
-              <p class="detalhe-responsavel-contato">{{ alunoOriginal?.telefone_responsavel || 'Sem telefone' }}</p>
-            </div>
+            @for (resp of alunoOriginal?.responsaveis; track resp) {
+              <div class="detalhe-responsavel-card">
+                <span class="detalhe-responsavel-label text-primary fw-bold">{{ resp.parentesco || 'Responsável' }}</span>
+                <h4 class="detalhe-responsavel-nome">{{ resp.nome }}</h4>
+                @if (resp.telefone) {
+                  <p class="detalhe-responsavel-contato mb-1">{{ resp.telefone }}</p>
+                }
+                @if (resp.email) {
+                  <p class="detalhe-responsavel-contato mb-0">{{ resp.email }}</p>
+                }
+              </div>
+            } @empty {
+              <p class="text-muted small">Nenhum responsável cadastrado.</p>
+            }
 
           </div>
         </div>
       </div>
 
-    </div>
+    </div> 
 
     <!-- Arquivos Section -->
     <div class="detalhe-arquivos-section">
@@ -288,7 +296,7 @@
           </tbody>
         </table>
       </div>
-    </div>
+    </div> 
   </div>
   } @else {
   <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">

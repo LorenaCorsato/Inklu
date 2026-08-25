@@ -130,9 +130,10 @@ export class AdicionarAluno {
 
   // --- MÉTODOS DE RESPONSÁVEIS ---
   adicionarResponsavel() {
-    this.form.responsaveis.push({ nome: '', parentesco: '', email: '', telefone: '' });
+   if (this.form.responsaveis.length < 2) {
+      this.form.responsaveis.push({ nome: '', parentesco: '', email: '', telefone: '' });
+    }
   }
-
   removerResponsavel(index: number) {
     if (this.form.responsaveis.length > 1) {
       this.form.responsaveis.splice(index, 1);
