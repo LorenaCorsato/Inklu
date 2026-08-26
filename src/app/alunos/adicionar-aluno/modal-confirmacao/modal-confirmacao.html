@@ -1,0 +1,43 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Cadastro realizado!</h2>
+        <button class="btn-close" type="button" (click)="dismiss()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <p class="modal-text">
+          Restam algumas informações a serem preenchidas sobre o aluno <strong>{{ nomeAluno }}</strong>:
+        </p>
+        <ul class="modal-list">
+          <li>
+            <svg lucideCheck [size]="16" [strokeWidth]="2"></svg>
+            Preferências
+          </li>
+          <li>
+            <svg lucideCheck [size]="16" [strokeWidth]="2"></svg>
+            Detalhes do Aluno
+          </li>
+        </ul>
+        <p class="modal-question">Gostaria de preencher agora?</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" type="button" (click)="dismiss()">
+          <svg lucideClock [size]="16" [strokeWidth]="2"></svg>
+          Não, faço isso depois
+        </button>
+        <button class="btn btn-primary" type="button" (click)="confirm()">
+          <svg lucideCheck [size]="16" [strokeWidth]="2"></svg>
+          Sim, preencher
+        </button>
+      </div>
+    </div>
+  </div>
+}

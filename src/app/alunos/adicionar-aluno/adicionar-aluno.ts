@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LucideArrowLeft, LucideTrash2 } from '@lucide/angular';
 import { ModalCrop } from '../modal-crop/modal-crop';
+import { ModalConfirmacao } from './modal-confirmacao/modal-confirmacao';
 import { AlunoService } from '../aluno.service';
 
 export interface DiagnosticoItem {
@@ -30,7 +31,7 @@ export interface AlunoForm {
 
 @Component({
   selector: 'app-adicionar-aluno',
-  imports: [FormsModule, LucideArrowLeft, LucideTrash2, ModalCrop],
+  imports: [FormsModule, LucideArrowLeft, LucideTrash2, ModalCrop, ModalConfirmacao],
   templateUrl: './adicionar-aluno.html',
   styleUrl: './adicionar-aluno.scss',
 })
@@ -87,6 +88,8 @@ export class AdicionarAluno {
   previewUrl: string | null = null;
   isCropModalOpen = false;
   tempImageSrc: string | null = null;
+  isConfirmacaoModalOpen = false;
+  novoAlunoId: string | null = null;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -235,9 +238,10 @@ export class AdicionarAluno {
     };
 
     this.alunoService.cadastrarAluno(payloadBanco).subscribe({
-      next: () => {
-        alert('Cadastro realizado com sucesso!');
-        this.router.navigate(['/alunos']);
+      next: (resposta: any) => {
+        this.novoAlunoId = resposta?.id || null;
+        this.isConfirmacaoModalOpen = true;
+        this.cdr.detectChanges();
       },
       error: (erro: any) => {
         console.error('Erro ao salvar no banco:', erro);
@@ -285,5 +289,19 @@ export class AdicionarAluno {
 
   getDiagnosticoLabel(value: string): string {
     return this.diagnosticos.find((d) => d.value === value)?.label || '';
+  }
+
+  onConfirmacaoConfirmed() {
+    this.isConfirmacaoModalOpen = false;
+    if (this.novoAlunoId) {
+      this.router.navigate(['/alunos', this.novoAlunoId]);
+    } else {
+      this.router.navigate(['/alunos']);
+    }
+  }
+
+  onConfirmacaoDismissed() {
+    this.isConfirmacaoModalOpen = false;
+    this.router.navigate(['/alunos']);
   }
 }
