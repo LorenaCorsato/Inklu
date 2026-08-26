@@ -27,6 +27,10 @@
         <h1 class="detalhe-title fw-bold mb-0">{{ aluno.nome }}</h1>
       </div>
       <div class="detalhe-actions d-flex gap-2">
+        <button class="btn btn-warning" type="button" (click)="openDadosAdicionaisModal()">
+          <svg lucidePen [size]="16" [strokeWidth]="2"></svg>
+          Inserir Dados Adicionais
+        </button>
         <button class="btn btn-success p-x-2 d-flex align-items-center gap-2" type="button" (click)="openDocumentoModal()">
             <svg lucideFilePlus [size]="16" [strokeWidth]="2"></svg>
           Adicionar Documento
@@ -68,7 +72,7 @@
 
   <!-- Main Content -->
   <div class="detalhe-content p-3">
-    
+
     <!-- Stats Cards -->
     <div class="detalhe-stats-grid mb-3">
       <div class="detalhe-stat-card">
@@ -105,12 +109,12 @@
 
     <!-- Two Column Layout -->
     <div class="detalhe-info-columns mb-3">
-      
+
       <!-- Left Column: Dados Escolares -->
       <div class="detalhe-card">
         <span class="detalhe-card-fieldset-label">Dados Escolares</span>
         <div class="detalhe-card-body">
-          
+
           <!-- Preferências -->
           <div class="detalhe-section mb-3">
             <h3 class="detalhe-section-title">Preferências</h3>
@@ -160,7 +164,7 @@
         <span class="detalhe-card-fieldset-label">Dados dos Responsáveis</span>
         <div class="detalhe-card-body">
           <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
-            
+
             @for (resp of alunoOriginal?.responsaveis; track resp) {
               <div class="detalhe-responsavel-card">
                 <span class="detalhe-responsavel-label text-primary fw-bold">{{ resp.parentesco || 'Responsável' }}</span>
@@ -180,14 +184,14 @@
         </div>
       </div>
 
-    </div> 
+    </div>
 
     <!-- Arquivos Section -->
     <div class="detalhe-arquivos-section">
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
         <div class="arquivos-toolbar d-flex align-items-center gap-2">
-          
+
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
@@ -210,7 +214,7 @@
 
             @if (isFilterOpen) {
               <div class="filter-menu">
-                
+
                 <!-- Materias -->
                 <div class="filter-section">
                   <span class="filter-section-label">Matérias</span>
@@ -296,7 +300,7 @@
           </tbody>
         </table>
       </div>
-    </div> 
+    </div>
   </div>
   } @else {
   <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
@@ -309,4 +313,10 @@
   }
 
   <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />
+  <app-modal-dados-adicionais
+    [isOpen]="isDadosAdicionaisModalOpen"
+    [dadosIniciais]="dadosAdicionais"
+    (closed)="closeDadosAdicionaisModal()"
+    (saved)="onDadosAdicionaisSaved($event)"
+  />
 </div>

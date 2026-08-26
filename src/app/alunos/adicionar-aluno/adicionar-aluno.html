@@ -303,4 +303,11 @@
     (cropComplete)="onCropComplete($event)"
     (closed)="onCropClosed()"
   ></app-modal-crop>
+
+  <app-modal-confirmacao
+    [isOpen]="isConfirmacaoModalOpen"
+    [nomeAluno]="form.nomeCompleto"
+    (confirmed)="onConfirmacaoConfirmed()"
+    (dismissed)="onConfirmacaoDismissed()"
+  ></app-modal-confirmacao>
 </div>
