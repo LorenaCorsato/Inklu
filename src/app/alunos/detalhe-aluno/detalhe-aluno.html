@@ -115,13 +115,15 @@
         <span class="detalhe-card-fieldset-label">Dados Escolares</span>
         <div class="detalhe-card-body">
 
-          <!-- Preferências -->
+          <!-- Interesses -->
           <div class="detalhe-section mb-3">
-            <h3 class="detalhe-section-title">Preferências</h3>
+            <h3 class="detalhe-section-title">Interesses</h3>
             <div class="detalhe-tags d-flex flex-wrap gap-2">
-              <span class="detalhe-tag">Dinossauros</span>
-              <span class="detalhe-tag">Música POP</span>
-              <span class="detalhe-tag">Desenhos animados</span>
+              @for (interesse of interessesList; track interesse) {
+                <span class="detalhe-tag">{{ interesse }}</span>
+              } @empty {
+                <span class="text-muted small">Nenhum interesse registrado.</span>
+              }
             </div>
           </div>
 
@@ -146,13 +148,15 @@
             </div>
           </div>
 
-          <!-- Informações -->
+          <!-- Preferências -->
           <div class="detalhe-section">
-            <h3 class="detalhe-section-title">Informações</h3>
+            <h3 class="detalhe-section-title">Preferências</h3>
             <ul class="detalhe-info-list">
-              <li>Utilizar jogos com música para aplicar atividades</li>
-              <li>Gosta do caderno com dinossauros</li>
-              <li>Não utilizar desenhos com muitas cores</li>
+              @for (pref of preferenciasList; track pref) {
+                <li>{{ pref }}</li>
+              } @empty {
+                <li class="text-muted small" style="list-style-type: none; padding-left: 0;">Nenhuma preferência registrada.</li>
+              }
             </ul>
           </div>
 

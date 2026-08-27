@@ -230,7 +230,7 @@ export class AdicionarAluno implements OnInit {
 
     this.alunoService.cadastrarAluno(payloadBanco).subscribe({
       next: (resposta: any) => {
-        this.novoAlunoId = resposta?.id || null;
+        this.novoAlunoId = resposta && resposta.length > 0 ? resposta[0].id : null;
         this.isConfirmacaoModalOpen = true;
         this.cdr.detectChanges();
       },
@@ -281,7 +281,7 @@ export class AdicionarAluno implements OnInit {
   onConfirmacaoConfirmed() {
     this.isConfirmacaoModalOpen = false;
     if (this.novoAlunoId) {
-      this.router.navigate(['/alunos', this.novoAlunoId]);
+      this.router.navigate(['/alunos', this.novoAlunoId], { queryParams: { preencher: 'true' } });
     } else {
       this.router.navigate(['/alunos']);
     }

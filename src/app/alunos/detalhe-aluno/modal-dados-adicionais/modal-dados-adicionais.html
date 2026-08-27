@@ -12,28 +12,28 @@
       <!-- Body -->
       <div class="modal-body">
 
-        <!-- Preferências -->
+        <!-- Interesses -->
         <div class="modal-section">
-          <label class="modal-label">Preferências</label>
-          <p class="modal-hint">Adicione preferências do aluno (ex: dinossauros, música POP)</p>
+          <label class="modal-label">Interesses</label>
+          <p class="modal-hint">Adicione interesses do aluno (ex: dinossauros, música POP)</p>
 
           <div class="tag-input-row d-flex gap-2">
             <input
               type="text"
               class="form-control"
-              placeholder="Digite uma preferência"
-              [(ngModel)]="preferenciaInput"
-              (keydown.enter)="addPreferencia()"
+              placeholder="Digite um interesse"
+              [(ngModel)]="interesseInput"
+              (keydown.enter)="addInteresse()"
             />
-            <button class="btn btn-outline-primary" type="button" (click)="addPreferencia()">Adicionar</button>
+            <button class="btn btn-outline-primary" type="button" (click)="addInteresse()">Adicionar</button>
           </div>
 
-          @if (preferencias.length > 0) {
+          @if (interesses.length > 0) {
             <div class="tags-container d-flex flex-wrap gap-2 mt-2">
-              @for (pref of preferencias; track pref; let i = $index) {
+              @for (interesse of interesses; track interesse; let i = $index) {
                 <span class="tag-chip">
-                  {{ pref }}
-                  <button class="tag-remove" type="button" (click)="removePreferencia(i)">
+                  {{ interesse }}
+                  <button class="tag-remove" type="button" (click)="removeInteresse(i)">
                     <svg lucideX [size]="12" [strokeWidth]="2"></svg>
                   </button>
                 </span>
@@ -42,16 +42,16 @@
           }
         </div>
 
-        <!-- Informações -->
+        <!-- Preferências -->
         <div class="modal-section mt-4">
-          <label class="modal-label">Informações</label>
-          <p class="modal-hint">Adicione informações adicionais sobre o aluno</p>
+          <label class="modal-label">Preferências</label>
+          <p class="modal-hint">Adicione preferências adicionais sobre o aluno</p>
 
           <textarea
             class="form-control"
             rows="4"
-            placeholder="Digite informações adicionais..."
-            [(ngModel)]="informacaoTexto"
+            placeholder="Digite preferências adicionais..."
+            [(ngModel)]="preferenciaTexto"
           ></textarea>
         </div>
 
