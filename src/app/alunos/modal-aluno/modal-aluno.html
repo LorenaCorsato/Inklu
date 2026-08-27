@@ -92,29 +92,16 @@
           </div>
         </div>
 
-        <!-- Série / Ano & Turma / Sala -->
-        <div class="form-row">
-          <div class="form-group form-group-half">
-            <label class="form-label">Série / Ano</label>
-            <div class="select-wrapper">
-              <select class="form-select" [(ngModel)]="form.serieAno">
-                <option value="" disabled selected>Selecione</option>
-                @for (serie of series; track serie.value) {
-                  <option [value]="serie.value">{{ serie.label }}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="form-group form-group-half">
-            <label class="form-label">Turma / Sala</label>
-            <div class="select-wrapper">
-              <select class="form-select" [(ngModel)]="form.turmaSala">
-                <option value="" disabled selected>Selecione</option>
-                @for (turma of turmas; track turma.value) {
-                  <option [value]="turma.value">{{ turma.label }}</option>
-                }
-              </select>
-            </div>
+        <!-- Turma / Sala -->
+        <div class="form-group">
+          <label class="form-label">Turma / Sala</label>
+          <div class="select-wrapper">
+            <select class="form-select" [(ngModel)]="form.id_turma">
+              <option value="" disabled selected>Selecione</option>
+              @for (turma of turmas; track turma.id_turma) {
+                <option [value]="turma.id_turma">{{ turma.nome }} - {{ turma.serie }}</option>
+              }
+            </select>
           </div>
         </div>
 

@@ -159,7 +159,7 @@ carregarAluno(id: string) {
         this.aluno = {
           id: alunoDb.id,
           nome: alunoDb.nome_completo ?? 'Sem nome',
-          ano: alunoDb.serie ?? 'Sem série',
+          ano: alunoDb.turma ? `${alunoDb.turma.serie} ${alunoDb.turma.nome}` : 'Não informada',
           deficiencia: this.diagnosticosLista.length > 0
             ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes')
             : 'Não informado',
