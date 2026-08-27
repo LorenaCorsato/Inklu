@@ -68,12 +68,7 @@ export class DetalheAluno {
 
   materias = ['Matemática', 'Artes', 'Português', 'Ciências'];
 
-  arquivos: Arquivo[] = [
-    { data: '2025-01-01', nome: 'Atividade_de_matematica', alteracao: 'Adição de jogos lúdicos para melhor entendimento', materia: 'Matemática' },
-    { data: '2025-01-01', nome: 'Atividade_de_desenhos_artes', alteracao: 'Adição de desenhos menos coloridos', materia: 'Artes' },
-    { data: '2025-01-01', nome: 'Atividade_portugues', alteracao: 'Remoção de cores', materia: 'Português' },
-    { data: '2025-01-01', nome: 'Atividade_de_ciencia', alteracao: 'Adaptação com dinossauros', materia: 'Ciências' },
-  ];
+  arquivos: Arquivo[] = [];
 
   get filteredArquivos(): Arquivo[] {
     return this.arquivos.filter(arquivo => {
@@ -162,6 +157,8 @@ carregarAluno(id: string) {
           originalData: alunoDb
         };
 
+        this.carregarArquivos(alunoDb.id);
+
 
         this.isLoading = false;
         
@@ -173,6 +170,27 @@ carregarAluno(id: string) {
         alert('Erro ao carregar os dados do aluno.');
         this.voltar(); 
       }
+    });
+  }
+
+  carregarArquivos(alunoId: string | number) {
+    this.alunoService.listarArquivosPorAluno(alunoId).subscribe({
+      next: (materiais) => {
+        this.arquivos = materiais
+          .map(material => ({
+            data: material.data_de_upload ?? material.data_upload,
+            nome: material.nome_do_arquivo ?? material.nome_arquivo,
+            alteracao: material.tipo_de_material ?? material.tipo_material ?? 'Original',
+            materia: material.nome_materia ?? 'Sem matéria',
+          }))
+          .sort((first, second) => new Date(second.data).getTime() - new Date(first.data).getTime());
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erro ao carregar arquivos:', error);
+        this.arquivos = [];
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -264,6 +282,12 @@ carregarAluno(id: string) {
 
   closeDocumentoModal() {
     this.isDocumentoModalOpen = false;
+  }
+
+  onDocumentoSaved() {
+    if (this.aluno?.id) {
+      this.carregarArquivos(this.aluno.id);
+    }
   }
 
 }

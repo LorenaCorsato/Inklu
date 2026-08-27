@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="modal-header">
         <h2 class="modal-title">Adicionar Documento</h2>
-        <button class="btn-close" type="button" (click)="close()">
+          <button class="btn-close" type="button" [disabled]="isSaving" (click)="close()">
           <svg lucideX [size]="20" [strokeWidth]="2"></svg>
         </button>
       </div>
@@ -80,8 +80,10 @@
             }
 
             <div class="d-flex justify-content-end gap-2">
-              <button class="btn btn-outline-danger" type="button">Cancelar</button>
-              <button class="btn btn-success" type="button">Salvar</button>
+              <button class="btn btn-outline-danger cancel-button" type="button" [disabled]="isSaving" (click)="$event.stopPropagation(); close()">Cancelar</button>
+              <button class="btn btn-success" type="button" [disabled]="isSaving" (click)="$event.stopPropagation(); save()">
+                {{ isSaving ? 'Salvando...' : 'Salvar' }}
+              </button>
             </div>
           </div>
         }
