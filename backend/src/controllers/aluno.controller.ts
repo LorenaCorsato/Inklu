@@ -143,7 +143,6 @@ export class AlunoController {
       const { data, error } = await supabase         
         .from('aluno')         
         .select('*, turma(*)')         
-        .neq('status', 2)
         .order('data_de_criacao', { ascending: false });       
         
       if (error) {         
