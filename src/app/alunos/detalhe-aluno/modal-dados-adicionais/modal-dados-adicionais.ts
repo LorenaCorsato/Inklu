@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { LucideX } from '@lucide/angular';
 
 export interface DadosAdicionais {
-  preferencias: string[];
-  informacoes: string;
+  interesses: string[];
+  preferencias: string;
 }
 
 @Component({
@@ -20,15 +20,15 @@ export class ModalDadosAdicionais {
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<DadosAdicionais>();
 
-  preferenciaInput = '';
-  informacaoTexto = '';
+  interesseInput = '';
+  preferenciaTexto = '';
 
-  preferencias: string[] = [];
+  interesses: string[] = [];
 
   ngOnInit() {
     if (this.dadosIniciais) {
-      this.preferencias = [...this.dadosIniciais.preferencias];
-      this.informacaoTexto = this.dadosIniciais.informacoes;
+      this.interesses = [...this.dadosIniciais.interesses];
+      this.preferenciaTexto = this.dadosIniciais.preferencias;
     }
   }
 
@@ -36,22 +36,22 @@ export class ModalDadosAdicionais {
     this.closed.emit();
   }
 
-  addPreferencia() {
-    const value = this.preferenciaInput.trim();
-    if (value && !this.preferencias.includes(value)) {
-      this.preferencias.push(value);
-      this.preferenciaInput = '';
+  addInteresse() {
+    const value = this.interesseInput.trim();
+    if (value && !this.interesses.includes(value)) {
+      this.interesses.push(value);
+      this.interesseInput = '';
     }
   }
 
-  removePreferencia(index: number) {
-    this.preferencias.splice(index, 1);
+  removeInteresse(index: number) {
+    this.interesses.splice(index, 1);
   }
 
   save() {
     this.saved.emit({
-      preferencias: [...this.preferencias],
-      informacoes: this.informacaoTexto,
+      interesses: [...this.interesses],
+      preferencias: this.preferenciaTexto,
     });
     this.close();
   }

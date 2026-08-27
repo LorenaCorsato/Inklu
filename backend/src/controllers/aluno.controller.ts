@@ -142,8 +142,7 @@ export class AlunoController {
     try {       
       const { data, error } = await supabase         
         .from('aluno')         
-        .select('*')         
-        .neq('status', 2)
+        .select('*, turma(*)')         
         .order('data_de_criacao', { ascending: false });       
         
       if (error) {         
@@ -182,10 +181,10 @@ export class AlunoController {
     try {
       const id = req.params.id;
 
-      // O 'responsaveis(*)' faz o JOIN automático do Supabase
+      // O 'responsaveis(*)' e 'turma(*)' fazem o JOIN automático do Supabase
       const { data, error } = await supabase
         .from('aluno')
-        .select('*, responsaveis(*)') 
+        .select('*, responsaveis(*), turma(*)') 
         .eq('id', id)
         .single(); 
 

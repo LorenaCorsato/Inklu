@@ -15,6 +15,8 @@ export interface Aluno {
   interesses?: string;
   estrategias_de_ensino?: string;
   status?: number; // 1 = ativo, 0 = inativo
+  id_turma?: string;
+  turma?: any;
 }
 
 @Injectable({

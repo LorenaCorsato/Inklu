@@ -64,7 +64,7 @@ export class DetalheAluno {
   isDocumentoModalOpen = false;
   isDadosAdicionaisModalOpen = false;
 
-  dadosAdicionais: DadosAdicionais = { preferencias: [], informacoes: '' };
+  dadosAdicionais: DadosAdicionais = { interesses: [], preferencias: '' };
 
   searchQuery = '';
   isFilterOpen = false;
@@ -131,8 +131,10 @@ export class DetalheAluno {
     };
   }
 
- alunoOriginal: any = null;
+  alunoOriginal: any = null;
   diagnosticosLista: Array<{diagnóstico?: string, diagnostico?: string, descricao: string}> = [];
+  interessesList: string[] = [];
+  preferenciasList: string[] = [];
   isLoading = true;
 
   ngOnInit() {
@@ -141,6 +143,12 @@ export class DetalheAluno {
       const id = params.get('id');
       if (id) {
         this.carregarAluno(id);
+      }
+    });
+
+    this.route.queryParamMap.subscribe(queryParams => {
+      if (queryParams.get('preencher') === 'true') {
+        this.isDadosAdicionaisModalOpen = true;
       }
     });
   }
@@ -156,10 +164,27 @@ carregarAluno(id: string) {
 
         this.processarDiagnosticos(alunoDb.diagnostico);
 
+        try {
+          this.interessesList = alunoDb.interesses ? JSON.parse(alunoDb.interesses) : [];
+        } catch(e) { 
+          this.interessesList = []; 
+        }
+
+        if (alunoDb.preferencias) {
+           this.preferenciasList = alunoDb.preferencias.split('\n').filter((p: string) => p.trim() !== '');
+        } else {
+           this.preferenciasList = [];
+        }
+
+        this.dadosAdicionais = {
+           interesses: this.interessesList,
+           preferencias: alunoDb.preferencias || ''
+        };
+
         this.aluno = {
           id: alunoDb.id,
           nome: alunoDb.nome_completo ?? 'Sem nome',
-          ano: alunoDb.serie ?? 'Sem série',
+          ano: alunoDb.turma ? `${alunoDb.turma.serie} ${alunoDb.turma.nome}` : 'Não informada',
           deficiencia: this.diagnosticosLista.length > 0
             ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes')
             : 'Não informado',
@@ -282,6 +307,23 @@ carregarAluno(id: string) {
 
   onDadosAdicionaisSaved(dados: DadosAdicionais) {
     this.dadosAdicionais = dados;
+    
+    if (this.aluno && this.aluno.id) {
+      const payload = {
+        interesses: JSON.stringify(dados.interesses),
+        preferencias: dados.preferencias
+      };
+      
+      this.alunoService.atualizarAluno(this.aluno.id, payload).subscribe({
+        next: () => {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (err) => {
+          console.error('Erro ao salvar dados adicionais:', err);
+          alert('Erro ao salvar dados adicionais.');
+        }
+      });
+    }
   }
 
 }
