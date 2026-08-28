@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideX } from '@lucide/angular';
@@ -14,7 +14,7 @@ export interface DadosAdicionais {
   templateUrl: './modal-dados-adicionais.html',
   styleUrl: './modal-dados-adicionais.scss',
 })
-export class ModalDadosAdicionais {
+export class ModalDadosAdicionais implements OnChanges {
   @Input() isOpen = false;
   @Input() dadosIniciais: DadosAdicionais | null = null;
   @Output() closed = new EventEmitter<void>();
@@ -25,10 +25,17 @@ export class ModalDadosAdicionais {
 
   interesses: string[] = [];
 
-  ngOnInit() {
-    if (this.dadosIniciais) {
-      this.interesses = [...this.dadosIniciais.interesses];
-      this.preferenciaTexto = this.dadosIniciais.preferencias;
+  ngOnChanges(changes: SimpleChanges) {
+    // Sempre que o modal abrir (isOpen passar para true), ele puxa os dados fresquinhos
+    if (changes['isOpen'] && changes['isOpen'].currentValue === true) {
+      if (this.dadosIniciais) {
+        this.interesses = [...this.dadosIniciais.interesses];
+        this.preferenciaTexto = this.dadosIniciais.preferencias;
+      } else {
+        this.interesses = [];
+        this.preferenciaTexto = '';
+      }
+      this.interesseInput = ''; // Limpa o campo de digitação ao abrir
     }
   }
 
