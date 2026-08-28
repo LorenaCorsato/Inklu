@@ -1,0 +1,67 @@
+@if (isOpen) {
+  <div class="modal-overlay">
+    <div class="modal-container">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Inserir Dados Adicionais</h2>
+        <button class="btn-close" type="button" (click)="close()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Interesses -->
+        <div class="modal-section">
+          <label class="modal-label">Interesses</label>
+          <p class="modal-hint">Adicione interesses do aluno (ex: dinossauros, música POP)</p>
+
+          <div class="tag-input-row d-flex gap-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Digite um interesse"
+              [(ngModel)]="interesseInput"
+              (keydown.enter)="addInteresse()"
+            />
+            <button class="btn btn-outline-primary" type="button" (click)="addInteresse()">Adicionar</button>
+          </div>
+
+          @if (interesses.length > 0) {
+            <div class="tags-container d-flex flex-wrap gap-2 mt-2">
+              @for (interesse of interesses; track interesse; let i = $index) {
+                <span class="tag-chip">
+                  {{ interesse }}
+                  <button class="tag-remove" type="button" (click)="removeInteresse(i)">
+                    <svg lucideX [size]="12" [strokeWidth]="2"></svg>
+                  </button>
+                </span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Preferências -->
+        <div class="modal-section mt-4">
+          <label class="modal-label">Preferências</label>
+          <p class="modal-hint">Adicione preferências adicionais sobre o aluno</p>
+
+          <textarea
+            class="form-control"
+            rows="4"
+            placeholder="Digite preferências adicionais..."
+            [(ngModel)]="preferenciaTexto"
+          ></textarea>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
+        <button class="btn btn-primary" type="button" (click)="save()">Salvar</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2 } from '@lucide/angular';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 
 export interface Aluno {
@@ -11,7 +11,7 @@ export interface Aluno {
   genero: string;
   fotoUrl?: string;
   originalData?: any;
-  status?: number; // 1 = ativo, 0 = inativo
+  status?: number; // 1 = ativo, 2 = inativo
 }
 
 @Component({
@@ -22,12 +22,12 @@ export interface Aluno {
 })
 export class CardAluno {
   @Input({ required: true }) aluno!: Aluno;
-  @Output() editar = new EventEmitter<Aluno>(); 
+  @Output() editar = new EventEmitter<Aluno>();
   @Output() excluir = new EventEmitter<Aluno>();
-  
+
   isOptionsMenuOpen = false;
 
-  constructor(private router: Router, private elementRef: ElementRef) {}
+  constructor(private router: Router, private elementRef: ElementRef) { }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
@@ -42,7 +42,7 @@ export class CardAluno {
 
   onEditarClick(event: Event) {
     event.stopPropagation();
-    this.editar.emit(this.aluno); 
+    this.editar.emit(this.aluno);
     this.closeOptionsMenu();
   }
 

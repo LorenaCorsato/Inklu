@@ -18,9 +18,11 @@ import {
   LucideFilter,
   LucideX,
   LucideCheck,
+  LucidePen,
 } from '@lucide/angular';
 import { Aluno } from '../card-aluno/card-aluno';
 import { ModalDocumento } from './modal-documento/modal-documento';
+import { ModalDadosAdicionais, DadosAdicionais } from './modal-dados-adicionais/modal-dados-adicionais';
 import { AlunoService } from '../aluno.service';
 
 export interface Arquivo {
@@ -42,15 +44,16 @@ export interface Arquivo {
     LucideGraduationCap,
     LucideAccessibility,
     LucideCalendar,
-    LucideTrendingUp,
     LucidePencil,
     LucideUserRoundX,
     LucideShare2,
     LucideFilePlus,
     LucideFilter,
+    LucidePen,
     LucideX,
     LucideCheck,
     ModalDocumento,
+    ModalDadosAdicionais,
   ],
   templateUrl: './detalhe-aluno.html',
   styleUrl: './detalhe-aluno.scss',
@@ -59,6 +62,9 @@ export class DetalheAluno {
   aluno: Aluno | null = null;
   isOptionsMenuOpen = false;
   isDocumentoModalOpen = false;
+  isDadosAdicionaisModalOpen = false;
+
+  dadosAdicionais: DadosAdicionais = { interesses: [], preferencias: '' };
 
   searchQuery = '';
   isFilterOpen = false;
@@ -104,11 +110,11 @@ export class DetalheAluno {
   private readonly onDocumentClick: (event: Event) => void;
 
   constructor(
-    private route: ActivatedRoute, 
-    private router: Router, 
+    private route: ActivatedRoute,
+    private router: Router,
     private elementRef: ElementRef,
     private alunoService: AlunoService,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef
 ) {
     this.onDocumentClick = (event: Event) => {
       if (this.isOptionsMenuOpen && !this.elementRef.nativeElement.contains(event.target)) {
@@ -120,23 +126,31 @@ export class DetalheAluno {
     };
   }
 
- alunoOriginal: any = null;
+  alunoOriginal: any = null;
   diagnosticosLista: Array<{diagnóstico?: string, diagnostico?: string, descricao: string}> = [];
+  interessesList: string[] = [];
+  preferenciasList: string[] = [];
   isLoading = true;
 
   ngOnInit() {
     document.addEventListener('click', this.onDocumentClick, true);
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id'); 
+      const id = params.get('id');
       if (id) {
         this.carregarAluno(id);
+      }
+    });
+
+    this.route.queryParamMap.subscribe(queryParams => {
+      if (queryParams.get('preencher') === 'true') {
+        this.isDadosAdicionaisModalOpen = true;
       }
     });
   }
 
 carregarAluno(id: string) {
     this.isLoading = true;
-    
+
     this.alunoService.buscarAlunoPorId(id).subscribe({
       next: (dados) => {
 
@@ -145,12 +159,29 @@ carregarAluno(id: string) {
 
         this.processarDiagnosticos(alunoDb.diagnostico);
 
+        try {
+          this.interessesList = alunoDb.interesses ? JSON.parse(alunoDb.interesses) : [];
+        } catch(e) { 
+          this.interessesList = []; 
+        }
+
+        if (alunoDb.preferencias) {
+           this.preferenciasList = alunoDb.preferencias.split('\n').filter((p: string) => p.trim() !== '');
+        } else {
+           this.preferenciasList = [];
+        }
+
+        this.dadosAdicionais = {
+           interesses: this.interessesList,
+           preferencias: alunoDb.preferencias || ''
+        };
+
         this.aluno = {
           id: alunoDb.id,
           nome: alunoDb.nome_completo ?? 'Sem nome',
-          ano: alunoDb.serie ?? 'Sem série',
-          deficiencia: this.diagnosticosLista.length > 0 
-            ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes') 
+          ano: alunoDb.turma ? `${alunoDb.turma.serie} ${alunoDb.turma.nome}` : 'Não informada',
+          deficiencia: this.diagnosticosLista.length > 0
+            ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes')
             : 'Não informado',
           genero: alunoDb.genero ?? 'Não informado',
           fotoUrl: alunoDb.fotoUrl ?? alunoDb.foto ?? undefined,
@@ -161,14 +192,14 @@ carregarAluno(id: string) {
 
 
         this.isLoading = false;
-        
-        this.cdr.detectChanges(); 
+
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao buscar aluno:', err);
         this.isLoading = false;
         alert('Erro ao carregar os dados do aluno.');
-        this.voltar(); 
+        this.voltar();
       }
     });
   }
@@ -199,10 +230,10 @@ carregarAluno(id: string) {
       this.diagnosticosLista = [];
       return;
     }
-    
+
     try {
-      this.diagnosticosLista = typeof diagnosticoDb === 'string' 
-        ? JSON.parse(diagnosticoDb) 
+      this.diagnosticosLista = typeof diagnosticoDb === 'string'
+        ? JSON.parse(diagnosticoDb)
         : diagnosticoDb;
     } catch (e) {
       console.error('Erro ao ler diagnósticos:', e);
@@ -263,7 +294,7 @@ carregarAluno(id: string) {
 
     const hoje = new Date();
     const nascimento = new Date(dataNascimento);
-    
+
     if (isNaN(nascimento.getTime())) return 'Data inválida';
 
     let idade = hoje.getFullYear() - nascimento.getFullYear();
@@ -284,9 +315,38 @@ carregarAluno(id: string) {
     this.isDocumentoModalOpen = false;
   }
 
-  onDocumentoSaved() {
+onDocumentoSaved() {
     if (this.aluno?.id) {
       this.carregarArquivos(this.aluno.id);
+    }
+  }
+
+  openDadosAdicionaisModal() {
+    this.isDadosAdicionaisModalOpen = true;
+  }
+
+  closeDadosAdicionaisModal() {
+    this.isDadosAdicionaisModalOpen = false;
+  }
+
+  onDadosAdicionaisSaved(dados: DadosAdicionais) {
+    this.dadosAdicionais = dados;
+    
+    if (this.aluno && this.aluno.id) {
+      const payload = {
+        interesses: JSON.stringify(dados.interesses),
+        preferencias: dados.preferencias
+      };
+      
+      this.alunoService.atualizarAluno(this.aluno.id, payload).subscribe({
+        next: () => {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (err) => {
+          console.error('Erro ao salvar dados adicionais:', err);
+          alert('Erro ao salvar dados adicionais.');
+        }
+      });
     }
   }
 

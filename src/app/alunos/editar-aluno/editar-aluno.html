@@ -17,46 +17,37 @@
       <!-- Nome Completo -->
       <div class="form-group">
         <label class="form-label">Nome Completo do Aluno</label>
-        <input
-          type="text"
-          class="form-input"
-          placeholder="Nome completo"
-          [(ngModel)]="form.nomeCompleto"
-        />
+        <input type="text" class="form-input" placeholder="Nome completo" [(ngModel)]="form.nomeCompleto" />
       </div>
 
       <!-- Foto -->
       <div class="form-group form-group-foto">
         <div class="foto-preview">
           @if (previewUrl) {
-            <img [src]="previewUrl" alt="Foto do aluno" class="foto-imagem" />
+          <img [src]="previewUrl" alt="Foto do aluno" class="foto-imagem" />
           } @else {
-            <div class="foto-placeholder">
-              <svg class="foto-placeholder-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
+          <div class="foto-placeholder">
+            <svg class="foto-placeholder-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
           }
         </div>
         <label class="btn-alterar-foto" for="foto-input-editar">
           Alterar Foto
         </label>
-        <input
-          type="file"
-          id="foto-input-editar"
-          accept="image/*"
-          class="hidden-input"
-          (change)="onFileChange($event)"
-        />
+        <input type="file" id="foto-input-editar" accept="image/*" class="hidden-input"
+          (change)="onFileChange($event)" />
       </div>
 
       <!-- Data de Nascimento & Gênero -->
       <div class="form-row">
         <div class="form-group form-group-half">
           <label class="form-label">Data de Nascimento</label>
-          <input
-            type="date"
-            class="form-input"
-            [(ngModel)]="form.dataNascimento"
-          />
+          <input type="date" class="form-input" [(ngModel)]="form.dataNascimento" />
         </div>
         <div class="form-group form-group-half">
           <label class="form-label">Gênero</label>
@@ -64,36 +55,23 @@
             <select class="form-select" [(ngModel)]="form.genero">
               <option value="" disabled selected>Selecione</option>
               @for (genero of generos; track genero.value) {
-                <option [value]="genero.value">{{ genero.label }}</option>
+              <option [value]="genero.value">{{ genero.label }}</option>
               }
             </select>
           </div>
         </div>
       </div>
 
-      <!-- Série / Ano & Turma / Sala -->
-      <div class="form-row">
-        <div class="form-group form-group-half">
-          <label class="form-label">Série / Ano</label>
-          <div class="select-wrapper">
-            <select class="form-select" [(ngModel)]="form.serieAno">
-              <option value="" disabled selected>Selecione</option>
-              @for (serie of series; track serie.value) {
-                <option [value]="serie.value">{{ serie.label }}</option>
-              }
-            </select>
-          </div>
-        </div>
-        <div class="form-group form-group-half">
-          <label class="form-label">Turma / Sala</label>
-          <div class="select-wrapper">
-            <select class="form-select" [(ngModel)]="form.turmaSala">
-              <option value="" disabled selected>Selecione</option>
-              @for (turma of turmas; track turma.value) {
-                <option [value]="turma.value">{{ turma.label }}</option>
-              }
-            </select>
-          </div>
+      <!-- Turma / Sala -->
+      <div class="form-group">
+        <label class="form-label">Turma / Sala</label>
+        <div class="select-wrapper">
+          <select class="form-select" [(ngModel)]="form.id_turma">
+            <option value="" disabled selected>Selecione</option>
+            @for (turma of turmas; track turma.id_turma) {
+            <option [value]="turma.id_turma">{{ turma.serie }} {{ turma.nome }} </option>
+            }
+          </select>
         </div>
       </div>
     </div>
@@ -102,75 +80,60 @@
     <div class="step-content card-step p-4 mb-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="step-title mb-0">Informações dos Responsáveis</h2>
-          @if (form.responsaveis.length < 2) {
-          <button type="button" class="btn btn-outline" style="border: 1px solid #ccc; padding: 5px 15px;" (click)="adicionarResponsavel()">
-            + Adicionar Responsável
+        @if (form.responsaveis.length < 2) { <button type="button" class="btn btn-outline"
+          style="border: 1px solid #ccc; padding: 5px 15px;" (click)="adicionarResponsavel()">
+          + Adicionar Responsável
           </button>
-        }
+          }
       </div>
 
       @for (resp of form.responsaveis; track $index; let i = $index) {
-        <div class="responsavel-block mb-4 p-3 border rounded position-relative">
-          
-          <div class="d-flex justify-content-between mb-3">
-            <h5 class="m-0 text-muted">Responsável {{ i + 1 }}</h5>
-            @if (form.responsaveis.length > 1) {
-              <button type="button" class="btn btn-ghost-icon p-0 text-danger" (click)="removerResponsavel(i)">
-                <svg lucideTrash2 [size]="20" stroke-width="2"></svg>
-              </button>
-            }
+      <div class="responsavel-block mb-4 p-3 border rounded position-relative">
+
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="m-0 text-muted">Responsável {{ i + 1 }}</h5>
+          @if (form.responsaveis.length > 1) {
+          <button type="button" class="btn btn-ghost-icon p-0 text-danger" (click)="removerResponsavel(i)">
+            <svg lucideTrash2 [size]="20" stroke-width="2"></svg>
+          </button>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">Nome do Responsável *</label>
+            <input type="text" class="form-input" placeholder="Nome completo" [(ngModel)]="form.responsaveis[i].nome" />
           </div>
 
-          <div class="form-row">
-            <div class="form-group form-group-half">
-              <label class="form-label">Nome do Responsável *</label>
-              <input
-                type="text"
-                class="form-input"
-                placeholder="Nome completo"
-                [(ngModel)]="form.responsaveis[i].nome"
-              />
-            </div>
-
-            <div class="form-group form-group-half">
-              <label class="form-label">Parentesco *</label>
-              <div class="select-wrapper">
-                <select class="form-select" [(ngModel)]="form.responsaveis[i].parentesco">
-                  <option value="" disabled selected>Selecione</option>
-                  <option value="Mãe">Mãe</option>
-                  <option value="Pai">Pai</option>
-                  <option value="Avó/Avô">Avó/Avô</option>
-                  <option value="Tia/Tio">Tia/Tio</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group form-group-half">
-              <label class="form-label">E-mail</label>
-              <input
-                type="email"
-                class="form-input"
-                placeholder="email@exemplo.com"
-                [(ngModel)]="form.responsaveis[i].email"
-              />
-            </div>
-
-            <div class="form-group form-group-half">
-              <label class="form-label">Telefone *</label>
-              <input
-                type="tel"
-                class="form-input"
-                placeholder="(00) 00000-0000"
-                [(ngModel)]="form.responsaveis[i].telefone"
-                (input)="aplicaMascaraTelefone($event, i)"
-                maxlength="15"
-              />
+          <div class="form-group form-group-half">
+            <label class="form-label">Parentesco *</label>
+            <div class="select-wrapper">
+              <select class="form-select" [(ngModel)]="form.responsaveis[i].parentesco">
+                <option value="" disabled selected>Selecione</option>
+                <option value="Mãe">Mãe</option>
+                <option value="Pai">Pai</option>
+                <option value="Avó/Avô">Avó/Avô</option>
+                <option value="Tia/Tio">Tia/Tio</option>
+                <option value="Outro">Outro</option>
+              </select>
             </div>
           </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">E-mail</label>
+            <input type="email" class="form-input" placeholder="email@exemplo.com"
+              [(ngModel)]="form.responsaveis[i].email" />
+          </div>
+
+          <div class="form-group form-group-half">
+            <label class="form-label">Telefone *</label>
+            <input type="tel" class="form-input" placeholder="(00) 00000-0000"
+              [(ngModel)]="form.responsaveis[i].telefone" (input)="aplicaMascaraTelefone($event, i)" maxlength="15" />
+          </div>
+        </div>
+      </div>
       }
     </div>
 
@@ -185,7 +148,7 @@
           <select class="form-select" (change)="onDiagnosticoSelect($event)">
             <option value="" disabled selected>Selecione um diagnóstico</option>
             @for (diag of availableDiagnosticos; track diag.value) {
-              <option [value]="diag.value">{{ diag.label }}</option>
+            <option [value]="diag.value">{{ diag.label }}</option>
             }
           </select>
         </div>
@@ -194,65 +157,44 @@
       <!-- Diagnosis Cards -->
       <div class="diagnosticos-list">
         @for (diag of form.diagnosticos; track diag.diagnostico; let i = $index) {
-          <div class="diagnostico-card">
-            <div class="diagnostico-card-header">
-              <h3 class="diagnostico-card-title">{{ getDiagnosticoLabel(diag.diagnostico) }}</h3>
-              <button
-                type="button"
-                class="btn-remove-diagnostico"
-                (click)="removeDiagnostico(i)"
-              >
-                <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
-              </button>
-            </div>
-            <div class="diagnostico-card-body">
-              <label class="form-label">Descrição</label>
-              <textarea
-                class="form-textarea"
-                placeholder="Descreva detalhadamente o diagnóstico e necessidades especiais do aluno..."
-                [value]="diag.descricao"
-                (input)="diag.descricao = $any($event.target).value; autoResize($event)"
-                rows="3"
-              ></textarea>
-            </div>
+        <div class="diagnostico-card">
+          <div class="diagnostico-card-header">
+            <h3 class="diagnostico-card-title">{{ getDiagnosticoLabel(diag.diagnostico) }}</h3>
+            <button type="button" class="btn-remove-diagnostico" (click)="removeDiagnostico(i)">
+              <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
+            </button>
           </div>
+          <div class="diagnostico-card-body">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-textarea"
+              placeholder="Descreva detalhadamente o diagnóstico e necessidades especiais do aluno..."
+              [value]="diag.descricao" (input)="diag.descricao = $any($event.target).value; autoResize($event)"
+              rows="3"></textarea>
+          </div>
+        </div>
         }
       </div>
 
       @if (form.diagnosticos.length === 0) {
-        <div class="empty-state">
-          <p class="text-muted mb-0">Nenhum diagnóstico adicionado. Selecione um diagnóstico acima para começar.</p>
-        </div>
+      <div class="empty-state">
+        <p class="text-muted mb-0">Nenhum diagnóstico adicionado. Selecione um diagnóstico acima para começar.</p>
+      </div>
       }
     </div>
 
     <!-- Botões de Ação -->
     <div class="step-actions d-flex justify-content-between mt-4">
-      <button
-        class="btn btn-cancelar"
-        type="button"
-        (click)="voltar()"
-      >
+      <button class="btn btn-cancelar" type="button" (click)="voltar()">
         Cancelar
       </button>
 
-      <button
-        class="btn btn-salvar"
-        type="button"
-        (click)="save()"
-        [disabled]="!isFormValid"
-        [style.opacity]="!isFormValid ? '0.5' : '1'"
-        [style.cursor]="!isFormValid ? 'not-allowed' : 'pointer'"
-      >
+      <button class="btn btn-salvar" type="button" (click)="save()" [disabled]="!isFormValid"
+        [style.opacity]="!isFormValid ? '0.5' : '1'" [style.cursor]="!isFormValid ? 'not-allowed' : 'pointer'">
         Salvar Alterações
       </button>
     </div>
   </div>
 
-  <app-modal-crop
-    [isOpen]="isCropModalOpen"
-    [imageSrc]="tempImageSrc"
-    (cropComplete)="onCropComplete($event)"
-    (closed)="onCropClosed()"
-  ></app-modal-crop>
+  <app-modal-crop [isOpen]="isCropModalOpen" [imageSrc]="tempImageSrc" (cropComplete)="onCropComplete($event)"
+    (closed)="onCropClosed()"></app-modal-crop>
 </div>
