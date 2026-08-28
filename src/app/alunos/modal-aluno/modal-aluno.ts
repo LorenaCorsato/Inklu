@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideX } from '@lucide/angular';
 import { ModalCrop } from '../modal-crop/modal-crop';
+import { TurmaService, Turma } from '../../turmas/turma.service';
 
 export interface AlunoForm {
   id?: any; // <--- Alterado para any
@@ -11,8 +12,7 @@ export interface AlunoForm {
   genero: string;
   nomeResponsavel: string;
   telefoneResponsavel: string;
-  serieAno: string;
-  turmaSala: string;
+  id_turma: string;
   diagnostico: string;
   status?: number; 
 }
@@ -23,7 +23,7 @@ export interface AlunoForm {
   templateUrl: './modal-aluno.html',
   styleUrl: './modal-aluno.scss',
 })
-export class ModalAluno implements OnChanges {
+export class ModalAluno implements OnChanges, OnInit {
   @Input() isOpen = false;
   @Input() alunoEdicao: any = null;
   @Output() closed = new EventEmitter<void>();
@@ -31,7 +31,17 @@ export class ModalAluno implements OnChanges {
 
   isEditMode = false;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef, private turmaService: TurmaService) {}
+
+  ngOnInit() {
+    this.turmaService.listarTurmas().subscribe({
+      next: (data) => {
+        this.turmas = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Erro ao buscar turmas', err)
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isOpen'] && this.isOpen) {
@@ -41,13 +51,12 @@ export class ModalAluno implements OnChanges {
           id: this.alunoEdicao.id, 
           nomeCompleto: this.alunoEdicao.nome,
           fotoUrl: this.alunoEdicao.fotoUrl || null,
-          serieAno: this.series.find(s => s.label === this.alunoEdicao.ano)?.value || '',
+          id_turma: this.alunoEdicao.id_turma || this.alunoEdicao.originalData?.id_turma || '',
           diagnostico: this.diagnosticos.find(d => d.label === this.alunoEdicao.deficiencia)?.value || '',
           genero: this.generos.find(g => g.label === this.alunoEdicao.genero)?.value || '',
           dataNascimento: this.alunoEdicao.originalData?.data_de_nascimento || '',
           nomeResponsavel: this.alunoEdicao.originalData?.nome_responsavel || '',
           telefoneResponsavel: this.alunoEdicao.originalData?.telefone_responsavel || '',
-          turmaSala: this.alunoEdicao.originalData?.turma || '',
           status: 1, 
           
         };
@@ -66,8 +75,7 @@ export class ModalAluno implements OnChanges {
       this.form.genero &&
       this.form.nomeResponsavel?.trim() &&
       this.form.telefoneResponsavel?.trim() &&
-      this.form.serieAno &&
-      this.form.turmaSala &&
+      this.form.id_turma &&
       this.form.diagnostico
     );
   }
@@ -78,22 +86,7 @@ export class ModalAluno implements OnChanges {
     { value: 'outro', label: 'Outro' },
   ];
 
-  series = [
-    { value: '6ano', label: '6º Ano' },
-    { value: '7ano', label: '7º Ano' },
-    { value: '8ano', label: '8º Ano' },
-    { value: '9ano', label: '9º Ano' },
-    { value: '1ano', label: '1º Ano' },
-    { value: '2ano', label: '2º Ano' },
-    { value: '3ano', label: '3º Ano' },
-  ];
-
-  turmas = [
-    { value: 'turma-a', label: 'Turma A' },
-    { value: 'turma-b', label: 'Turma B' },
-    { value: 'turma-c', label: 'Turma C' },
-    { value: 'turma-d', label: 'Turma D' },
-  ];
+  turmas: Turma[] = [];
 
   diagnosticos = [
     { value: 'tdah', label: 'TDAH (Transtorno do Déficit de Atenção com Hiperatividade)' },
@@ -113,8 +106,7 @@ export class ModalAluno implements OnChanges {
     genero: '',
     nomeResponsavel: '',
     telefoneResponsavel: '',
-    serieAno: '',
-    turmaSala: '',
+    id_turma: '',
     diagnostico: '',
   };
 
@@ -182,8 +174,7 @@ export class ModalAluno implements OnChanges {
       genero: '',
       nomeResponsavel: '',
       telefoneResponsavel: '',
-      serieAno: '',
-      turmaSala: '',
+      id_turma: '',
       diagnostico: '',
       status: 1,
     };

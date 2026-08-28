@@ -19,11 +19,14 @@ import {
   LucideFilter,
   LucideX,
   LucideCheck,
+  LucidePen,
+  LucideUserCheck,
 } from '@lucide/angular';
 import { Aluno } from '../card-aluno/card-aluno';
 import { ModalDocumento } from './modal-documento/modal-documento';
-import { AlunoService } from '../aluno.service';
+import { ModalDadosAdicionais, DadosAdicionais } from './modal-dados-adicionais/modal-dados-adicionais';
 import { ModalConfirmarExclusao } from '../modal-confirmar-exclusao/modal-confirmar-exclusao';
+import { AlunoService } from '../aluno.service';
 
 export interface Arquivo {
   data: string;
@@ -51,9 +54,12 @@ export interface Arquivo {
     LucideShare2,
     LucideFilePlus,
     LucideFilter,
+    LucidePen,
     LucideX,
     LucideCheck,
+    LucideUserCheck,
     ModalDocumento,
+    ModalDadosAdicionais,
     ModalConfirmarExclusao,
   ],
   templateUrl: './detalhe-aluno.html',
@@ -63,7 +69,10 @@ export class DetalheAluno {
   aluno: Aluno | null = null;
   isOptionsMenuOpen = false;
   isDocumentoModalOpen = false;
+  isDadosAdicionaisModalOpen = false;
   isConfirmModalOpen = false;
+
+  dadosAdicionais: DadosAdicionais = { interesses: [], preferencias: '' };
 
   searchQuery = '';
   isFilterOpen = false;
@@ -73,12 +82,7 @@ export class DetalheAluno {
 
   materias = ['Matemática', 'Artes', 'Português', 'Ciências'];
 
-  arquivos: Arquivo[] = [
-    { data: '2025-01-01', nome: 'Atividade_de_matematica', alteracao: 'Adição de jogos lúdicos para melhor entendimento', materia: 'Matemática' },
-    { data: '2025-01-01', nome: 'Atividade_de_desenhos_artes', alteracao: 'Adição de desenhos menos coloridos', materia: 'Artes' },
-    { data: '2025-01-01', nome: 'Atividade_portugues', alteracao: 'Remoção de cores', materia: 'Português' },
-    { data: '2025-01-01', nome: 'Atividade_de_ciencia', alteracao: 'Adaptação com dinossauros', materia: 'Ciências' },
-  ];
+  arquivos: Arquivo[] = [];
 
   get filteredArquivos(): Arquivo[] {
     return this.arquivos.filter(arquivo => {
@@ -114,12 +118,12 @@ export class DetalheAluno {
   private readonly onDocumentClick: (event: Event) => void;
 
   constructor(
-    private route: ActivatedRoute, 
-    private router: Router, 
+    private route: ActivatedRoute,
+    private router: Router,
     private elementRef: ElementRef,
     private alunoService: AlunoService,
-    private cdr: ChangeDetectorRef 
-) {
+    private cdr: ChangeDetectorRef
+  ) {
     this.onDocumentClick = (event: Event) => {
       if (this.isOptionsMenuOpen && !this.elementRef.nativeElement.contains(event.target)) {
         this.isOptionsMenuOpen = false;
@@ -130,54 +134,99 @@ export class DetalheAluno {
     };
   }
 
- alunoOriginal: any = null;
+  alunoOriginal: any = null;
   diagnosticosLista: Array<{diagnóstico?: string, diagnostico?: string, descricao: string}> = [];
+  interessesList: string[] = [];
+  preferenciasList: string[] = [];
   isLoading = true;
 
   ngOnInit() {
     document.addEventListener('click', this.onDocumentClick, true);
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id'); 
+      const id = params.get('id');
       if (id) {
         this.carregarAluno(id);
       }
     });
+
+    this.route.queryParamMap.subscribe(queryParams => {
+      if (queryParams.get('preencher') === 'true') {
+        this.isDadosAdicionaisModalOpen = true;
+      }
+    });
   }
 
-carregarAluno(id: string) {
+  carregarAluno(id: string) {
     this.isLoading = true;
-    
+
     this.alunoService.buscarAlunoPorId(id).subscribe({
       next: (dados) => {
-
         const alunoDb = Array.isArray(dados) ? dados[0] : dados;
         this.alunoOriginal = alunoDb;
 
         this.processarDiagnosticos(alunoDb.diagnostico);
 
+        try {
+          this.interessesList = alunoDb.interesses ? JSON.parse(alunoDb.interesses) : [];
+        } catch(e) { 
+          this.interessesList = []; 
+        }
+
+        if (alunoDb.preferencias) {
+           this.preferenciasList = alunoDb.preferencias.split('\n').filter((p: string) => p.trim() !== '');
+        } else {
+           this.preferenciasList = [];
+        }
+
+        this.dadosAdicionais = {
+           interesses: this.interessesList,
+           preferencias: alunoDb.preferencias || ''
+        };
+
         this.aluno = {
           id: alunoDb.id,
           nome: alunoDb.nome_completo ?? 'Sem nome',
-          ano: alunoDb.serie ?? 'Sem série',
-          deficiencia: this.diagnosticosLista.length > 0 
-            ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes') 
+          ano: alunoDb.turma ? `${alunoDb.turma.serie} ${alunoDb.turma.nome}` : 'Não informada',
+          deficiencia: this.diagnosticosLista.length > 0
+            ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || 'Ver detalhes')
             : 'Não informado',
           genero: alunoDb.genero ?? 'Não informado',
           fotoUrl: alunoDb.fotoUrl ?? alunoDb.foto ?? undefined,
           originalData: alunoDb
         };
 
+        this.carregarArquivos(alunoDb.id);
 
         this.isLoading = false;
-        
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao buscar aluno:', err);
         this.isLoading = false;
         alert('Erro ao carregar os dados do aluno.');
-        this.voltar(); 
+        this.voltar();
       }
+    });
+  }
+
+  carregarArquivos(alunoId: string | number) {
+    this.alunoService.listarArquivosPorAluno(alunoId).subscribe({
+      next: (materiais) => {
+        this.arquivos = materiais
+          .map(material => ({
+            data: material.data_de_upload ?? material.data_upload,
+            nome: material.nome_do_arquivo ?? material.nome_arquivo,
+            alteracao: material.tipo_de_material ?? material.tipo_material ?? 'Original',
+            materia: material.nome_materia ?? 'Sem matéria',
+          }))
+          .sort((first, second) => new Date(second.data).getTime() - new Date(first.data).getTime());
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erro ao carregar arquivos:', error);
+        this.arquivos = [];
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -186,16 +235,17 @@ carregarAluno(id: string) {
       this.diagnosticosLista = [];
       return;
     }
-    
+
     try {
-      this.diagnosticosLista = typeof diagnosticoDb === 'string' 
-        ? JSON.parse(diagnosticoDb) 
+      this.diagnosticosLista = typeof diagnosticoDb === 'string'
+        ? JSON.parse(diagnosticoDb)
         : diagnosticoDb;
     } catch (e) {
       console.error('Erro ao ler diagnósticos:', e);
       this.diagnosticosLista = [];
     }
   }
+
   ngOnDestroy() {
     document.removeEventListener('click', this.onDocumentClick, true);
   }
@@ -214,12 +264,14 @@ carregarAluno(id: string) {
   }
 
   editarAluno() {
+    this.closeOptionsMenu();
     if (this.aluno?.id !== undefined && this.aluno.id !== null) {
       this.router.navigate(['/alunos', this.aluno.id, 'editar']);
     }
   }
 
   inativarAluno() {
+    this.closeOptionsMenu();
     if (!this.aluno?.id) return;
 
     const deveMostrarModal = localStorage.getItem('naoMostrarModalExclusao') !== 'true';
@@ -230,11 +282,28 @@ carregarAluno(id: string) {
     }
   }
 
-  confirmarInativacao(naoMostrarNovamente: boolean) {
+  ativarAluno() {
+    this.closeOptionsMenu();
+    if (this.aluno) {
+      this.isLoading = true;
+      this.alunoService.atualizarAluno(this.aluno.id, { status: 1 }).subscribe({
+        next: () => {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (erro) => {
+          console.error('Erro ao ativar aluno:', erro);
+          alert('Falha ao ativar o aluno.');
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+      });
+    }
+  }
+
+  onConfirmarExclusao(naoMostrarNovamente: boolean) {
     if (naoMostrarNovamente) {
       localStorage.setItem('naoMostrarModalExclusao', 'true');
     }
-
     this.fecharModalConfirmacao();
     this.executarInativacao();
   }
@@ -245,7 +314,8 @@ carregarAluno(id: string) {
 
   private executarInativacao() {
     if (!this.aluno?.id) return;
-
+    this.isLoading = true;
+    
     this.alunoService.excluirAluno(this.aluno.id).subscribe({
       next: () => {
         alert('Aluno inativado com sucesso!');
@@ -254,6 +324,8 @@ carregarAluno(id: string) {
       error: (erro) => {
         console.error('Erro ao inativar aluno:', erro);
         alert('Falha ao inativar o aluno.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -291,6 +363,24 @@ carregarAluno(id: string) {
     return d.toLocaleDateString('pt-BR');
   }
 
+  calcularIdade(dataNascimento: string | null | undefined): string {
+    if (!dataNascimento) return 'Não informada';
+
+    const hoje = new Date();
+    const nascimento = new Date(dataNascimento);
+
+    if (isNaN(nascimento.getTime())) return 'Data inválida';
+
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const diferencaMeses = hoje.getMonth() - nascimento.getMonth();
+
+    if (diferencaMeses < 0 || (diferencaMeses === 0 && hoje.getDate() < nascimento.getDate())) {
+      idade--;
+    }
+
+    return `${idade} anos`;
+  }
+
   openDocumentoModal() {
     this.isDocumentoModalOpen = true;
   }
@@ -299,4 +389,38 @@ carregarAluno(id: string) {
     this.isDocumentoModalOpen = false;
   }
 
+  onDocumentoSaved() {
+    if (this.aluno?.id) {
+      this.carregarArquivos(this.aluno.id);
+    }
+  }
+
+  openDadosAdicionaisModal() {
+    this.isDadosAdicionaisModalOpen = true;
+  }
+
+  closeDadosAdicionaisModal() {
+    this.isDadosAdicionaisModalOpen = false;
+  }
+
+  onDadosAdicionaisSaved(dados: DadosAdicionais) {
+    this.dadosAdicionais = dados;
+    
+    if (this.aluno && this.aluno.id) {
+      const payload = {
+        interesses: JSON.stringify(dados.interesses),
+        preferencias: dados.preferencias
+      };
+      
+      this.alunoService.atualizarAluno(this.aluno.id, payload).subscribe({
+        next: () => {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (err) => {
+          console.error('Erro ao salvar dados adicionais:', err);
+          alert('Erro ao salvar dados adicionais.');
+        }
+      });
+    }
+  }
 }

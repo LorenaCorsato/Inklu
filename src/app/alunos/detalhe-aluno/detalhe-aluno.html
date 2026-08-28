@@ -32,6 +32,10 @@
         <h1 class="detalhe-title fw-bold mb-0">{{ aluno.nome }}</h1>
       </div>
       <div class="detalhe-actions d-flex gap-2">
+        <button class="btn btn-warning" type="button" (click)="openDadosAdicionaisModal()">
+          <svg lucidePen [size]="16" [strokeWidth]="2"></svg>
+          Inserir Dados Adicionais
+        </button>
         <button class="btn btn-success p-x-2 d-flex align-items-center gap-2" type="button" (click)="openDocumentoModal()">
             <svg lucideFilePlus [size]="16" [strokeWidth]="2"></svg>
           Adicionar Documento
@@ -56,10 +60,17 @@
               <svg lucidePencil class="dropdown-item-icon"></svg>
               Editar
             </button>
-            <button class="dropdown-item" type="button" (click)="inativarAluno(); closeOptionsMenu()">
-              <svg lucideUserRoundX class="dropdown-item-icon"></svg>
-              Inativar
-            </button>
+            @if (aluno.originalData?.status === 2) {
+              <button class="dropdown-item" type="button" (click)="ativarAluno(); closeOptionsMenu()">
+                <svg lucideUserCheck class="dropdown-item-icon"></svg>
+                Ativar
+              </button>
+            } @else {
+              <button class="dropdown-item" type="button" (click)="inativarAluno(); closeOptionsMenu()">
+                <svg lucideUserRoundX class="dropdown-item-icon"></svg>
+                Inativar
+              </button>
+            }
             <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
               <svg lucideShare2 class="dropdown-item-icon"></svg>
               Compartilhar
@@ -73,7 +84,7 @@
 
   <!-- Main Content -->
   <div class="detalhe-content p-3">
-    
+
     <!-- Stats Cards -->
     <div class="detalhe-stats-grid mb-3">
       <div class="detalhe-stat-card">
@@ -90,13 +101,13 @@
         </div>
         <span class="detalhe-stat-value">{{ aluno.deficiencia }}</span>
       </div>
-      <div class="detalhe-stat-card">
+        <div class="detalhe-stat-card">
         <div class="detalhe-stat-header d-flex justify-content-between align-items-center">
-          <span class="detalhe-stat-label">Nascimento</span>
+          <span class="detalhe-stat-label">Idade</span>
           <svg lucideCalendar></svg>
         </div>
         <span class="detalhe-stat-value text-truncate" style="font-size: 1.1rem;">
-          {{ alunoOriginal?.data_de_nascimento ? (alunoOriginal?.data_de_nascimento | date:'dd/MM/yyyy') : 'Não informada' }}
+          {{ calcularIdade(alunoOriginal?.data_de_nascimento) }}
         </span>
       </div>
       <div class="detalhe-stat-card">
@@ -110,19 +121,21 @@
 
     <!-- Two Column Layout -->
     <div class="detalhe-info-columns mb-3">
-      
+
       <!-- Left Column: Dados Escolares -->
       <div class="detalhe-card">
         <span class="detalhe-card-fieldset-label">Dados Escolares</span>
         <div class="detalhe-card-body">
-          
-          <!-- Preferências -->
+
+          <!-- Interesses -->
           <div class="detalhe-section mb-3">
-            <h3 class="detalhe-section-title">Preferências</h3>
+            <h3 class="detalhe-section-title">Interesses</h3>
             <div class="detalhe-tags d-flex flex-wrap gap-2">
-              <span class="detalhe-tag">Dinossauros</span>
-              <span class="detalhe-tag">Música POP</span>
-              <span class="detalhe-tag">Desenhos animados</span>
+              @for (interesse of interessesList; track interesse) {
+                <span class="detalhe-tag">{{ interesse }}</span>
+              } @empty {
+                <span class="text-muted small">Nenhum interesse registrado.</span>
+              }
             </div>
           </div>
 
@@ -147,13 +160,15 @@
             </div>
           </div>
 
-          <!-- Informações -->
+          <!-- Preferências -->
           <div class="detalhe-section">
-            <h3 class="detalhe-section-title">Informações</h3>
+            <h3 class="detalhe-section-title">Preferências</h3>
             <ul class="detalhe-info-list">
-              <li>Utilizar jogos com música para aplicar atividades</li>
-              <li>Gosta do caderno com dinossauros</li>
-              <li>Não utilizar desenhos com muitas cores</li>
+              @for (pref of preferenciasList; track pref) {
+                <li>{{ pref }}</li>
+              } @empty {
+                <li class="text-muted small" style="list-style-type: none; padding-left: 0;">Nenhuma preferência registrada.</li>
+              }
             </ul>
           </div>
 
@@ -165,13 +180,21 @@
         <span class="detalhe-card-fieldset-label">Dados dos Responsáveis</span>
         <div class="detalhe-card-body">
           <div class="detalhe-responsaveis-list d-flex flex-column gap-3">
-            
-            <!-- Responsável Cadastrado -->
-            <div class="detalhe-responsavel-card">
-              <span class="detalhe-responsavel-label">Responsável Principal</span>
-              <h4 class="detalhe-responsavel-nome">{{ alunoOriginal?.nome_responsavel || 'Não informado' }}</h4>
-              <p class="detalhe-responsavel-contato">{{ alunoOriginal?.telefone_responsavel || 'Sem telefone' }}</p>
-            </div>
+
+            @for (resp of alunoOriginal?.responsaveis; track resp) {
+              <div class="detalhe-responsavel-card">
+                <span class="detalhe-responsavel-label text-primary fw-bold">{{ resp.parentesco || 'Responsável' }}</span>
+                <h4 class="detalhe-responsavel-nome">{{ resp.nome }}</h4>
+                @if (resp.telefone) {
+                  <p class="detalhe-responsavel-contato mb-1">{{ resp.telefone }}</p>
+                }
+                @if (resp.email) {
+                  <p class="detalhe-responsavel-contato mb-0">{{ resp.email }}</p>
+                }
+              </div>
+            } @empty {
+              <p class="text-muted small">Nenhum responsável cadastrado.</p>
+            }
 
           </div>
         </div>
@@ -184,7 +207,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
         <div class="arquivos-toolbar d-flex align-items-center gap-2">
-          
+
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
@@ -207,7 +230,7 @@
 
             @if (isFilterOpen) {
               <div class="filter-menu">
-                
+
                 <!-- Materias -->
                 <div class="filter-section">
                   <span class="filter-section-label">Matérias</span>
@@ -305,11 +328,24 @@
   </div>
   }
 
-  <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />
+  <app-modal-documento
+    [isOpen]="isDocumentoModalOpen"
+    [alunoId]="aluno?.id"
+    (closed)="closeDocumentoModal()"
+    (saved)="onDocumentoSaved()">
+  </app-modal-documento>
+
+  <app-modal-dados-adicionais
+    [isOpen]="isDadosAdicionaisModalOpen"
+    [dadosIniciais]="dadosAdicionais"
+    (closed)="closeDadosAdicionaisModal()"
+    (saved)="onDadosAdicionaisSaved($event)">
+  </app-modal-dados-adicionais>
+
   <app-modal-confirmar-exclusao
     [isOpen]="isConfirmModalOpen"
     [alunoNome]="aluno?.nome || ''"
-    (confirmed)="confirmarInativacao($event)"
-    (closed)="fecharModalConfirmacao()"
-  />
+    (confirmed)="onConfirmarExclusao($event)"
+    (closed)="fecharModalConfirmacao()">
+  </app-modal-confirmar-exclusao>
 </div>

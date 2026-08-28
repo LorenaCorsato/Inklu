@@ -4,10 +4,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LucideArrowLeft, LucideTrash2 } from '@lucide/angular';
 import { ModalCrop } from '../modal-crop/modal-crop';
 import { AlunoService } from '../aluno.service';
+import { TurmaService, Turma } from '../../turmas/turma.service';
 
 export interface DiagnosticoItem {
   diagnostico: string;
   descricao: string;
+}
+
+export interface ResponsavelItem {
+  id?: string;
+  nome: string;
+  parentesco: string;
+  email: string;
+  telefone: string;
 }
 
 export interface AlunoForm {
@@ -15,11 +24,9 @@ export interface AlunoForm {
   fotoUrl: string | null;
   dataNascimento: string;
   genero: string;
-  nomeResponsavel: string;
-  telefoneResponsavel: string;
-  serieAno: string;
-  turmaSala: string;
+  id_turma: string;
   diagnosticos: DiagnosticoItem[];
+  responsaveis: ResponsavelItem[];
 }
 
 @Component({
@@ -38,24 +45,7 @@ export class EditarAluno implements OnInit {
     { value: 'outro', label: 'Outro' },
   ];
 
-  series = [
-    { value: '1ano', label: '1º Ano' },
-    { value: '2ano', label: '2º Ano' },
-    { value: '3ano', label: '3º Ano' },
-    { value: '4ano', label: '4º Ano' },
-    { value: '5ano', label: '5º Ano' },
-    { value: '6ano', label: '6º Ano' },
-    { value: '7ano', label: '7º Ano' },
-    { value: '8ano', label: '8º Ano' },
-    { value: '9ano', label: '9º Ano' },
-  ];
-
-  turmas = [
-    { value: 'turma-a', label: 'Turma A' },
-    { value: 'turma-b', label: 'Turma B' },
-    { value: 'turma-c', label: 'Turma C' },
-    { value: 'turma-d', label: 'Turma D' },
-  ];
+  turmas: Turma[] = [];
 
   diagnosticos = [
     { value: 'tdah', label: 'TDAH (Transtorno do Déficit de Atenção com Hiperatividade)' },
@@ -72,11 +62,9 @@ export class EditarAluno implements OnInit {
     fotoUrl: null,
     dataNascimento: '',
     genero: '',
-    nomeResponsavel: '',
-    telefoneResponsavel: '',
-    serieAno: '',
-    turmaSala: '',
+    id_turma: '',
     diagnosticos: [],
+    responsaveis: [],
   };
 
   previewUrl: string | null = null;
@@ -87,10 +75,19 @@ export class EditarAluno implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private route: ActivatedRoute,
-    private alunoService: AlunoService
+    private alunoService: AlunoService,
+    private turmaService: TurmaService
   ) {}
 
   ngOnInit() {
+    this.turmaService.listarTurmas().subscribe({
+      next: (data) => {
+        this.turmas = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Erro ao buscar turmas', err)
+    });
+
     this.route.paramMap.subscribe(params => {
       this.alunoId = params.get('id');
       if (this.alunoId) {
@@ -123,9 +120,23 @@ export class EditarAluno implements OnInit {
     this.form.nomeCompleto = aluno.nome_completo || '';
     this.form.dataNascimento = aluno.data_de_nascimento || '';
     this.form.genero = this.getGeneroValue(aluno.genero) || '';
-    this.form.serieAno = this.getSerieValue(aluno.serie) || '';
+    this.form.id_turma = aluno.id_turma || '';
     this.form.fotoUrl = aluno.foto || null;
     this.previewUrl = aluno.fotoUrl ?? aluno.foto ?? null;
+
+    // Popula Responsáveis (Baseado no Join do backend)
+    if (aluno.responsaveis && aluno.responsaveis.length > 0) {
+      this.form.responsaveis = aluno.responsaveis.map((r: any) => ({
+        id: r.id,
+        nome: r.nome,
+        parentesco: r.parentesco,
+        email: r.email,
+        telefone: r.telefone
+      }));
+    } else {
+      // Fallback para 1 vazio se não vier do banco
+      this.form.responsaveis = [{ nome: '', parentesco: '', email: '', telefone: '' }];
+    }
 
     if (aluno.diagnostico) {
       try {
@@ -151,13 +162,44 @@ export class EditarAluno implements OnInit {
       this.form.nomeCompleto?.trim() &&
       this.form.dataNascimento &&
       this.form.genero &&
-      this.form.nomeResponsavel?.trim() &&
-      this.form.telefoneResponsavel?.trim() &&
-      this.form.serieAno &&
-      this.form.turmaSala &&
+      this.form.id_turma &&
+      this.form.responsaveis.every(r => r.nome?.trim() && r.parentesco && r.telefone?.trim()) &&
       this.form.diagnosticos.length > 0
     );
   }
+
+  // --- MÉTODOS DE RESPONSÁVEIS ---
+  adicionarResponsavel() {
+    if (this.form.responsaveis.length < 2) {
+      this.form.responsaveis.push({ nome: '', parentesco: '', email: '', telefone: '' });
+    }
+  }
+
+  removerResponsavel(index: number) {
+    if (this.form.responsaveis.length > 1) {
+      this.form.responsaveis.splice(index, 1);
+    }
+  }
+
+  aplicaMascaraTelefone(event: any, index: number) {
+    let valor = event.target.value.replace(/\D/g, '');
+    if (valor.length > 11) {
+      valor = valor.substring(0, 11);
+    }
+
+    let formato = valor;
+    if (valor.length > 2 && valor.length <= 6) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
+    } else if (valor.length > 6 && valor.length <= 10) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
+    } else if (valor.length === 11) {
+      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
+    }
+
+    event.target.value = formato;
+    this.form.responsaveis[index].telefone = formato;
+  }
+  // ------------------------------
 
   get availableDiagnosticos() {
     const usedValues = this.form.diagnosticos.map(d => d.diagnostico);
@@ -214,10 +256,11 @@ export class EditarAluno implements OnInit {
       nome_completo: this.form.nomeCompleto,
       data_de_nascimento: this.form.dataNascimento || undefined,
       genero: this.getGeneroLabel(this.form.genero),
-      serie: this.getSerieLabel(this.form.serieAno),
+      id_turma: this.form.id_turma,
       diagnostico: diagnosticosFormatados,
       descricao_diagnostico: JSON.stringify(diagnosticosFormatados),
       foto: this.form.fotoUrl || undefined,
+      responsaveis: this.form.responsaveis
     };
 
     this.alunoService.atualizarAluno(this.alunoId, payloadBanco).subscribe({
@@ -261,35 +304,10 @@ export class EditarAluno implements OnInit {
     textarea.style.height = textarea.scrollHeight + 'px';
   }
 
-  aplicaMascaraTelefone(event: any) {
-    let valor = event.target.value.replace(/\D/g, '');
-    if (valor.length > 11) {
-      valor = valor.substring(0, 11);
-    }
-
-    let formato = valor;
-    if (valor.length > 2 && valor.length <= 6) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
-    } else if (valor.length > 6 && valor.length <= 10) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}`;
-    } else if (valor.length === 11) {
-      formato = `(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}`;
-    }
-
-    event.target.value = formato;
-    this.form.telefoneResponsavel = formato;
-  }
-
   private getGeneroValue(label: string): string {
     if (!label) return '';
     const genero = this.generos.find(g => g.label.toLowerCase() === label.toLowerCase());
     return genero?.value || '';
-  }
-
-  private getSerieValue(label: string): string {
-    if (!label) return '';
-    const serie = this.series.find(s => s.label === label);
-    return serie?.value || '';
   }
 
   private getDiagnosticoValue(label: string): string {
@@ -300,10 +318,6 @@ export class EditarAluno implements OnInit {
 
   private getGeneroLabel(value: string): string {
     return this.generos.find((g) => g.value === value)?.label || '';
-  }
-
-  private getSerieLabel(value: string): string {
-    return this.series.find((s) => s.value === value)?.label || '';
   }
 
   getDiagnosticoLabel(value: string): string {

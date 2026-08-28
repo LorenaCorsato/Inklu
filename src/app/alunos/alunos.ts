@@ -18,6 +18,7 @@ import { ModalConfirmarExclusao } from './modal-confirmar-exclusao/modal-confirm
 export class Alunos implements OnInit {
   searchTerm = '';
   viewMode: 'grid' | 'list' = 'grid';
+  activeTab: 'ativos' | 'inativos' = 'ativos';
   alunos: Aluno[] = [];
   
   isModalOpen = false;
@@ -65,17 +66,20 @@ formatarDiagnostico(diagnosticoDb: any): string {
     }
   }
   get filteredAlunos(): Aluno[] {
-    if (!this.searchTerm.trim()) {
-      return this.alunos;
+    const statusFilter = this.activeTab === 'ativos' ? 1 : 2;
+    let alunosFiltrados = this.alunos.filter((aluno) => aluno.status === statusFilter);
+
+    if (this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase();
+      alunosFiltrados = alunosFiltrados.filter(
+        (aluno) =>
+          aluno.nome.toLowerCase().includes(term) ||
+          aluno.ano.toLowerCase().includes(term) ||
+          aluno.deficiencia.toLowerCase().includes(term)
+      );
     }
 
-    const term = this.searchTerm.toLowerCase();
-    return this.alunos.filter(
-      (aluno) =>
-        aluno.nome.toLowerCase().includes(term) ||
-        aluno.ano.toLowerCase().includes(term) ||
-        aluno.deficiencia.toLowerCase().includes(term)
-    );
+    return alunosFiltrados;
   }
 
   // --- MUDANÇA DA BRANCH DEV AQUI ---
@@ -121,7 +125,7 @@ formatarDiagnostico(diagnosticoDb: any): string {
       nome_completo: alunoForm.nomeCompleto,
       data_de_nascimento: alunoForm.dataNascimento ? alunoForm.dataNascimento : undefined,
       genero: this.getGeneroLabel(alunoForm.genero),
-      serie: this.getSerieLabel(alunoForm.serieAno),
+      id_turma: alunoForm.id_turma,
       diagnostico: this.getDiagnosticoLabel(alunoForm.diagnostico),
       foto: alunoForm.fotoUrl || undefined,
       status: alunoForm.status ?? 1   
@@ -179,6 +183,21 @@ formatarDiagnostico(diagnosticoDb: any): string {
     this.fecharModalConfirmacao();
   }
 
+  onAtivarAluno(aluno: Aluno) {
+    this.isLoading = true;
+    this.alunoService.atualizarAluno(aluno.id, { status: 1 }).subscribe({
+      next: () => {
+        this.carregarAlunos();
+      },
+      error: (erro) => {
+        console.error('Erro ao ativar aluno:', erro);
+        alert('Falha ao ativar o aluno.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   fecharModalConfirmacao() {
     this.isConfirmModalOpen = false;
     this.alunoParaExcluir = null;
@@ -204,6 +223,10 @@ formatarDiagnostico(diagnosticoDb: any): string {
     this.viewMode = mode;
   }
 
+  setActiveTab(tab: 'ativos' | 'inativos') {
+    this.activeTab = tab;
+  }
+
   onSearchChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.searchTerm = target.value;
@@ -213,16 +236,13 @@ formatarDiagnostico(diagnosticoDb: any): string {
     return {
       id: alunoBanco.id, 
       nome: alunoBanco.nome_completo ?? 'Aluno sem nome',
-      ano: alunoBanco.serie ?? 'Sem série',
-    deficiencia: this.formatarDiagnostico(alunoBanco.diagnostico),
+      ano: alunoBanco.turma ? `${alunoBanco.turma.serie} ${alunoBanco.turma.nome}` : 'Não informada',
+      deficiencia: this.formatarDiagnostico(alunoBanco.diagnostico),
       genero: alunoBanco.genero ?? 'Não informado',
       fotoUrl: alunoBanco.fotoUrl ?? alunoBanco.foto ?? undefined,
       originalData: alunoBanco,
+      status: alunoBanco.status ?? 1,
     };
-  }
-
-  private getSerieLabel(value: string): string {
-    return this.series.find((s) => s.value === value)?.label || '';
   }
 
   private getDiagnosticoLabel(value: string): string {
@@ -232,18 +252,6 @@ formatarDiagnostico(diagnosticoDb: any): string {
   private getGeneroLabel(value: string): string {
     return this.generos.find((g) => g.value === value)?.label || '';
   }
-
-  private series = [
-    { value: '1ano', label: '1º Ano' },
-    { value: '2ano', label: '2º Ano' },
-    { value: '3ano', label: '3º Ano' },
-    { value: '4ano', label: '4º Ano' },
-    { value: '5ano', label: '5º Ano' },
-    { value: '6ano', label: '6º Ano' },
-    { value: '7ano', label: '7º Ano' },
-    { value: '8ano', label: '8º Ano' },
-    { value: '9ano', label: '9º Ano' },
-  ];
 
   private diagnosticos = [
     { value: 'tdah', label: 'TDAH (Transtorno do Déficit de Atenção com Hiperatividade)' },

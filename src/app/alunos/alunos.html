@@ -13,6 +13,17 @@
     </button>
   </div>
 
+  <div class="mb-2">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'ativos'" aria-current="page" href="#" (click)="setActiveTab('ativos'); $event.preventDefault()">Ativos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'inativos'" href="#" (click)="setActiveTab('inativos'); $event.preventDefault()">Inativos</a>
+      </li>
+    </ul>
+  </div>
+
   <!-- Search Bar + View Toggle -->
   <div class="search-toolbar mb-3 d-flex align-items-center gap-2">
     <div class="search-wrapper flex-grow-1">
@@ -62,7 +73,8 @@
         <app-card-aluno
           [aluno]="aluno"
           (editar)="abrirModalEdicao($event)"
-          (excluir)="onExcluirAluno($event)">
+          (excluir)="onExcluirAluno($event)"
+          (ativar)="onAtivarAluno($event)">
         </app-card-aluno>
       }
     </div>

@@ -19,6 +19,9 @@ export interface Aluno {
   preferencias?: string;
   interesses?: string;
   estrategias_de_ensino?: string;
+  status?: number; // 1 = ativo, 0 = inativo
+  id_turma?: string;
+  turma?: any;
   descricao_diagnostico?: string;
 }
 
@@ -47,5 +50,10 @@ export class AlunoService {
   }
 
   buscarAlunoPorId(id: string) {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);  }
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  listarArquivosPorAluno(alunoId: string | number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3000/api/arquivos/alunos/${alunoId}`);
+  }
 }
