@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
   LucideX,
   LucideUploadCloud,
@@ -12,6 +13,7 @@ export interface DocumentoFile {
   name: string;
   size: number;
   type: string;
+  data: string;
   progress: number;
   status: 'uploading' | 'done' | 'error';
 }
@@ -33,12 +35,17 @@ const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.docx'];
 })
 export class ModalDocumento {
   @Input() isOpen = false;
+  @Input() alunoId: number | string | null | undefined;
   @Output() closed = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<void>();
 
   files: DocumentoFile[] = [];
   isDragOver = false;
   maxFileSize = 1024 * 1024 * 1024; // 1 GB
   errorMessage: string | null = null;
+  isSaving = false;
+
+  constructor(private http: HttpClient) {}
 
   onBackdropClick(event: MouseEvent) {
     if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
@@ -47,6 +54,7 @@ export class ModalDocumento {
   }
 
   close() {
+    if (this.isSaving) return;
     this.files = [];
     this.closed.emit();
   }
@@ -101,11 +109,12 @@ export class ModalDocumento {
         name: file.name,
         size: file.size,
         type: file.type,
+        data: '',
         progress: 0,
         status: 'uploading',
       };
       this.files.push(docFile);
-      this.simulateUpload(docFile);
+      this.readFile(docFile, file);
     }
 
     if (invalidFiles.length > 0) {
@@ -123,15 +132,58 @@ export class ModalDocumento {
     this.errorMessage = null;
   }
 
-  private simulateUpload(file: DocumentoFile) {
-    const interval = setInterval(() => {
-      file.progress += Math.random() * 15 + 5;
-      if (file.progress >= 100) {
-        file.progress = 100;
-        file.status = 'done';
-        clearInterval(interval);
-      }
-    }, 200);
+  private readFile(documento: DocumentoFile, file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      documento.data = reader.result as string;
+      documento.progress = 100;
+      documento.status = 'done';
+    };
+    reader.onerror = () => {
+      documento.status = 'error';
+      this.errorMessage = `Não foi possível ler o arquivo ${file.name}.`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  save() {
+    if (this.isSaving) return;
+
+    if (!this.alunoId) {
+      this.errorMessage = 'Aluno não identificado.';
+      return;
+    }
+
+    const filesToSave = this.files.filter(file => file.status === 'done' && file.data);
+    if (filesToSave.length === 0) {
+      this.errorMessage = 'Aguarde o carregamento dos arquivos.';
+      return;
+    }
+
+    this.isSaving = true;
+    let savedCount = 0;
+    filesToSave.forEach(file => {
+      this.http.post(`http://localhost:3000/api/arquivos/alunos/${this.alunoId}`, {
+        nomeArquivo: file.name,
+        tipoArquivo: file.type || 'application/octet-stream',
+        arquivo: file.data,
+      }).subscribe({
+        next: () => {
+          savedCount++;
+          if (savedCount === filesToSave.length) {
+            this.isSaving = false;
+            alert('Documentos salvos com sucesso!');
+            this.saved.emit();
+            this.close();
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao salvar documento:', error);
+          this.isSaving = false;
+          this.errorMessage = `Não foi possível salvar ${file.name}.`;
+        },
+      });
+    });
   }
 
   removeFile(index: number) {

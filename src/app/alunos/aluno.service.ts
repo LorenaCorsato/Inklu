@@ -45,4 +45,8 @@ export class AlunoService {
 
   buscarAlunoPorId(id: string) {
     return this.http.get<any>(`${this.apiUrl}/${id}`);  }
+
+  listarArquivosPorAluno(alunoId: string | number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3000/api/arquivos/alunos/${alunoId}`);
+  }
 }

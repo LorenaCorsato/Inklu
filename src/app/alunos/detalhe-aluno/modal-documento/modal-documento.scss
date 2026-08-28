@@ -245,6 +245,13 @@
   flex-shrink: 0;
 }
 
+.cancel-button:disabled {
+  color: var(--ds-danger);
+  background-color: transparent;
+  border-color: var(--ds-danger);
+  opacity: 1;
+}
+
 .btn-icon-file {
   display: flex;
   align-items: center;

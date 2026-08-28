@@ -316,7 +316,13 @@
   </div>
   }
 
-  <app-modal-documento [isOpen]="isDocumentoModalOpen" (closed)="closeDocumentoModal()" />
+<app-modal-documento
+    [isOpen]="isDocumentoModalOpen"
+    [alunoId]="aluno?.id"
+    (closed)="closeDocumentoModal()"
+    (saved)="onDocumentoSaved()"
+  />
+
   <app-modal-dados-adicionais
     [isOpen]="isDadosAdicionaisModalOpen"
     [dadosIniciais]="dadosAdicionais"
