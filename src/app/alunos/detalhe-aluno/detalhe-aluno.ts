@@ -10,6 +10,7 @@ import {
   LucideGraduationCap,
   LucideAccessibility,
   LucideCalendar,
+  LucideLoader2,
   LucideTrendingUp,
   LucidePencil,
   LucideUserRoundX,
@@ -46,6 +47,8 @@ export interface Arquivo {
     LucideGraduationCap,
     LucideAccessibility,
     LucideCalendar,
+    LucideLoader2,
+    LucideTrendingUp,
     LucidePencil,
     LucideUserRoundX,
     LucideShare2,
@@ -120,7 +123,7 @@ export class DetalheAluno {
     private elementRef: ElementRef,
     private alunoService: AlunoService,
     private cdr: ChangeDetectorRef
-) {
+  ) {
     this.onDocumentClick = (event: Event) => {
       if (this.isOptionsMenuOpen && !this.elementRef.nativeElement.contains(event.target)) {
         this.isOptionsMenuOpen = false;
@@ -153,12 +156,11 @@ export class DetalheAluno {
     });
   }
 
-carregarAluno(id: string) {
+  carregarAluno(id: string) {
     this.isLoading = true;
 
     this.alunoService.buscarAlunoPorId(id).subscribe({
       next: (dados) => {
-
         const alunoDb = Array.isArray(dados) ? dados[0] : dados;
         this.alunoOriginal = alunoDb;
 
@@ -195,9 +197,7 @@ carregarAluno(id: string) {
 
         this.carregarArquivos(alunoDb.id);
 
-
         this.isLoading = false;
-
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -245,6 +245,7 @@ carregarAluno(id: string) {
       this.diagnosticosLista = [];
     }
   }
+
   ngOnDestroy() {
     document.removeEventListener('click', this.onDocumentClick, true);
   }
@@ -264,20 +265,20 @@ carregarAluno(id: string) {
 
   editarAluno() {
     this.closeOptionsMenu();
-    if (this.aluno) {
+    if (this.aluno?.id !== undefined && this.aluno.id !== null) {
       this.router.navigate(['/alunos', this.aluno.id, 'editar']);
     }
   }
 
   inativarAluno() {
     this.closeOptionsMenu();
-    if (this.aluno) {
-      const deveMostrarModal = localStorage.getItem('naoMostrarModalExclusao') !== 'true';
-      if (deveMostrarModal) {
-        this.isConfirmModalOpen = true;
-      } else {
-        this.executarInativacao();
-      }
+    if (!this.aluno?.id) return;
+
+    const deveMostrarModal = localStorage.getItem('naoMostrarModalExclusao') !== 'true';
+    if (deveMostrarModal) {
+      this.isConfirmModalOpen = true;
+    } else {
+      this.executarInativacao();
     }
   }
 
@@ -303,8 +304,8 @@ carregarAluno(id: string) {
     if (naoMostrarNovamente) {
       localStorage.setItem('naoMostrarModalExclusao', 'true');
     }
-    this.executarInativacao();
     this.fecharModalConfirmacao();
+    this.executarInativacao();
   }
 
   fecharModalConfirmacao() {
@@ -312,10 +313,12 @@ carregarAluno(id: string) {
   }
 
   private executarInativacao() {
-    if (!this.aluno) return;
+    if (!this.aluno?.id) return;
     this.isLoading = true;
+    
     this.alunoService.excluirAluno(this.aluno.id).subscribe({
       next: () => {
+        alert('Aluno inativado com sucesso!');
         this.router.navigate(['/alunos']);
       },
       error: (erro) => {
@@ -359,6 +362,7 @@ carregarAluno(id: string) {
     const d = new Date(dateStr);
     return d.toLocaleDateString('pt-BR');
   }
+
   calcularIdade(dataNascimento: string | null | undefined): string {
     if (!dataNascimento) return 'Não informada';
 
@@ -385,7 +389,7 @@ carregarAluno(id: string) {
     this.isDocumentoModalOpen = false;
   }
 
-onDocumentoSaved() {
+  onDocumentoSaved() {
     if (this.aluno?.id) {
       this.carregarArquivos(this.aluno.id);
     }
@@ -419,5 +423,4 @@ onDocumentoSaved() {
       });
     }
   }
-
 }

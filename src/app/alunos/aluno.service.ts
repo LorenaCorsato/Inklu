@@ -2,13 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface DiagnosticoAluno {
+  diagnostico: string;
+  descricao: string;
+}
+
 export interface Aluno {
   id?: any; // <--- Alterado para any
   nome_completo?: string;
   serie?: string;
   data_de_nascimento?: string;
   genero?: string;
-  diagnostico?: string | { diagnostico: string; descricao: string }[];
+  diagnostico?: string | DiagnosticoAluno[];
   foto?: string;
   fotoUrl?: string;
   preferencias?: string;
@@ -17,6 +22,7 @@ export interface Aluno {
   status?: number; // 1 = ativo, 0 = inativo
   id_turma?: string;
   turma?: any;
+  descricao_diagnostico?: string;
 }
 
 @Injectable({
@@ -44,7 +50,8 @@ export class AlunoService {
   }
 
   buscarAlunoPorId(id: string) {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);  }
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
 
   listarArquivosPorAluno(alunoId: string | number): Observable<any[]> {
     return this.http.get<any[]>(`http://localhost:3000/api/arquivos/alunos/${alunoId}`);
