@@ -1,6 +1,6 @@
 
 import { Router } from 'express';
-import { ArquivoController } from '../controllers/arquivo.controller.js';
+import { ArquivoController } from '../controllers/arquivo.controller';
 
 const router = Router();
 const arquivoController = new ArquivoController();

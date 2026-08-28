@@ -183,6 +183,21 @@ formatarDiagnostico(diagnosticoDb: any): string {
     this.fecharModalConfirmacao();
   }
 
+  onAtivarAluno(aluno: Aluno) {
+    this.isLoading = true;
+    this.alunoService.atualizarAluno(aluno.id, { status: 1 }).subscribe({
+      next: () => {
+        this.carregarAlunos();
+      },
+      error: (erro) => {
+        console.error('Erro ao ativar aluno:', erro);
+        alert('Falha ao ativar o aluno.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   fecharModalConfirmacao() {
     this.isConfirmModalOpen = false;
     this.alunoParaExcluir = null;

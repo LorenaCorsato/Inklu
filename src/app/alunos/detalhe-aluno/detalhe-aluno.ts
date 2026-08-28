@@ -19,10 +19,12 @@ import {
   LucideX,
   LucideCheck,
   LucidePen,
+  LucideUserCheck,
 } from '@lucide/angular';
 import { Aluno } from '../card-aluno/card-aluno';
 import { ModalDocumento } from './modal-documento/modal-documento';
 import { ModalDadosAdicionais, DadosAdicionais } from './modal-dados-adicionais/modal-dados-adicionais';
+import { ModalConfirmarExclusao } from '../modal-confirmar-exclusao/modal-confirmar-exclusao';
 import { AlunoService } from '../aluno.service';
 
 export interface Arquivo {
@@ -52,8 +54,10 @@ export interface Arquivo {
     LucidePen,
     LucideX,
     LucideCheck,
+    LucideUserCheck,
     ModalDocumento,
     ModalDadosAdicionais,
+    ModalConfirmarExclusao,
   ],
   templateUrl: './detalhe-aluno.html',
   styleUrl: './detalhe-aluno.scss',
@@ -63,6 +67,7 @@ export class DetalheAluno {
   isOptionsMenuOpen = false;
   isDocumentoModalOpen = false;
   isDadosAdicionaisModalOpen = false;
+  isConfirmModalOpen = false;
 
   dadosAdicionais: DadosAdicionais = { interesses: [], preferencias: '' };
 
@@ -255,6 +260,71 @@ carregarAluno(id: string) {
 
   closeOptionsMenu() {
     this.isOptionsMenuOpen = false;
+  }
+
+  editarAluno() {
+    this.closeOptionsMenu();
+    if (this.aluno) {
+      this.router.navigate(['/alunos', this.aluno.id, 'editar']);
+    }
+  }
+
+  inativarAluno() {
+    this.closeOptionsMenu();
+    if (this.aluno) {
+      const deveMostrarModal = localStorage.getItem('naoMostrarModalExclusao') !== 'true';
+      if (deveMostrarModal) {
+        this.isConfirmModalOpen = true;
+      } else {
+        this.executarInativacao();
+      }
+    }
+  }
+
+  ativarAluno() {
+    this.closeOptionsMenu();
+    if (this.aluno) {
+      this.isLoading = true;
+      this.alunoService.atualizarAluno(this.aluno.id, { status: 1 }).subscribe({
+        next: () => {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (erro) => {
+          console.error('Erro ao ativar aluno:', erro);
+          alert('Falha ao ativar o aluno.');
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+      });
+    }
+  }
+
+  onConfirmarExclusao(naoMostrarNovamente: boolean) {
+    if (naoMostrarNovamente) {
+      localStorage.setItem('naoMostrarModalExclusao', 'true');
+    }
+    this.executarInativacao();
+    this.fecharModalConfirmacao();
+  }
+
+  fecharModalConfirmacao() {
+    this.isConfirmModalOpen = false;
+  }
+
+  private executarInativacao() {
+    if (!this.aluno) return;
+    this.isLoading = true;
+    this.alunoService.excluirAluno(this.aluno.id).subscribe({
+      next: () => {
+        this.router.navigate(['/alunos']);
+      },
+      error: (erro) => {
+        console.error('Erro ao inativar aluno:', erro);
+        alert('Falha ao inativar o aluno.');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   toggleFilter(event: Event) {

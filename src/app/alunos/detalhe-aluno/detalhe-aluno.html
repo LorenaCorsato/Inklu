@@ -51,14 +51,21 @@
           </button>
           @if (isOptionsMenuOpen) {
           <div class="dropdown-menu dropdown-menu-end show">
-            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
+            <button class="dropdown-item" type="button" (click)="editarAluno()">
               <svg lucidePencil class="dropdown-item-icon"></svg>
               Editar
             </button>
-            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
-              <svg lucideUserRoundX class="dropdown-item-icon"></svg>
-              Inativar
-            </button>
+            @if (aluno.originalData?.status === 2) {
+              <button class="dropdown-item" type="button" (click)="ativarAluno()">
+                <svg lucideUserCheck class="dropdown-item-icon"></svg>
+                Ativar
+              </button>
+            } @else {
+              <button class="dropdown-item" type="button" (click)="inativarAluno()">
+                <svg lucideUserRoundX class="dropdown-item-icon"></svg>
+                Inativar
+              </button>
+            }
             <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">
               <svg lucideShare2 class="dropdown-item-icon"></svg>
               Compartilhar
@@ -320,13 +327,21 @@
     [isOpen]="isDocumentoModalOpen"
     [alunoId]="aluno?.id"
     (closed)="closeDocumentoModal()"
-    (saved)="onDocumentoSaved()"
-  />
+    (saved)="onDocumentoSaved()">
+  </app-modal-documento>
 
   <app-modal-dados-adicionais
     [isOpen]="isDadosAdicionaisModalOpen"
     [dadosIniciais]="dadosAdicionais"
     (closed)="closeDadosAdicionaisModal()"
-    (saved)="onDadosAdicionaisSaved($event)"
-  />
+    (saved)="onDadosAdicionaisSaved($event)">
+  </app-modal-dados-adicionais>
+
+  <app-modal-confirmar-exclusao
+    [isOpen]="isConfirmModalOpen"
+    [alunoNome]="aluno?.nome || ''"
+    (confirmed)="onConfirmarExclusao($event)"
+    (closed)="fecharModalConfirmacao()">
+  </app-modal-confirmar-exclusao>
 </div>
+

@@ -1,22 +1,22 @@
 import { Router } from '@angular/router';
-import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2 } from '@lucide/angular';
+import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2, LucideUserCheck } from '@lucide/angular';
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 
 export interface Aluno {
-  id: any; // <--- Alterado para any
+  id: any; 
   nome: string;
   ano: string;
   deficiencia: string;
   genero: string;
   fotoUrl?: string;
   originalData?: any;
-  status?: number; // 1 = ativo, 2 = inativo
+  status?: number; 
 }
 
 @Component({
   selector: 'app-card-aluno',
-  imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2],
+  imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2, LucideUserCheck],
   templateUrl: './card-aluno.html',
   styleUrl: './card-aluno.scss',
 })
@@ -24,6 +24,7 @@ export class CardAluno {
   @Input({ required: true }) aluno!: Aluno;
   @Output() editar = new EventEmitter<Aluno>();
   @Output() excluir = new EventEmitter<Aluno>();
+  @Output() ativar = new EventEmitter<Aluno>();
 
   isOptionsMenuOpen = false;
 
@@ -43,6 +44,12 @@ export class CardAluno {
   onEditarClick(event: Event) {
     event.stopPropagation();
     this.editar.emit(this.aluno);
+    this.closeOptionsMenu();
+  }
+
+  onAtivarClick(event: Event) {
+    event.stopPropagation();
+    this.ativar.emit(this.aluno);
     this.closeOptionsMenu();
   }
 
