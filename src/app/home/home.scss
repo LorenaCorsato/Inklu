@@ -172,7 +172,7 @@
   align-items: center;
   font-size: 0.7rem;
   font-weight: 500;
-  background-color: #f0f4ff;
+  background-color: var(--ds-primary-soft);
   color: var(--ds-primary);
   border-radius: var(--ds-radius-sm);
   padding: 3px 8px;
@@ -250,7 +250,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: none;
+  border: 1px solid var(--ds-border);
   background: transparent;
   border-radius: var(--ds-radius-sm);
   color: var(--ds-muted);

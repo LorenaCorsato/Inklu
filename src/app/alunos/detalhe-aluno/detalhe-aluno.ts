@@ -48,7 +48,6 @@ export interface Arquivo {
     LucideAccessibility,
     LucideCalendar,
     LucideLoader2,
-    LucideTrendingUp,
     LucidePencil,
     LucideUserRoundX,
     LucideShare2,
@@ -168,8 +167,8 @@ export class DetalheAluno {
 
         try {
           this.interessesList = alunoDb.interesses ? JSON.parse(alunoDb.interesses) : [];
-        } catch(e) { 
-          this.interessesList = []; 
+        } catch(e) {
+          this.interessesList = [];
         }
 
         if (alunoDb.preferencias) {
@@ -315,7 +314,7 @@ export class DetalheAluno {
   private executarInativacao() {
     if (!this.aluno?.id) return;
     this.isLoading = true;
-    
+
     this.alunoService.excluirAluno(this.aluno.id).subscribe({
       next: () => {
         alert('Aluno inativado com sucesso!');
@@ -405,13 +404,13 @@ export class DetalheAluno {
 
   onDadosAdicionaisSaved(dados: DadosAdicionais) {
     this.dadosAdicionais = dados;
-    
+
     if (this.aluno && this.aluno.id) {
       const payload = {
         interesses: JSON.stringify(dados.interesses),
         preferencias: dados.preferencias
       };
-      
+
       this.alunoService.atualizarAluno(this.aluno.id, payload).subscribe({
         next: () => {
           this.carregarAluno(this.aluno!.id);

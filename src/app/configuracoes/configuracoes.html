@@ -1,0 +1,225 @@
+<div class="config-breadcrumb p-2 border-bottom d-flex align-items-center gap-2">
+  <svg lucideSettings [size]="18" [strokeWidth]="2" color="#8d8d8d"></svg>
+  <p class="mb-0 text-muted">Configurações</p>
+</div>
+
+<div class="config-page d-flex flex-row h-100 overflow-hidden">
+  <!-- Sidebar -->
+  <aside class="config-sidebar border-end">
+    <ul class="list-unstyled m-0 p-0">
+      @for (item of menuItems; track item.id) {
+        <li>
+          <a
+            class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-decoration-none"
+            [class.active]="activeSection === item.id"
+            (click)="setSection(item.id); $event.preventDefault()"
+            href="#"
+          >
+            @if (item.icon === 'home') {
+              <svg lucideHome [size]="18" [strokeWidth]="2"></svg>
+            }
+            @if (item.icon === 'user') {
+              <svg lucideUser [size]="18" [strokeWidth]="2"></svg>
+            }
+            @if (item.icon === 'shield') {
+              <svg lucideShield [size]="18" [strokeWidth]="2"></svg>
+            }
+            @if (item.icon === 'help') {
+              <svg lucideHelpCircle [size]="18" [strokeWidth]="2"></svg>
+            }
+            @if (item.icon === 'file') {
+              <svg lucideFileText [size]="18" [strokeWidth]="2"></svg>
+            }
+            <span class="sidebar-label">{{ item.label }}</span>
+            <svg lucideChevronRight [size]="14" [strokeWidth]="2" class="ms-auto chevron"></svg>
+          </a>
+        </li>
+      }
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="config-content flex-grow-1 d-flex justify-content-center overflow-auto">
+    <!-- Geral -->
+    @if (activeSection === 'geral') {
+      <div class="config-section">
+        <h2 class="section-title fw-bold mb-1">Geral</h2>
+        <p class="section-subtitle text-muted mb-4">Preferências gerais do sistema</p>
+
+        <div>
+          <div class="setting-card">
+            <div class="setting-info">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                @if (theme.isDark()) {
+                  <svg lucideMoon [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+                } @else {
+                  <svg lucideSun [size]="18" [strokeWidth]="2" color="var(--ds-warning)"></svg>
+                }
+                <span class="setting-label fw-semibold">Tema</span>
+              </div>
+              <p class="setting-description text-muted mb-0">Escolha entre tema claro, escuro ou automático</p>
+            </div>
+            <div class="setting-control">
+              <select
+                class="form-select form-select-sm theme-select"
+                [value]="theme.mode()"
+                (change)="onThemeChange($event)"
+              >
+                <option value="system">Sistema</option>
+                <option value="light">Claro</option>
+                <option value="dark">Escuro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Conta -->
+    @if (activeSection === 'conta') {
+      <div class="config-section">
+        <h2 class="section-title fw-bold mb-1">Conta</h2>
+        <p class="section-subtitle text-muted mb-4">Gerencie suas informações pessoais</p>
+
+        <div>
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideUser [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Dados Pessoais</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Nome, email e informações de contato</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-action" type="button">Editar</button>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideBell [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Notificações</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Configure alertas e notificações por email</p>
+          </div>
+          <div class="setting-control">
+            <button class="theme-toggle" type="button">
+              <span class="theme-toggle-knob"></span>
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+    }
+
+    <!-- Segurança -->
+    @if (activeSection === 'seguranca') {
+      <div class="config-section">
+        <h2 class="section-title fw-bold mb-1">Segurança</h2>
+        <p class="section-subtitle text-muted mb-4">Proteja sua conta</p>
+        <div>
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideLock [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Alterar Senha</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Atualize sua senha de acesso</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-action" type="button">Alterar</button>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideShield [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Autenticação em Duas Etapas</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Adicione uma camada extra de segurança</p>
+          </div>
+          <div class="setting-control">
+            <button class="theme-toggle" type="button">
+              <span class="theme-toggle-knob"></span>
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+    }
+
+    <!-- Suporte -->
+    @if (activeSection === 'suporte') {
+      <div class="config-section">
+        <h2 class="section-title fw-bold mb-1">Suporte</h2>
+        <p class="section-subtitle text-muted mb-4">Precisa de ajuda?</p>
+
+        <div>
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideHelpCircle [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Central de Ajuda</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Perguntas frequentes e tutoriais</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-action" type="button">Acessar</button>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideBell [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Falar com Suporte</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Entre em contato com nossa equipe</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-action" type="button">Contatar</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    }
+
+    <!-- Termos -->
+    @if (activeSection === 'termos') {
+      <div class="config-section">
+        <h2 class="section-title fw-bold mb-1">Termos e Privacidade</h2>
+        <p class="section-subtitle text-muted mb-4">Documentos legais</p>
+
+        <div>
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideFileText [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Termos de Uso</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Leia nossos termos e condições de uso</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-action" type="button">Ler</button>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <svg lucideShield [size]="18" [strokeWidth]="2" color="var(--ds-primary)"></svg>
+              <span class="setting-label fw-semibold">Política de Privacidade</span>
+            </div>
+            <p class="setting-description text-muted mb-0">Como tratamos seus dados pessoais</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-action" type="button">Ler</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    }
+  </main>
+</div>

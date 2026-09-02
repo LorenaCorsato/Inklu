@@ -134,7 +134,7 @@
   font-size: var(--ds-font-size-base);
   font-family: var(--ds-font-family-base);
   color: var(--ds-body);
-  background-color: var(--ds-surface);
+  background-color: var(--ds-foreground);
   border: 1px solid var(--ds-border);
   border-radius: var(--ds-radius-sm);
   outline: none;
@@ -313,7 +313,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: 1px solid var(--ds-border);
   background: transparent;
   color: var(--ds-muted);
   cursor: pointer;

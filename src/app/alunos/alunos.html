@@ -104,3 +104,11 @@
   (confirmed)="onConfirmarExclusao($event)"
   (closed)="fecharModalConfirmacao()">
 </app-modal-confirmar-exclusao>
+
+<!-- Toast de Notificação -->
+<app-toast
+  [isOpen]="toastOpen"
+  [message]="toastMessage"
+  [type]="toastType"
+  (closed)="closeToast()">
+</app-toast>
