@@ -7,11 +7,12 @@ import { AlunoService } from './aluno.service';
 
 import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
 import { ModalConfirmarExclusao } from './modal-confirmar-exclusao/modal-confirmar-exclusao';
+import { Toast } from '../shared/toast/toast';
 
 @Component({
   selector: 'app-alunos',
   // O ModalAluno inserido corretamente nos imports do Component:
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno, ModalConfirmarExclusao],
+  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno, ModalConfirmarExclusao, Toast],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
@@ -26,6 +27,10 @@ export class Alunos implements OnInit {
   isLoading = true; 
   isConfirmModalOpen = false;
   alunoParaExcluir: Aluno | null = null;
+
+  toastOpen = false;
+  toastMessage = '';
+  toastType: 'error' | 'success' | 'info' = 'error';
 
   constructor(
     private alunoService: AlunoService,
@@ -115,7 +120,7 @@ formatarDiagnostico(diagnosticoDb: any): string {
         this.alunos = [];
         this.isLoading = false;
         this.cdr.detectChanges(); 
-        alert('Falha ao carregar os alunos.');
+        this.showToast('Falha ao carregar os alunos.');
       },
     });
   }
@@ -138,11 +143,11 @@ formatarDiagnostico(diagnosticoDb: any): string {
         next: () => {
           this.carregarAlunos();
           this.closeModal();
-          alert('Aluno atualizado com sucesso!');
+          this.showToast('Aluno atualizado com sucesso!', 'success');
         },
         error: (erro: any) => {
           console.error('Erro ao atualizar no banco:', erro);
-          alert('Falha ao atualizar aluno.');
+          this.showToast('Falha ao atualizar aluno.');
         },
       });
     } else if (!this.alunoEmEdicao) {
@@ -150,11 +155,11 @@ formatarDiagnostico(diagnosticoDb: any): string {
         next: () => {
           this.carregarAlunos();
           this.closeModal();
-          alert('Cadastro realizado com sucesso!');
+          this.showToast('Cadastro realizado com sucesso!', 'success');
         },
         error: (erro: any) => {
           console.error('Erro ao salvar no banco:', erro);
-          alert('Falha ao cadastrar aluno.');
+          this.showToast('Falha ao cadastrar aluno.');
         },
       });
     }
@@ -191,7 +196,7 @@ formatarDiagnostico(diagnosticoDb: any): string {
       },
       error: (erro) => {
         console.error('Erro ao ativar aluno:', erro);
-        alert('Falha ao ativar o aluno.');
+        this.showToast('Falha ao ativar o aluno.');
         this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -212,7 +217,7 @@ formatarDiagnostico(diagnosticoDb: any): string {
       },
       error: (erro) => {
         console.error('Erro ao excluir aluno:', erro);
-        alert('Falha ao excluir o aluno.');
+        this.showToast('Falha ao excluir o aluno.');
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -230,6 +235,16 @@ formatarDiagnostico(diagnosticoDb: any): string {
   onSearchChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.searchTerm = target.value;
+  }
+
+  showToast(message: string, type: 'error' | 'success' | 'info' = 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastOpen = true;
+  }
+
+  closeToast(): void {
+    this.toastOpen = false;
   }
 
   private mapAlunoBancoParaTela(alunoBanco: any): Aluno {
