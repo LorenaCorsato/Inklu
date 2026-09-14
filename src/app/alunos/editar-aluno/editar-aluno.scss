@@ -234,7 +234,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: 1px solid var(--ds-border);
   background: transparent;
   color: var(--ds-muted);
   cursor: pointer;

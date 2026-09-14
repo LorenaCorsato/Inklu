@@ -12,6 +12,21 @@
   background-color: #1653ff;
 }
 
+.btn-ghost-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ds-border);
+  background: transparent;
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--ds-body);
+  }
+}
+
 .detalhe-aluno-page {
   height: 100%;
   min-height: 0;
@@ -194,8 +209,8 @@
   display: inline-flex;
   align-items: center;
   padding: var(--ds-spacing-1) var(--ds-spacing-3);
-  background-color: var(--ds-body);
-  color: white;
+  background-color: var(--ds-neutral-500);
+  color: var(--ds-surface);
   font-size: var(--ds-font-size-sm);
   border-radius: var(--ds-radius-sm);
   font-weight: 500;
