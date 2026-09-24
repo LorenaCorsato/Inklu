@@ -7,10 +7,17 @@
   <div class="alunos-header d-flex align-items-center justify-content-between mb-3">
     <h1 class="alunos-title fw-bold mb-0">Todos os Alunos</h1>
     <!-- O clique do botão usa a função da branch dev (openAdicionarAluno) -->
-    <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openAdicionarAluno()">
-      <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
-      Adicionar Aluno
-    </button>
+    <div class="d-flex gap-2">
+      <!-- MEDIDA PROVISÓRIA: Botão de Gerir Matéria -->
+      <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" style="background-color: var(--ds-surface); color: var(--ds-body); border: 1px solid var(--ds-border);" (click)="openGerirMateriaModal()">
+        <svg lucideBookOpen [size]="18" [strokeWidth]="2"></svg>
+        Gerir Matéria
+      </button>
+      <button class="btn-add-aluno d-flex align-items-center gap-2" type="button" (click)="openAdicionarAluno()">
+        <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
+        Adicionar Aluno
+      </button>
+    </div>
   </div>
 
   <div class="mb-2">
@@ -112,3 +119,84 @@
   [type]="toastType"
   (closed)="closeToast()">
 </app-toast>
+
+<!-- MEDIDA PROVISÓRIA: Modal Gerir Matéria -->
+@if (isGerirMateriaModalOpen) {
+  <div class="modal-overlay" (click)="closeGerirMateriaModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()" style="max-width: 500px; width: 100%; padding: 24px; background: var(--ds-surface); border-radius: var(--ds-radius-lg); box-shadow: var(--ds-shadow-lg);">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-4">
+        <h2 class="modal-title m-0" style="font-size: 1.25rem; font-weight: 600;">Gerir Matéria</h2>
+        <button class="btn-close" type="button" (click)="closeGerirMateriaModal()" style="background: none; border: none; cursor: pointer; color: var(--ds-muted);">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+        <p class="text-muted mb-3">Aqui você poderá gerenciar as matérias dos alunos.</p>
+        
+        <!-- MEDIDA PROVISÓRIA: Formulário para adicionar/editar nova matéria -->
+        <div class="mb-4 p-3 border rounded" style="background: var(--ds-surface-hover); border-color: var(--ds-border);">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4 class="m-0" style="font-size: 0.95rem; font-weight: 600;">
+              {{ materiaEmEdicaoId ? 'Editar Matéria' : 'Adicionar Nova Matéria' }}
+            </h4>
+            @if (materiaEmEdicaoId) {
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="cancelarEdicaoMateria()" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; background: transparent; border: 1px solid var(--ds-border); color: var(--ds-muted); cursor: pointer;">
+                Cancelar Edição
+              </button>
+            }
+          </div>
+          <div class="d-flex gap-2 align-items-end">
+            <div class="flex-grow-1">
+              <label class="d-block mb-1 text-muted" style="font-size: 0.8rem;">Nome da Matéria</label>
+              <input type="text" class="form-control" [(ngModel)]="novaMateriaNome" placeholder="Ex: Matemática" style="width: 100%; padding: 8px; border: 1px solid var(--ds-border); border-radius: 4px;">
+            </div>
+            <div class="flex-grow-1">
+              <label class="d-block mb-1 text-muted" style="font-size: 0.8rem;">Área (opcional)</label>
+              <input type="text" class="form-control" [(ngModel)]="novaMateriaArea" placeholder="Ex: Exatas" style="width: 100%; padding: 8px; border: 1px solid var(--ds-border); border-radius: 4px;">
+            </div>
+            <button class="btn btn-primary" type="button" (click)="salvarMateria()" [disabled]="!novaMateriaNome.trim()" style="padding: 8px 16px; background-color: var(--ds-primary); color: white; border: none; border-radius: 4px; cursor: pointer; height: 37px;">
+              {{ materiaEmEdicaoId ? 'Atualizar' : 'Adicionar' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- MEDIDA PROVISÓRIA: Listagem de matérias cadastradas -->
+        @if (isMateriasLoading) {
+          <div class="d-flex justify-content-center p-4">
+            <svg lucideLoader2 [size]="24" class="spin-animation" color="var(--ds-muted)"></svg>
+          </div>
+        } @else if (materias.length === 0) {
+          <div class="text-center p-4 text-muted">
+            <p>Nenhuma matéria cadastrada ou ativa.</p>
+          </div>
+        } @else {
+          <div class="d-flex flex-column gap-2">
+            @for (materia of materias; track materia.id_materia) {
+              <div class="d-flex align-items-center justify-content-between p-3 border rounded" style="background: var(--ds-surface); border-color: var(--ds-border);">
+                <div>
+                  <h3 class="m-0" style="font-size: 1rem; font-weight: 500;">{{ materia.nome }}</h3>
+                  @if (materia.descricao || materia.area_conhecimento) {
+                    <p class="m-0 text-muted" style="font-size: 0.875rem;">{{ materia.area_conhecimento || materia.descricao }}</p>
+                  }
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-secondary" type="button" (click)="prepararEdicaoMateria(materia)" title="Editar Matéria" style="background: transparent; color: var(--ds-body); border: 1px solid var(--ds-border); border-radius: 4px; padding: 6px 10px; cursor: pointer;">
+                    <svg lucideEdit2 [size]="16" [strokeWidth]="2"></svg>
+                  </button>
+                  <button class="btn btn-danger" type="button" (click)="excluirMateria(materia.id_materia)" title="Inativar Matéria" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer;">
+                    <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="modal-footer d-flex justify-content-end mt-4 pt-3" style="border-top: 1px solid var(--ds-border);">
+        <button class="btn btn-primary" type="button" (click)="closeGerirMateriaModal()" style="padding: 8px 16px; background-color: var(--ds-primary); color: white; border: none; border-radius: var(--ds-radius-sm); cursor: pointer;">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+}

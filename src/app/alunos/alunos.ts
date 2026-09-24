@@ -1,9 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2 } from '@lucide/angular';
+import { FormsModule } from '@angular/forms';
+import { LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, LucideBookOpen, LucideX, LucideTrash2, LucideEdit2 } from '@lucide/angular';
 import { CardAluno, Aluno } from './card-aluno/card-aluno';
 import { AlunoService } from './aluno.service';
+import { MateriaService, Materia } from './materia.service';
 
 import { ModalAluno, AlunoForm } from './modal-aluno/modal-aluno';
 import { ModalConfirmarExclusao } from './modal-confirmar-exclusao/modal-confirmar-exclusao';
@@ -12,7 +14,7 @@ import { Toast } from '../shared/toast/toast';
 @Component({
   selector: 'app-alunos',
   // O ModalAluno inserido corretamente nos imports do Component:
-  imports: [LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, CardAluno, ModalAluno, ModalConfirmarExclusao, Toast],
+  imports: [FormsModule, LucideSearch, LucidePlus, LucideLayoutGrid, LucideList, LucideLoader2, LucideBookOpen, LucideX, LucideTrash2, LucideEdit2, CardAluno, ModalAluno, ModalConfirmarExclusao, Toast],
   templateUrl: './alunos.html',
   styleUrl: './alunos.scss',
 })
@@ -28,12 +30,22 @@ export class Alunos implements OnInit {
   isConfirmModalOpen = false;
   alunoParaExcluir: Aluno | null = null;
 
+  // MEDIDA PROVISÓRIA: Estado para controle do modal simples de Gerir Matéria
+  isGerirMateriaModalOpen = false;
+  materias: Materia[] = [];
+  isMateriasLoading = false;
+  // MEDIDA PROVISÓRIA: Campos do formulário de adicionar matéria
+  novaMateriaNome = '';
+  novaMateriaArea = '';
+  materiaEmEdicaoId: string | null = null;
+
   toastOpen = false;
   toastMessage = '';
   toastType: 'error' | 'success' | 'info' = 'error';
 
   constructor(
     private alunoService: AlunoService,
+    private materiaService: MateriaService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
@@ -92,6 +104,113 @@ formatarDiagnostico(diagnosticoDb: any): string {
     this.router.navigate(['/alunos/adicionar']);
   }
   // ----------------------------------
+
+  // MEDIDA PROVISÓRIA: Funções para abrir e fechar o modal simples de Gerir Matéria
+  openGerirMateriaModal() {
+    this.isGerirMateriaModalOpen = true;
+    this.carregarMaterias();
+  }
+
+  closeGerirMateriaModal() {
+    this.isGerirMateriaModalOpen = false;
+    this.cancelarEdicaoMateria();
+  }
+
+  carregarMaterias() {
+    this.isMateriasLoading = true;
+    this.materiaService.listarMaterias().subscribe({
+      next: (dados) => {
+        // Filtrar para mostrar apenas as ativas (exclui status "inativa" e "2")
+        this.materias = dados.filter(m => m.status !== 'inativa' && m.status !== '2');
+        console.log('[DEBUG] Primeiro objeto materia recebido:', JSON.stringify(this.materias[0]));
+        this.isMateriasLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (erro) => {
+        console.error('Erro ao carregar matérias', erro);
+        this.isMateriasLoading = false;
+        this.showToast('Erro ao carregar matérias.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // MEDIDA PROVISÓRIA: Prepara o formulário para editar matéria existente
+  prepararEdicaoMateria(materia: any) {
+    this.materiaEmEdicaoId = materia.id_materia;
+    this.novaMateriaNome = materia.nome;
+    this.novaMateriaArea = materia.area_conhecimento || '';
+    this.cdr.detectChanges();
+  }
+
+  // MEDIDA PROVISÓRIA: Cancela a edição e limpa o formulário
+  cancelarEdicaoMateria() {
+    this.materiaEmEdicaoId = null;
+    this.novaMateriaNome = '';
+    this.novaMateriaArea = '';
+  }
+
+  // MEDIDA PROVISÓRIA: Lógica para adicionar ou atualizar uma matéria
+  salvarMateria() {
+    if (!this.novaMateriaNome.trim()) {
+      this.showToast('O nome da matéria é obrigatório.');
+      return;
+    }
+
+    const payload = {
+      nome: this.novaMateriaNome,
+      area_conhecimento: this.novaMateriaArea,
+      status: '1'  // MEDIDA PROVISÓRIA: status como string conforme padrão da tabela 'materia'
+    };
+
+    if (this.materiaEmEdicaoId) {
+      this.materiaService.atualizarMateria(this.materiaEmEdicaoId, payload).subscribe({
+        next: () => {
+          this.showToast('Matéria atualizada com sucesso.', 'success');
+          this.cancelarEdicaoMateria();
+          this.carregarMaterias();
+        },
+        error: (erro) => {
+          console.error('Erro ao atualizar matéria', erro);
+          this.showToast('Erro ao atualizar matéria.');
+        }
+      });
+    } else {
+      this.materiaService.adicionarMateria(payload).subscribe({
+        next: () => {
+          this.showToast('Matéria adicionada com sucesso.', 'success');
+          this.cancelarEdicaoMateria();
+          this.carregarMaterias();
+        },
+        error: (erro) => {
+          console.error('Erro ao adicionar matéria', erro);
+          this.showToast('Erro ao adicionar matéria.');
+        }
+      });
+    }
+  }
+
+  // MEDIDA PROVISÓRIA: Lógica para excluir (inativar) uma matéria
+  excluirMateria(id: string) {
+    console.log('[DEBUG] excluirMateria chamado com id:', id, '| tipo:', typeof id);
+    if (!id) {
+      this.showToast('ID da matéria não encontrado. Recarregue o modal e tente novamente.');
+      return;
+    }
+    if (confirm('Tem certeza que deseja inativar esta matéria?')) {
+      this.materiaService.excluirMateria(id).subscribe({
+        next: (resposta) => {
+          console.log('[DEBUG] Exclusão OK:', resposta);
+          this.showToast('Matéria inativada com sucesso.', 'success');
+          this.carregarMaterias();
+        },
+        error: (erro) => {
+          console.error('[DEBUG] Erro ao excluir matéria — status HTTP:', erro.status, '| mensagem:', erro.error);
+          this.showToast('Erro ao excluir matéria.');
+        }
+      });
+    }
+  }
 
   openModal() {
     this.alunoEmEdicao = null;
