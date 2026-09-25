@@ -95,7 +95,7 @@ export class ArquivoController {
 			const { alunoId } = req.params;
 			const { data, error } = await supabase
 				.from('material')
-				.select('*')
+				.select('*, materia(*)')
 				.eq('id_aluno', alunoId);
 
 			if (error) {
@@ -106,6 +106,24 @@ export class ArquivoController {
 		} catch (error) {
 			console.error('Erro ao listar materiais:', error);
 			return res.status(500).json({ erro: 'Erro interno ao listar materiais.' });
+		}
+	}
+
+	async listarMaterias(req: Request, res: Response): Promise<Response> {
+		try {
+			const { data, error } = await supabase
+				.from('materia')
+				.select('id_materia, nome')
+				.order('nome', { ascending: true });
+
+			if (error) {
+				return res.status(400).json({ erro: error.message });
+			}
+
+			return res.status(200).json(data);
+		} catch (error) {
+			console.error('Erro ao listar matérias:', error);
+			return res.status(500).json({ erro: 'Erro interno ao listar matérias.' });
 		}
 	}
 

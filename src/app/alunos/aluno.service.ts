@@ -56,4 +56,8 @@ export class AlunoService {
   listarArquivosPorAluno(alunoId: string | number): Observable<any[]> {
     return this.http.get<any[]>(`http://localhost:3000/api/arquivos/alunos/${alunoId}`);
   }
+
+  listarMaterias(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:3000/api/arquivos/materias');
+  }
 }

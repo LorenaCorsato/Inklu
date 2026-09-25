@@ -79,7 +79,7 @@ export class DetalheAluno {
   dateFrom = '';
   dateTo = '';
 
-  materias = ['Matemática', 'Artes', 'Português', 'Ciências'];
+  materias: string[] = [];
 
   arquivos: Arquivo[] = [];
 
@@ -101,11 +101,11 @@ export class DetalheAluno {
       if (this.dateFrom || this.dateTo) {
         const arquivoDate = new Date(arquivo.data);
         if (this.dateFrom) {
-          const from = new Date(this.dateFrom);
+          const from = new Date(`${this.dateFrom}T00:00:00`);
           if (arquivoDate < from) return false;
         }
         if (this.dateTo) {
-          const to = new Date(this.dateTo);
+          const to = new Date(`${this.dateTo}T23:59:59.999`);
           if (arquivoDate > to) return false;
         }
       }
@@ -144,6 +144,7 @@ export class DetalheAluno {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
+        this.carregarMaterias();
         this.carregarAluno(id);
       }
     });
@@ -216,7 +217,7 @@ export class DetalheAluno {
             data: material.data_de_upload ?? material.data_upload,
             nome: material.nome_do_arquivo ?? material.nome_arquivo,
             alteracao: material.tipo_de_material ?? material.tipo_material ?? 'Original',
-            materia: material.nome_materia ?? 'Sem matéria',
+            materia: (material.nome_materia ?? material.materia?.nome_materia ?? material.materia?.nome ?? 'Sem matéria').trim(),
           }))
           .sort((first, second) => new Date(second.data).getTime() - new Date(first.data).getTime());
         this.cdr.detectChanges();
@@ -224,7 +225,26 @@ export class DetalheAluno {
       error: (error) => {
         console.error('Erro ao carregar arquivos:', error);
         this.arquivos = [];
+        this.materias = [];
+        this.selectedMaterias.clear();
         this.cdr.detectChanges();
+      },
+    });
+  }
+
+  carregarMaterias() {
+    this.alunoService.listarMaterias().subscribe({
+      next: (materias) => {
+        this.materias = [...new Set(
+          materias
+            .map(materia => (materia.nome_materia ?? materia.nome)?.trim())
+            .filter((materia): materia is string => !!materia)
+        )].sort((first, second) => first.localeCompare(second, 'pt-BR'));
+      },
+      error: (error) => {
+        console.error('Erro ao carregar matérias:', error);
+        this.materias = [];
+        this.selectedMaterias.clear();
       },
     });
   }
