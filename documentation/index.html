@@ -1,0 +1,278 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	   <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="./" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content readme">
+                   <div class="content-data">
+
+
+<h1>INKLU</h1>
+<p>Desenvolvida como um projeto acadêmico para a disciplina de Engenharia de Software da Fatec Itu, esta é uma plataforma web voltada a otimizar a rotina de professores de apoio na educação inclusiva. O sistema visa reduzir a sobrecarga administrativa desses profissionais, permitindo que dediquem mais tempo e energia ao que realmente importa: o acompanhamento direto, o desenvolvimento social e emocional, e o planejamento pedagógico dos estudantes com necessidades educacionais específicas.</p>
+<h2>:busts_in_silhouette:Integrantes</h2>
+<ul>
+<li>Carlos Henrique Mattei de Oliveira - Frontend</li>
+<li>Diego Stocco Oliveira - Documentação e testes</li>
+<li>Lavínia Keiller - Backend</li>
+<li>Lorena Gonçalves Ribeiro Corsato - Backend</li>
+<li>Lyncon de Oliveira Santos - Backend</li>
+</ul>
+<h2>📎 Links importantes</h2>
+<ul>
+<li><a href="https://drive.google.com/drive/folders/1jK5MWw4MHqhwms5YI6WmAED73FlfaHfP?hl=pt-b">📚 Documentação do Projeto</a>.</li>
+<li><a href="https://www.figma.com/design/JZQhmmTiSCEQVZTVarJMqR/INKLU?node-id=0-1&t=UGmP3gTKUIAGXEtO-1">🎨 Figma</a></li>
+<li><a href="https://app.notion.com/p/Inklu-Projeto-de-Engenharia-de-Software-37942ea14da9808fac65d7c83b7a6b68?source=copy_link">🗒️ Notion</a></li>
+<li><a href="https://trello.com/b/g6w9zYot/inklu">🗒️ Trello</a></li>
+</ul>
+<h2>✔️ Conceito de pronto</h2>
+<p>No Trello, o nosso &quot;Conceito de Pronto&quot; baseia-se em duas checklists obrigatórias presentes em cada cartão: Progresso e Critérios de Aceite.</p>
+<ul>
+<li><p>A checklist de Progresso é utilizada pelo desenvolvedor para acompanhar as etapas técnicas já implementadas.</p>
+</li>
+<li><p>A checklist de Critérios de Aceite é destinada ao responsável pela validação, que testará a funcionalidade.</p>
+</li>
+</ul>
+<p>Um cartão só é considerado concluído e movido para a coluna &quot;Finalizado&quot; quando todos os itens de ambas as listas estiverem totalmente marcados.</p>
+<h2>⚙️ Guia de Execução - Inklu</h2>
+<p>Este guia é para que todos os integrantes da equipe consigam rodar o projeto localmente em suas máquinas. Nossa stack utiliza Angular (Frontend) e Node.js + Express (Backend).</p>
+<h3>1. Pré-requisitos</h3>
+<p>Antes de começar, certifique-se de que sua máquina possui:</p>
+<ul>
+<li><strong>Node.js</strong>: Baixe obrigatoriamente a versão <strong>LTS</strong> (Long Term Support) no <a href="https://nodejs.org/">site oficial</a>.</li>
+<li><strong>Git</strong>: Para versionamento de código.</li>
+<li><strong>VS Code</strong>: Nosso editor padrão.</li>
+</ul>
+<h3>2. Clonar o repositório</h3>
+<p>Abra o seu terminal, escolha a pasta onde deseja salvar o projeto e rode:</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">git clone https://github.com/LorenaCorsato/Inklu.git
+cd Inklu
+</code></pre></div><h3>3. Configurar as Chaves Secretas (.env)</h3>
+<p>Nós não subimos senhas e chaves de API para o GitHub. Você precisará configurar seus arquivos ocultos de ambiente.</p>
+<ol>
+<li>Acesse a página do nosso projeto no <strong>Notion</strong>. Lá estão centralizadas as chaves de desenvolvimento do Supabase, Cloudflare R2 e OpenRouter.</li>
+<li>Na pasta <code>backend/</code>, faça uma cópia do arquivo <code>.env.example</code> e renomeie para <code>.env</code>. Cole as chaves do backend dentro dele.</li>
+<li>Na pasta <code>frontend/</code>, faça o mesmo: copie o <code>.env.example</code>, renomeie para <code>.env</code> e cole as chaves públicas (se houver).</li>
+</ol>
+<h3>4. Como rodar o Backend (API Node.js)</h3>
+<p>Abra um terminal no VS Code e acesse a pasta do backend para instalar as dependências e ligar o servidor:</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">cd backend
+npm install
+npm run dev
+</code></pre></div><blockquote>
+<p>✅ <strong>Sucesso:</strong> Se tudo der certo, o terminal avisará que o servidor está rodando em <code>http://localhost:3000</code>. Deixe este terminal aberto.</p>
+</blockquote>
+<h3>5. Como rodar o Frontend (Angular)</h3>
+<p>Abra um <strong>segundo terminal</strong> no VS Code (clicando no ícone de <code>+</code>). Na raiz do projeto, basta instalar as dependências e rodar:</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm install
+ng s -o</code></pre></div><blockquote>
+<p>✅ <strong>Sucesso:</strong> O Angular vai compilar o projeto. Assim que terminar, acesse no seu navegador: <code>http://localhost:4200</code></p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'readme';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+
+       <script src="./js/menu-wc.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

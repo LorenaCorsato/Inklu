@@ -1,0 +1,3109 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  AdicionarAluno</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/alunos/adicionar-aluno/adicionar-aluno.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-adicionar-aluno</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>    <code>LucideArrowLeft</code>
+</div>
+                        <div>    <code>LucideTrash2</code>
+</div>
+                        <div>        <code><a href="../components/ModalCrop.html" target="_self" >ModalCrop</a></code>
+</div>
+                        <div>        <code><a href="../components/ModalConfirmacao.html" target="_self" >ModalConfirmacao</a></code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./adicionar-aluno.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./adicionar-aluno.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./adicionar-aluno.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>No results matching.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>LucideArrowLeft</code>
+                                </li>
+                                <li>
+                                        <code>LucideTrash2</code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/ModalCrop.html" target="_self" >ModalCrop</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/ModalConfirmacao.html" target="_self" >ModalConfirmacao</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#currentStep" >currentStep</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#diagnosticos" >diagnosticos</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#form" >form</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#generos" >generos</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#isConfirmacaoModalOpen" >isConfirmacaoModalOpen</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#isCropModalOpen" >isCropModalOpen</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#novoAlunoId" >novoAlunoId</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#previewUrl" >previewUrl</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#tempImageSrc" >tempImageSrc</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#turmas" >turmas</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#adicionarResponsavel" >adicionarResponsavel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#aplicaMascaraTelefone" >aplicaMascaraTelefone</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#autoResize" >autoResize</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#getDiagnosticoLabel" >getDiagnosticoLabel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#getGeneroLabel" >getGeneroLabel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#nextStep" >nextStep</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onConfirmacaoConfirmed" >onConfirmacaoConfirmed</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onConfirmacaoDismissed" >onConfirmacaoDismissed</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onCropClosed" >onCropClosed</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onCropComplete" >onCropComplete</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onDiagnosticoSelect" >onDiagnosticoSelect</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onFileChange" >onFileChange</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#previousStep" >previousStep</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#removeDiagnostico" >removeDiagnostico</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#removerResponsavel" >removerResponsavel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#save" >save</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#selectDiagnostico" >selectDiagnostico</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#voltar" >voltar</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Accessors</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--accessor" aria-hidden="true">A</span>
+                                <a href="#isCurrentStepValid" >isCurrentStepValid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--accessor" aria-hidden="true">A</span>
+                                <a href="#isFormValid" >isFormValid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--accessor" aria-hidden="true">A</span>
+                                <a href="#availableDiagnosticos" >availableDiagnosticos</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(cdr: <a href="https://angular.dev/api/core/ChangeDetectorRef" target="_blank">ChangeDetectorRef</a>, router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, alunoService: <a href="../injectables/AlunoService.html" target="_self">AlunoService</a>, turmaService: <a href="../injectables/TurmaService.html" target="_self">TurmaService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="74" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:74</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>cdr</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/core/ChangeDetectorRef" target="_blank" >ChangeDetectorRef</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>alunoService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AlunoService.html" target="_self" >AlunoService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>turmaService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TurmaService.html" target="_self" >TurmaService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="adicionarResponsavel"></a>
+                    <span class="name">
+                        <span ><b>adicionarResponsavel</b></span>
+                        <a href="#adicionarResponsavel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>adicionarResponsavel()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="126"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:126</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="aplicaMascaraTelefone"></a>
+                    <span class="name">
+                        <span ><b>aplicaMascaraTelefone</b></span>
+                        <a href="#aplicaMascaraTelefone"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>aplicaMascaraTelefone(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="137"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:137</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>index</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="autoResize"></a>
+                    <span class="name">
+                        <span ><b>autoResize</b></span>
+                        <a href="#autoResize"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>autoResize(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="267"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:267</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getDiagnosticoLabel"></a>
+                    <span class="name">
+                        <span ><b>getDiagnosticoLabel</b></span>
+                        <a href="#getDiagnosticoLabel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getDiagnosticoLabel(value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="277"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:277</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getGeneroLabel"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getGeneroLabel</b></span>
+                        <a href="#getGeneroLabel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getGeneroLabel(value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="273"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:273</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="nextStep"></a>
+                    <span class="name">
+                        <span ><b>nextStep</b></span>
+                        <a href="#nextStep"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>nextStep()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="162"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:162</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="83"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:83</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onConfirmacaoConfirmed"></a>
+                    <span class="name">
+                        <span ><b>onConfirmacaoConfirmed</b></span>
+                        <a href="#onConfirmacaoConfirmed"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onConfirmacaoConfirmed()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="281"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:281</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onConfirmacaoDismissed"></a>
+                    <span class="name">
+                        <span ><b>onConfirmacaoDismissed</b></span>
+                        <a href="#onConfirmacaoDismissed"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onConfirmacaoDismissed()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="290"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:290</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCropClosed"></a>
+                    <span class="name">
+                        <span ><b>onCropClosed</b></span>
+                        <a href="#onCropClosed"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onCropClosed()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="203"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:203</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCropComplete"></a>
+                    <span class="name">
+                        <span ><b>onCropComplete</b></span>
+                        <a href="#onCropComplete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onCropComplete(croppedImage: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="195"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:195</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>croppedImage</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onDiagnosticoSelect"></a>
+                    <span class="name">
+                        <span ><b>onDiagnosticoSelect</b></span>
+                        <a href="#onDiagnosticoSelect"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onDiagnosticoSelect(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="259"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:259</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onFileChange"></a>
+                    <span class="name">
+                        <span ><b>onFileChange</b></span>
+                        <a href="#onFileChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onFileChange(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="178"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:178</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="previousStep"></a>
+                    <span class="name">
+                        <span ><b>previousStep</b></span>
+                        <a href="#previousStep"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>previousStep()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="168"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:168</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeDiagnostico"></a>
+                    <span class="name">
+                        <span ><b>removeDiagnostico</b></span>
+                        <a href="#removeDiagnostico"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>removeDiagnostico(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="244"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:244</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>index</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removerResponsavel"></a>
+                    <span class="name">
+                        <span ><b>removerResponsavel</b></span>
+                        <a href="#removerResponsavel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>removerResponsavel(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="131"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:131</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>index</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="save"></a>
+                    <span class="name">
+                        <span ><b>save</b></span>
+                        <a href="#save"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>save()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="209"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:209</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectDiagnostico"></a>
+                    <span class="name">
+                        <span ><b>selectDiagnostico</b></span>
+                        <a href="#selectDiagnostico"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>selectDiagnostico(value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="249"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:249</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="voltar"></a>
+                    <span class="name">
+                        <span ><b>voltar</b></span>
+                        <a href="#voltar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>voltar()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="174"
+                                    class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:174</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentStep"></a>
+                    <span class="name">
+                        <span ><b>currentStep</b></span>
+                        <a href="#currentStep"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>1</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="diagnosticos"></a>
+                    <span class="name">
+                        <span ><b>diagnosticos</b></span>
+                        <a href="#diagnosticos"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    { value: &#x27;tdah&#x27;, label: &#x27;TDAH (Transtorno do Déficit de Atenção com Hiperatividade)&#x27; },
+    { value: &#x27;autismo&#x27;, label: &#x27;TEA (Transtorno do Espectro Autista)&#x27; },
+    { value: &#x27;deficiencia-fisica&#x27;, label: &#x27;Deficiência Física&#x27; },
+    { value: &#x27;deficiencia-visual&#x27;, label: &#x27;Deficiência Visual&#x27; },
+    { value: &#x27;deficiencia-auditiva&#x27;, label: &#x27;Deficiência Auditiva&#x27; },
+    { value: &#x27;intelectual&#x27;, label: &#x27;Deficiência Intelectual&#x27; },
+    { value: &#x27;outro&#x27;, label: &#x27;Outro&#x27; },
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="form"></a>
+                    <span class="name">
+                        <span ><b>form</b></span>
+                        <a href="#form"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/AlunoForm.html" target="_self" >AlunoForm</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+    nomeCompleto: &#x27;&#x27;,
+    fotoUrl: null,
+    dataNascimento: &#x27;&#x27;,
+    genero: &#x27;&#x27;,
+    id_turma: &#x27;&#x27;,
+    diagnosticos: [],
+    // Inicia com 1 responsável vazio obrigatório
+    responsaveis: [{ nome: &#x27;&#x27;, parentesco: &#x27;&#x27;, email: &#x27;&#x27;, telefone: &#x27;&#x27; }], 
+  }</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generos"></a>
+                    <span class="name">
+                        <span ><b>generos</b></span>
+                        <a href="#generos"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    { value: &#x27;masculino&#x27;, label: &#x27;Masculino&#x27; },
+    { value: &#x27;feminino&#x27;, label: &#x27;Feminino&#x27; },
+    { value: &#x27;outro&#x27;, label: &#x27;Outro&#x27; },
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isConfirmacaoModalOpen"></a>
+                    <span class="name">
+                        <span ><b>isConfirmacaoModalOpen</b></span>
+                        <a href="#isConfirmacaoModalOpen"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="73" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:73</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isCropModalOpen"></a>
+                    <span class="name">
+                        <span ><b>isCropModalOpen</b></span>
+                        <a href="#isCropModalOpen"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="71" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="novoAlunoId"></a>
+                    <span class="name">
+                        <span ><b>novoAlunoId</b></span>
+                        <a href="#novoAlunoId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="74" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="previewUrl"></a>
+                    <span class="name">
+                        <span ><b>previewUrl</b></span>
+                        <a href="#previewUrl"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tempImageSrc"></a>
+                    <span class="name">
+                        <span ><b>tempImageSrc</b></span>
+                        <a href="#tempImageSrc"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="72" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="turmas"></a>
+                    <span class="name">
+                        <span ><b>turmas</b></span>
+                        <a href="#turmas"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/Turma.html" target="_self" >Turma[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isCurrentStepValid"></a>
+                        <span class="name"><b>isCurrentStepValid</b><a href="#isCurrentStepValid"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>isCurrentStepValid()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="93" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:93</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isFormValid"></a>
+                        <span class="name"><b>isFormValid</b><a href="#isFormValid"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>isFormValid()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="114" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:114</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="availableDiagnosticos"></a>
+                        <span class="name"><b>availableDiagnosticos</b><a href="#availableDiagnosticos"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>availableDiagnosticos()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="157" class="link-to-prism">src/app/alunos/adicionar-aluno/adicionar-aluno.ts:157</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, ChangeDetectorRef, OnInit } from &#x27;@angular/core&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { Router } from &#x27;@angular/router&#x27;;
+import { LucideArrowLeft, LucideTrash2 } from &#x27;@lucide/angular&#x27;;
+import { ModalCrop } from &#x27;../modal-crop/modal-crop&#x27;;
+import { ModalConfirmacao } from &#x27;./modal-confirmacao/modal-confirmacao&#x27;;
+import { AlunoService } from &#x27;../aluno.service&#x27;;
+import { TurmaService, Turma } from &#x27;../../turmas/turma.service&#x27;;
+
+export interface DiagnosticoItem {
+  diagnostico: string;
+  descricao: string;
+}
+
+export interface ResponsavelItem {
+  nome: string;
+  parentesco: string;
+  email: string;
+  telefone: string;
+}
+
+export interface AlunoForm {
+  nomeCompleto: string;
+  fotoUrl: string | null;
+  dataNascimento: string;
+  genero: string;
+  id_turma: string;
+  diagnosticos: DiagnosticoItem[];
+  responsaveis: ResponsavelItem[];
+}
+
+@Component({
+  selector: &#x27;app-adicionar-aluno&#x27;,
+  imports: [FormsModule, LucideArrowLeft, LucideTrash2, ModalCrop, ModalConfirmacao],
+  templateUrl: &#x27;./adicionar-aluno.html&#x27;,
+  styleUrl: &#x27;./adicionar-aluno.scss&#x27;,
+})
+export class AdicionarAluno implements OnInit {
+  currentStep &#x3D; 1;
+
+  generos &#x3D; [
+    { value: &#x27;masculino&#x27;, label: &#x27;Masculino&#x27; },
+    { value: &#x27;feminino&#x27;, label: &#x27;Feminino&#x27; },
+    { value: &#x27;outro&#x27;, label: &#x27;Outro&#x27; },
+  ];
+
+  turmas: Turma[] &#x3D; [];
+
+  diagnosticos &#x3D; [
+    { value: &#x27;tdah&#x27;, label: &#x27;TDAH (Transtorno do Déficit de Atenção com Hiperatividade)&#x27; },
+    { value: &#x27;autismo&#x27;, label: &#x27;TEA (Transtorno do Espectro Autista)&#x27; },
+    { value: &#x27;deficiencia-fisica&#x27;, label: &#x27;Deficiência Física&#x27; },
+    { value: &#x27;deficiencia-visual&#x27;, label: &#x27;Deficiência Visual&#x27; },
+    { value: &#x27;deficiencia-auditiva&#x27;, label: &#x27;Deficiência Auditiva&#x27; },
+    { value: &#x27;intelectual&#x27;, label: &#x27;Deficiência Intelectual&#x27; },
+    { value: &#x27;outro&#x27;, label: &#x27;Outro&#x27; },
+  ];
+
+  form: AlunoForm &#x3D; {
+    nomeCompleto: &#x27;&#x27;,
+    fotoUrl: null,
+    dataNascimento: &#x27;&#x27;,
+    genero: &#x27;&#x27;,
+    id_turma: &#x27;&#x27;,
+    diagnosticos: [],
+    // Inicia com 1 responsável vazio obrigatório
+    responsaveis: [{ nome: &#x27;&#x27;, parentesco: &#x27;&#x27;, email: &#x27;&#x27;, telefone: &#x27;&#x27; }], 
+  };
+
+  previewUrl: string | null &#x3D; null;
+  isCropModalOpen &#x3D; false;
+  tempImageSrc: string | null &#x3D; null;
+  isConfirmacaoModalOpen &#x3D; false;
+  novoAlunoId: string | null &#x3D; null;
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private alunoService: AlunoService,
+    private turmaService: TurmaService
+  ) {}
+
+  ngOnInit() {
+    this.turmaService.listarTurmas().subscribe({
+      next: (data) &#x3D;&gt; {
+        this.turmas &#x3D; data;
+        this.cdr.detectChanges();
+      },
+      error: (err) &#x3D;&gt; console.error(&#x27;Erro ao buscar turmas&#x27;, err)
+    });
+  }
+
+  get isCurrentStepValid(): boolean {
+    if (this.currentStep &#x3D;&#x3D;&#x3D; 1) {
+      return !!(
+        this.form.nomeCompleto?.trim() &amp;&amp;
+        this.form.dataNascimento &amp;&amp;
+        this.form.genero &amp;&amp;
+        this.form.id_turma
+      );
+    }
+    if (this.currentStep &#x3D;&#x3D;&#x3D; 2) {
+      // Valida se todos os responsáveis preencheram os campos mínimos
+      return this.form.responsaveis.every(r &#x3D;&gt; 
+        r.nome?.trim() &amp;&amp; r.parentesco &amp;&amp; r.telefone?.trim()
+      );
+    }
+    if (this.currentStep &#x3D;&#x3D;&#x3D; 3) {
+      return this.form.diagnosticos.length &gt; 0;
+    }
+    return false;
+  }
+
+  get isFormValid(): boolean {
+    return !!(
+      this.form.nomeCompleto?.trim() &amp;&amp;
+      this.form.dataNascimento &amp;&amp;
+      this.form.genero &amp;&amp;
+      this.form.id_turma &amp;&amp;
+      this.form.responsaveis.every(r &#x3D;&gt; r.nome?.trim() &amp;&amp; r.parentesco &amp;&amp; r.telefone?.trim()) &amp;&amp;
+      this.form.diagnosticos.length &gt; 0
+    );
+  }
+
+  // --- MÉTODOS DE RESPONSÁVEIS ---
+  adicionarResponsavel() {
+   if (this.form.responsaveis.length &lt; 2) {
+      this.form.responsaveis.push({ nome: &#x27;&#x27;, parentesco: &#x27;&#x27;, email: &#x27;&#x27;, telefone: &#x27;&#x27; });
+    }
+  }
+  removerResponsavel(index: number) {
+    if (this.form.responsaveis.length &gt; 1) {
+      this.form.responsaveis.splice(index, 1);
+    }
+  }
+
+  aplicaMascaraTelefone(event: any, index: number) {
+    let valor &#x3D; event.target.value.replace(/\D/g, &#x27;&#x27;);
+    if (valor.length &gt; 11) {
+      valor &#x3D; valor.substring(0, 11);
+    }
+
+    let formato &#x3D; valor;
+    if (valor.length &gt; 2 &amp;&amp; valor.length &lt;&#x3D; 6) {
+      formato &#x3D; &#x60;(${valor.substring(0, 2)}) ${valor.substring(2)}&#x60;;
+    } else if (valor.length &gt; 6 &amp;&amp; valor.length &lt;&#x3D; 10) {
+      formato &#x3D; &#x60;(${valor.substring(0, 2)}) ${valor.substring(2, 6)}-${valor.substring(6)}&#x60;;
+    } else if (valor.length &#x3D;&#x3D;&#x3D; 11) {
+      formato &#x3D; &#x60;(${valor.substring(0, 2)}) ${valor.substring(2, 7)}-${valor.substring(7)}&#x60;;
+    }
+
+    event.target.value &#x3D; formato;
+    this.form.responsaveis[index].telefone &#x3D; formato; // Atualiza no índice correto
+  }
+  // ------------------------------
+
+  get availableDiagnosticos() {
+    const usedValues &#x3D; this.form.diagnosticos.map(d &#x3D;&gt; d.diagnostico);
+    return this.diagnosticos.filter(d &#x3D;&gt; !usedValues.includes(d.value));
+  }
+
+  nextStep() {
+    if (this.isCurrentStepValid &amp;&amp; this.currentStep &lt; 3) {
+      this.currentStep++;
+    }
+  }
+
+  previousStep() {
+    if (this.currentStep &gt; 1) {
+      this.currentStep--;
+    }
+  }
+
+  voltar() {
+    this.router.navigate([&#x27;/alunos&#x27;]);
+  }
+
+  onFileChange(event: Event) {
+    const input &#x3D; event.target as HTMLInputElement;
+    if (input.files &amp;&amp; input.files[0]) {
+      const file &#x3D; input.files[0];
+      const reader &#x3D; new FileReader();
+
+      reader.onload &#x3D; () &#x3D;&gt; {
+        this.tempImageSrc &#x3D; reader.result as string;
+        this.isCropModalOpen &#x3D; true;
+        input.value &#x3D; &#x27;&#x27;;
+        this.cdr.detectChanges();
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onCropComplete(croppedImage: string) {
+    this.form.fotoUrl &#x3D; croppedImage;
+    this.previewUrl &#x3D; croppedImage;
+    this.isCropModalOpen &#x3D; false;
+    this.tempImageSrc &#x3D; null;
+    this.cdr.detectChanges();
+  }
+
+  onCropClosed() {
+    this.isCropModalOpen &#x3D; false;
+    this.tempImageSrc &#x3D; null;
+    this.cdr.detectChanges();
+  }
+
+  save() {
+    if (!this.isFormValid) {
+      alert(&#x27;Por favor, preencha todos os campos obrigatórios antes de salvar.&#x27;);
+      return;
+    }
+
+    const diagnosticosFormatados &#x3D; this.form.diagnosticos.map(d &#x3D;&gt; ({
+      diagnostico: this.getDiagnosticoLabel(d.diagnostico),
+      descricao: d.descricao,
+    }));
+
+    const payloadBanco &#x3D; {
+      nome_completo: this.form.nomeCompleto,
+      data_de_nascimento: this.form.dataNascimento || undefined,
+      genero: this.getGeneroLabel(this.form.genero),
+      id_turma: this.form.id_turma,
+      diagnostico: diagnosticosFormatados,
+      descricao_diagnostico: JSON.stringify(diagnosticosFormatados),
+      foto: this.form.fotoUrl || undefined,
+      responsaveis: this.form.responsaveis // Enviando o array para o backend processar
+    };
+
+    this.alunoService.cadastrarAluno(payloadBanco).subscribe({
+      next: (resposta: any) &#x3D;&gt; {
+        this.novoAlunoId &#x3D; resposta &amp;&amp; resposta.length &gt; 0 ? resposta[0].id : null;
+        this.isConfirmacaoModalOpen &#x3D; true;
+        this.cdr.detectChanges();
+      },
+      error: (erro: any) &#x3D;&gt; {
+        console.error(&#x27;Erro ao salvar no banco:&#x27;, erro);
+        alert(&#x27;Falha ao cadastrar aluno. Tente novamente.&#x27;);
+      },
+    });
+  }
+
+  removeDiagnostico(index: number) {
+    this.form.diagnosticos.splice(index, 1);
+    this.cdr.detectChanges();
+  }
+
+  selectDiagnostico(value: string) {
+    if (value &amp;&amp; !this.form.diagnosticos.some(d &#x3D;&gt; d.diagnostico &#x3D;&#x3D;&#x3D; value)) {
+      this.form.diagnosticos.push({
+        diagnostico: value,
+        descricao: &#x27;&#x27;,
+      });
+      this.cdr.detectChanges();
+    }
+  }
+
+  onDiagnosticoSelect(event: Event) {
+    const select &#x3D; event.target as HTMLSelectElement;
+    if (select.value) {
+      this.selectDiagnostico(select.value);
+      select.value &#x3D; &#x27;&#x27;;
+    }
+  }
+
+  autoResize(event: Event) {
+    const textarea &#x3D; event.target as HTMLTextAreaElement;
+    textarea.style.height &#x3D; &#x27;auto&#x27;;
+    textarea.style.height &#x3D; textarea.scrollHeight + &#x27;px&#x27;;
+  }
+
+  private getGeneroLabel(value: string): string {
+    return this.generos.find((g) &#x3D;&gt; g.value &#x3D;&#x3D;&#x3D; value)?.label || &#x27;&#x27;;
+  }
+
+  getDiagnosticoLabel(value: string): string {
+    return this.diagnosticos.find((d) &#x3D;&gt; d.value &#x3D;&#x3D;&#x3D; value)?.label || &#x27;&#x27;;
+  }
+
+  onConfirmacaoConfirmed() {
+    this.isConfirmacaoModalOpen &#x3D; false;
+    if (this.novoAlunoId) {
+      this.router.navigate([&#x27;/alunos&#x27;, this.novoAlunoId], { queryParams: { preencher: &#x27;true&#x27; } });
+    } else {
+      this.router.navigate([&#x27;/alunos&#x27;]);
+    }
+  }
+
+  onConfirmacaoDismissed() {
+    this.isConfirmacaoModalOpen &#x3D; false;
+    this.router.navigate([&#x27;/alunos&#x27;]);
+  }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;adicionar-aluno-page d-flex flex-column h-100 overflow-auto&quot;&gt;
+  &lt;!-- Breadcrumb --&gt;
+  &lt;div class&#x3D;&quot;alunos-breadcrumb mb-2 p-2 border-bottom d-flex align-items-center gap-2&quot;&gt;
+    &lt;button class&#x3D;&quot;btn btn-ghost-icon px-2&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;voltar()&quot;&gt;
+      &lt;svg lucideArrowLeft [size]&#x3D;&quot;20&quot; stroke-width&#x3D;&quot;2&quot;&gt;&lt;/svg&gt;
+    &lt;/button&gt;
+    &lt;p class&#x3D;&quot;mb-0 text-muted&quot;&gt;Alunos / Adicionar Aluno&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div class&#x3D;&quot;adicionar-aluno-content p-4&quot;&gt;
+    &lt;h1 class&#x3D;&quot;page-title fw-bold mb-4&quot;&gt;Adicionar Novo Aluno&lt;/h1&gt;
+
+    &lt;!-- Step Indicator --&gt;
+    &lt;div class&#x3D;&quot;step-indicator d-flex align-items-center justify-content-center mb-5&quot;&gt;
+      &lt;div class&#x3D;&quot;step&quot; [class.active]&#x3D;&quot;currentStep &gt;&#x3D; 1&quot; [class.completed]&#x3D;&quot;currentStep &gt; 1&quot;&gt;
+        &lt;div class&#x3D;&quot;step-circle&quot;&gt;1&lt;/div&gt;
+        &lt;span class&#x3D;&quot;step-label&quot;&gt;Informações do Aluno&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class&#x3D;&quot;step-connector&quot; [class.active]&#x3D;&quot;currentStep &gt; 1&quot;&gt;&lt;/div&gt;
+      &lt;div class&#x3D;&quot;step&quot; [class.active]&#x3D;&quot;currentStep &gt;&#x3D; 2&quot; [class.completed]&#x3D;&quot;currentStep &gt; 2&quot;&gt;
+        &lt;div class&#x3D;&quot;step-circle&quot;&gt;2&lt;/div&gt;
+        &lt;span class&#x3D;&quot;step-label&quot;&gt;Informações do Responsável&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class&#x3D;&quot;step-connector&quot; [class.active]&#x3D;&quot;currentStep &gt; 2&quot;&gt;&lt;/div&gt;
+      &lt;div class&#x3D;&quot;step&quot; [class.active]&#x3D;&quot;currentStep &gt;&#x3D; 3&quot;&gt;
+        &lt;div class&#x3D;&quot;step-circle&quot;&gt;3&lt;/div&gt;
+        &lt;span class&#x3D;&quot;step-label&quot;&gt;Sintomas&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Step 1: Informações do Aluno --&gt;
+    @if (currentStep &#x3D;&#x3D;&#x3D; 1) {
+    &lt;div class&#x3D;&quot;step-content card-step p-4&quot;&gt;
+      &lt;h2 class&#x3D;&quot;step-title mb-4&quot;&gt;Informações do Aluno&lt;/h2&gt;
+
+      &lt;!-- Nome Completo --&gt;
+      &lt;div class&#x3D;&quot;form-group&quot;&gt;
+        &lt;label class&#x3D;&quot;form-label&quot;&gt;Nome Completo do Aluno&lt;/label&gt;
+        &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;form-input&quot; placeholder&#x3D;&quot;Nome completo&quot; [(ngModel)]&#x3D;&quot;form.nomeCompleto&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Foto --&gt;
+      &lt;div class&#x3D;&quot;form-group form-group-foto&quot;&gt;
+        &lt;div class&#x3D;&quot;foto-preview&quot;&gt;
+          @if (previewUrl) {
+          &lt;img [src]&#x3D;&quot;previewUrl&quot; alt&#x3D;&quot;Foto do aluno&quot; class&#x3D;&quot;foto-imagem&quot; /&gt;
+          } @else {
+          &lt;div class&#x3D;&quot;foto-placeholder&quot;&gt;
+            &lt;svg class&#x3D;&quot;foto-placeholder-icon&quot; xmlns&#x3D;&quot;http://www.w3.org/2000/svg&quot; width&#x3D;&quot;32&quot; height&#x3D;&quot;32&quot;
+              viewBox&#x3D;&quot;0 0 24 24&quot; fill&#x3D;&quot;none&quot; stroke&#x3D;&quot;currentColor&quot; stroke-width&#x3D;&quot;1.5&quot; stroke-linecap&#x3D;&quot;round&quot;
+              stroke-linejoin&#x3D;&quot;round&quot;&gt;
+              &lt;path d&#x3D;&quot;M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2&quot; /&gt;
+              &lt;circle cx&#x3D;&quot;12&quot; cy&#x3D;&quot;7&quot; r&#x3D;&quot;4&quot; /&gt;
+            &lt;/svg&gt;
+          &lt;/div&gt;
+          }
+        &lt;/div&gt;
+        &lt;label class&#x3D;&quot;btn-alterar-foto&quot; for&#x3D;&quot;foto-input&quot;&gt;
+          Alterar Foto
+        &lt;/label&gt;
+        &lt;input type&#x3D;&quot;file&quot; id&#x3D;&quot;foto-input&quot; accept&#x3D;&quot;image/*&quot; class&#x3D;&quot;hidden-input&quot; (change)&#x3D;&quot;onFileChange($event)&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Data de Nascimento &amp; Gênero --&gt;
+      &lt;div class&#x3D;&quot;form-row&quot;&gt;
+        &lt;div class&#x3D;&quot;form-group form-group-half&quot;&gt;
+          &lt;label class&#x3D;&quot;form-label&quot;&gt;Data de Nascimento&lt;/label&gt;
+          &lt;input type&#x3D;&quot;date&quot; class&#x3D;&quot;form-input&quot; [(ngModel)]&#x3D;&quot;form.dataNascimento&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;form-group form-group-half&quot;&gt;
+          &lt;label class&#x3D;&quot;form-label&quot;&gt;Gênero&lt;/label&gt;
+          &lt;div class&#x3D;&quot;select-wrapper&quot;&gt;
+            &lt;select class&#x3D;&quot;form-select&quot; [(ngModel)]&#x3D;&quot;form.genero&quot;&gt;
+              &lt;option value&#x3D;&quot;&quot; disabled selected&gt;Selecione&lt;/option&gt;
+              @for (genero of generos; track genero.value) {
+              &lt;option [value]&#x3D;&quot;genero.value&quot;&gt;{{ genero.label }}&lt;/option&gt;
+              }
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Turma / Sala --&gt;
+      &lt;div class&#x3D;&quot;form-group&quot;&gt;
+        &lt;label class&#x3D;&quot;form-label&quot;&gt;Turma / Sala&lt;/label&gt;
+        &lt;div class&#x3D;&quot;select-wrapper&quot;&gt;
+          &lt;select class&#x3D;&quot;form-select&quot; [(ngModel)]&#x3D;&quot;form.id_turma&quot;&gt;
+            &lt;option value&#x3D;&quot;&quot; disabled selected&gt;Selecione&lt;/option&gt;
+            @for (turma of turmas; track turma.id_turma) {
+            &lt;option [value]&#x3D;&quot;turma.id_turma&quot;&gt;{{ turma.serie }} {{ turma.nome }}&lt;/option&gt;
+            }
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    }
+
+    &lt;!-- Step 2: Informações do Responsável --&gt;
+    @if (currentStep &#x3D;&#x3D;&#x3D; 2) {
+    &lt;div class&#x3D;&quot;step-content card-step p-4&quot;&gt;
+      &lt;div class&#x3D;&quot;d-flex justify-content-between align-items-center mb-4&quot;&gt;
+        &lt;h2 class&#x3D;&quot;step-title mb-0&quot;&gt;Informações dos Responsáveis&lt;/h2&gt;
+        @if (form.responsaveis.length &lt; 2) { &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;btn btn-outline&quot;
+          style&#x3D;&quot;border: 1px solid #ccc; padding: 5px 15px;&quot; (click)&#x3D;&quot;adicionarResponsavel()&quot;&gt;
+          + Adicionar Responsável
+          &lt;/button&gt;
+          }
+      &lt;/div&gt;
+
+      @for (resp of form.responsaveis; track $index; let i &#x3D; $index) {
+      &lt;div class&#x3D;&quot;responsavel-block mb-4 p-3 border rounded position-relative&quot;&gt;
+
+        &lt;div class&#x3D;&quot;d-flex justify-content-between mb-3&quot;&gt;
+          &lt;h5 class&#x3D;&quot;m-0 text-muted&quot;&gt;Responsável {{ i + 1 }}&lt;/h5&gt;
+          @if (form.responsaveis.length &gt; 1) {
+          &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;btn btn-ghost-icon p-0 text-danger&quot; (click)&#x3D;&quot;removerResponsavel(i)&quot;&gt;
+            &lt;svg lucideTrash2 [size]&#x3D;&quot;20&quot; stroke-width&#x3D;&quot;2&quot;&gt;&lt;/svg&gt;
+          &lt;/button&gt;
+          }
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;form-row&quot;&gt;
+          &lt;div class&#x3D;&quot;form-group form-group-half&quot;&gt;
+            &lt;label class&#x3D;&quot;form-label&quot;&gt;Nome do Responsável *&lt;/label&gt;
+            &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;form-input&quot; placeholder&#x3D;&quot;Nome completo&quot; [(ngModel)]&#x3D;&quot;form.responsaveis[i].nome&quot; /&gt;
+          &lt;/div&gt;
+
+          &lt;div class&#x3D;&quot;form-group form-group-half&quot;&gt;
+            &lt;label class&#x3D;&quot;form-label&quot;&gt;Parentesco *&lt;/label&gt;
+            &lt;div class&#x3D;&quot;select-wrapper&quot;&gt;
+              &lt;select class&#x3D;&quot;form-select&quot; [(ngModel)]&#x3D;&quot;form.responsaveis[i].parentesco&quot;&gt;
+                &lt;option value&#x3D;&quot;&quot; disabled selected&gt;Selecione&lt;/option&gt;
+                &lt;option value&#x3D;&quot;Mãe&quot;&gt;Mãe&lt;/option&gt;
+                &lt;option value&#x3D;&quot;Pai&quot;&gt;Pai&lt;/option&gt;
+                &lt;option value&#x3D;&quot;Avó/Avô&quot;&gt;Avó/Avô&lt;/option&gt;
+                &lt;option value&#x3D;&quot;Tia/Tio&quot;&gt;Tia/Tio&lt;/option&gt;
+                &lt;option value&#x3D;&quot;Outro&quot;&gt;Outro&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;form-row&quot;&gt;
+          &lt;div class&#x3D;&quot;form-group form-group-half&quot;&gt;
+            &lt;label class&#x3D;&quot;form-label&quot;&gt;E-mail&lt;/label&gt;
+            &lt;input type&#x3D;&quot;email&quot; class&#x3D;&quot;form-input&quot; placeholder&#x3D;&quot;email@exemplo.com&quot;
+              [(ngModel)]&#x3D;&quot;form.responsaveis[i].email&quot; /&gt;
+          &lt;/div&gt;
+
+          &lt;div class&#x3D;&quot;form-group form-group-half&quot;&gt;
+            &lt;label class&#x3D;&quot;form-label&quot;&gt;Telefone *&lt;/label&gt;
+            &lt;input type&#x3D;&quot;tel&quot; class&#x3D;&quot;form-input&quot; placeholder&#x3D;&quot;(00) 00000-0000&quot;
+              [(ngModel)]&#x3D;&quot;form.responsaveis[i].telefone&quot; (input)&#x3D;&quot;aplicaMascaraTelefone($event, i)&quot; maxlength&#x3D;&quot;15&quot; /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      }
+    &lt;/div&gt;
+    }
+    &lt;!-- Step 3: Sintomas --&gt;
+    @if (currentStep &#x3D;&#x3D;&#x3D; 3) {
+    &lt;div class&#x3D;&quot;step-content card-step p-4&quot;&gt;
+      &lt;h2 class&#x3D;&quot;step-title mb-4&quot;&gt;Sintomas&lt;/h2&gt;
+
+      &lt;!-- Add Diagnosis Select --&gt;
+      &lt;div class&#x3D;&quot;form-group mb-4&quot;&gt;
+        &lt;label class&#x3D;&quot;form-label&quot;&gt;Adicionar Diagnóstico&lt;/label&gt;
+        &lt;div class&#x3D;&quot;select-wrapper&quot;&gt;
+          &lt;select class&#x3D;&quot;form-select&quot; (change)&#x3D;&quot;onDiagnosticoSelect($event)&quot;&gt;
+            &lt;option value&#x3D;&quot;&quot; disabled selected&gt;Selecione um diagnóstico&lt;/option&gt;
+            @for (diag of availableDiagnosticos; track diag.value) {
+            &lt;option [value]&#x3D;&quot;diag.value&quot;&gt;{{ diag.label }}&lt;/option&gt;
+            }
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Diagnosis Cards --&gt;
+      &lt;div class&#x3D;&quot;diagnosticos-list&quot;&gt;
+        @for (diag of form.diagnosticos; track diag.diagnostico; let i &#x3D; $index) {
+        &lt;div class&#x3D;&quot;diagnostico-card&quot;&gt;
+          &lt;div class&#x3D;&quot;diagnostico-card-header&quot;&gt;
+            &lt;h3 class&#x3D;&quot;diagnostico-card-title&quot;&gt;{{ getDiagnosticoLabel(diag.diagnostico) }}&lt;/h3&gt;
+            &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;btn-remove-diagnostico&quot; (click)&#x3D;&quot;removeDiagnostico(i)&quot;&gt;
+              &lt;svg lucideTrash2 [size]&#x3D;&quot;16&quot; [strokeWidth]&#x3D;&quot;2&quot;&gt;&lt;/svg&gt;
+            &lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;diagnostico-card-body&quot;&gt;
+            &lt;label class&#x3D;&quot;form-label&quot;&gt;Descrição&lt;/label&gt;
+            &lt;textarea class&#x3D;&quot;form-textarea&quot;
+              placeholder&#x3D;&quot;Descreva detalhadamente o diagnóstico e necessidades especiais do aluno...&quot;
+              [value]&#x3D;&quot;diag.descricao&quot; (input)&#x3D;&quot;diag.descricao &#x3D; $any($event.target).value; autoResize($event)&quot;
+              rows&#x3D;&quot;3&quot;&gt;&lt;/textarea&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        }
+      &lt;/div&gt;
+
+      @if (form.diagnosticos.length &#x3D;&#x3D;&#x3D; 0) {
+      &lt;div class&#x3D;&quot;empty-state&quot;&gt;
+        &lt;p class&#x3D;&quot;text-muted mb-0&quot;&gt;Nenhum diagnóstico adicionado. Selecione um diagnóstico acima para começar.&lt;/p&gt;
+      &lt;/div&gt;
+      }
+    &lt;/div&gt;
+    }
+
+    &lt;!-- Navigation Buttons --&gt;
+    &lt;div class&#x3D;&quot;step-actions d-flex justify-content-between mt-4&quot;&gt;
+      &lt;button class&#x3D;&quot;btn btn-cancelar&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;voltar()&quot;&gt;
+        Cancelar
+      &lt;/button&gt;
+
+      &lt;div class&#x3D;&quot;d-flex gap-2&quot;&gt;
+        @if (currentStep &gt; 1) {
+        &lt;button class&#x3D;&quot;btn btn-outline&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;previousStep()&quot;&gt;
+          Voltar
+        &lt;/button&gt;
+        }
+
+        @if (currentStep &lt; 3) { &lt;button class&#x3D;&quot;btn btn-salvar&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;nextStep()&quot;
+          [disabled]&#x3D;&quot;!isCurrentStepValid&quot; [style.opacity]&#x3D;&quot;!isCurrentStepValid ? &#x27;0.5&#x27; : &#x27;1&#x27;&quot;
+          [style.cursor]&#x3D;&quot;!isCurrentStepValid ? &#x27;not-allowed&#x27; : &#x27;pointer&#x27;&quot;&gt;
+          Próximo
+          &lt;/button&gt;
+          } @else {
+          &lt;button class&#x3D;&quot;btn btn-salvar&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;save()&quot; [disabled]&#x3D;&quot;!isFormValid&quot;
+            [style.opacity]&#x3D;&quot;!isFormValid ? &#x27;0.5&#x27; : &#x27;1&#x27;&quot; [style.cursor]&#x3D;&quot;!isFormValid ? &#x27;not-allowed&#x27; : &#x27;pointer&#x27;&quot;&gt;
+            Salvar Aluno
+          &lt;/button&gt;
+          }
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;app-modal-crop [isOpen]&#x3D;&quot;isCropModalOpen&quot; [imageSrc]&#x3D;&quot;tempImageSrc&quot; (cropComplete)&#x3D;&quot;onCropComplete($event)&quot;
+    (closed)&#x3D;&quot;onCropClosed()&quot;&gt;&lt;/app-modal-crop&gt;
+
+  &lt;app-modal-confirmacao [isOpen]&#x3D;&quot;isConfirmacaoModalOpen&quot; [nomeAluno]&#x3D;&quot;form.nomeCompleto&quot;
+    (confirmed)&#x3D;&quot;onConfirmacaoConfirmed()&quot; (dismissed)&#x3D;&quot;onConfirmacaoDismissed()&quot;&gt;&lt;/app-modal-confirmacao&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./adicionar-aluno.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.adicionar-aluno-page {
+  height: 100%;
+  min-height: 0;
+}
+
+.page-title {
+  font-size: 1.625rem;
+  color: var(--ds-body);
+  font-family: var(--ds-font-family-base);
+}
+
+// ─── Step Indicator ─────────────────────────────────────────────────────────
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  position: relative;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  background-color: var(--ds-neutral-100);
+  color: var(--ds-muted);
+  border: 2px solid var(--ds-border);
+  transition: all 0.2s ease;
+}
+
+.step.active .step-circle {
+  background-color: var(--ds-primary);
+  color: white;
+  border-color: var(--ds-primary);
+}
+
+.step.completed .step-circle {
+  background-color: var(--ds-primary);
+  color: white;
+  border-color: var(--ds-primary);
+}
+
+.step-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-muted);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.step.active .step-label {
+  color: var(--ds-primary);
+  font-weight: 600;
+}
+
+.step-connector {
+  width: 60px;
+  height: 2px;
+  background-color: var(--ds-border);
+  margin: 0 var(--ds-spacing-2);
+  margin-bottom: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.step-connector.active {
+  background-color: var(--ds-primary);
+}
+
+// ─── Card Step ──────────────────────────────────────────────────────────────
+.card-step {
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.step-title {
+  font-size: var(--ds-font-size-lg);
+  font-weight: 600;
+  color: var(--ds-body);
+  margin: 0;
+}
+
+// ─── Form Groups ────────────────────────────────────────────────────────────
+.form-group {
+  margin-bottom: var(--ds-spacing-4);
+
+  &amp;:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-group-foto {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+}
+
+.form-group-half {
+  flex: 1;
+}
+
+.form-label {
+  display: block;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  color: var(--ds-muted);
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-base);
+  font-family: var(--ds-font-family-base);
+  color: var(--ds-body);
+  background-color: var(--ds-foreground);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+
+  &amp;::placeholder {
+    color: var(--ds-muted);
+  }
+
+  &amp;:focus {
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 0 3px var(--ds-primary-soft);
+  }
+}
+
+.form-select {
+  width: 100%;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-base);
+  font-family: var(--ds-font-family-base);
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  appearance: none;
+  cursor: pointer;
+
+  &amp;:focus {
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 0 3px var(--ds-primary-soft);
+  }
+}
+
+.select-wrapper {
+  position: relative;
+
+  &amp;::after {
+    content: &#x27;&#x27;;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ds-muted);
+    pointer-events: none;
+  }
+}
+
+// ─── Form Row ───────────────────────────────────────────────────────────────
+.form-row {
+  display: flex;
+  gap: var(--ds-spacing-3);
+}
+
+// ─── Photo ──────────────────────────────────────────────────────────────────
+.foto-preview {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--ds-radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--ds-neutral-100);
+}
+
+.foto-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--ds-primary-soft) 0%, var(--ds-neutral-100) 100%);
+}
+
+.foto-placeholder-icon {
+  color: var(--ds-muted);
+}
+
+.btn-alterar-foto {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--ds-spacing-1) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+
+  &amp;:hover {
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-neutral-500);
+  }
+}
+
+.hidden-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+// ─── Step Actions ───────────────────────────────────────────────────────────
+.step-actions {
+  max-width: 700px;
+  margin: var(--ds-spacing-4) auto 0;
+  width: 100%;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+
+  &amp;:hover {
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-neutral-500);
+  }
+}
+
+.btn-outline {
+  color: var(--ds-body);
+  background-color: transparent;
+  border: 1px solid var(--ds-border);
+
+  &amp;:hover {
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-neutral-500);
+  }
+}
+
+.btn-salvar {
+  color: white;
+  background-color: var(--ds-primary);
+  border: 1px solid var(--ds-primary);
+
+  &amp;:hover {
+    background-color: var(--ds-primary-hover);
+    box-shadow: var(--ds-shadow-sm);
+  }
+
+  &amp;:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-ghost-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ds-border);
+  background: transparent;
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &amp;:hover {
+    color: var(--ds-body);
+  }
+}
+
+// ─── Responsive ─────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .step-indicator {
+    flex-direction: column;
+    gap: var(--ds-spacing-3);
+  }
+
+  .step-connector {
+    width: 2px;
+    height: 20px;
+    margin: 0;
+  }
+
+  .step {
+    flex-direction: row;
+    gap: var(--ds-spacing-3);
+  }
+
+  .step-label {
+    margin-bottom: 0;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-actions {
+    flex-direction: column;
+    gap: var(--ds-spacing-2);
+  }
+
+  .step-actions .btn {
+    width: 100%;
+  }
+}
+
+// ─── Diagnosis Cards ────────────────────────────────────────────────────────
+.diagnosticos-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.diagnostico-card {
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-spacing-4);
+  transition: box-shadow 0.2s ease;
+
+  &amp;:hover {
+    box-shadow: var(--ds-shadow-sm);
+  }
+}
+
+.diagnostico-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.diagnostico-card-title {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-body);
+  margin: 0;
+}
+
+.btn-remove-diagnostico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &amp;:hover {
+    background-color: var(--ds-danger-soft);
+    color: var(--ds-danger);
+  }
+}
+
+.diagnostico-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.form-textarea {
+  width: 100%;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-base);
+  font-family: var(--ds-font-family-base);
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  resize: none;
+  overflow: hidden;
+  min-height: 80px;
+
+  &amp;::placeholder {
+    color: var(--ds-muted);
+  }
+
+  &amp;:focus {
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 0 3px var(--ds-primary-soft);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--ds-spacing-6) var(--ds-spacing-4);
+  border: 1px dashed var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  background-color: var(--ds-neutral-100);
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="adicionar-aluno-page d-flex flex-column h-100 overflow-auto">  <!-- Breadcrumb -->  <div class="alunos-breadcrumb mb-2 p-2 border-bottom d-flex align-items-center gap-2">    <button class="btn btn-ghost-icon px-2" type="button" (click)="voltar()">      <svg lucideArrowLeft [size]="20" stroke-width="2"></svg>    </button>    <p class="mb-0 text-muted">Alunos / Adicionar Aluno</p>  </div>  <div class="adicionar-aluno-content p-4">    <h1 class="page-title fw-bold mb-4">Adicionar Novo Aluno</h1>    <!-- Step Indicator -->    <div class="step-indicator d-flex align-items-center justify-content-center mb-5">      <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">        <div class="step-circle">1</div>        <span class="step-label">Informações do Aluno</span>      </div>      <div class="step-connector" [class.active]="currentStep > 1"></div>      <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">        <div class="step-circle">2</div>        <span class="step-label">Informações do Responsável</span>      </div>      <div class="step-connector" [class.active]="currentStep > 2"></div>      <div class="step" [class.active]="currentStep >= 3">        <div class="step-circle">3</div>        <span class="step-label">Sintomas</span>      </div>    </div>    <!-- Step 1: Informações do Aluno -->    @if (currentStep === 1) {    <div class="step-content card-step p-4">      <h2 class="step-title mb-4">Informações do Aluno</h2>      <!-- Nome Completo -->      <div class="form-group">        <label class="form-label">Nome Completo do Aluno</label>        <input type="text" class="form-input" placeholder="Nome completo" [(ngModel)]="form.nomeCompleto" />      </div>      <!-- Foto -->      <div class="form-group form-group-foto">        <div class="foto-preview">          @if (previewUrl) {          <img [src]="previewUrl" alt="Foto do aluno" class="foto-imagem" />          } @else {          <div class="foto-placeholder">            <svg class="foto-placeholder-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32"              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"              stroke-linejoin="round">              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />              <circle cx="12" cy="7" r="4" />            </svg>          </div>          }        </div>        <label class="btn-alterar-foto" for="foto-input">          Alterar Foto        </label>        <input type="file" id="foto-input" accept="image/*" class="hidden-input" (change)="onFileChange($event)" />      </div>      <!-- Data de Nascimento & Gênero -->      <div class="form-row">        <div class="form-group form-group-half">          <label class="form-label">Data de Nascimento</label>          <input type="date" class="form-input" [(ngModel)]="form.dataNascimento" />        </div>        <div class="form-group form-group-half">          <label class="form-label">Gênero</label>          <div class="select-wrapper">            <select class="form-select" [(ngModel)]="form.genero">              <option value="" disabled selected>Selecione</option>              @for (genero of generos; track genero.value) {              <option [value]="genero.value">{{ genero.label }}</option>              }            </select>          </div>        </div>      </div>      <!-- Turma / Sala -->      <div class="form-group">        <label class="form-label">Turma / Sala</label>        <div class="select-wrapper">          <select class="form-select" [(ngModel)]="form.id_turma">            <option value="" disabled selected>Selecione</option>            @for (turma of turmas; track turma.id_turma) {            <option [value]="turma.id_turma">{{ turma.serie }} {{ turma.nome }}</option>            }          </select>        </div>      </div>    </div>    }    <!-- Step 2: Informações do Responsável -->    @if (currentStep === 2) {    <div class="step-content card-step p-4">      <div class="d-flex justify-content-between align-items-center mb-4">        <h2 class="step-title mb-0">Informações dos Responsáveis</h2>        @if (form.responsaveis.length < 2) { <button type="button" class="btn btn-outline"          style="border: 1px solid #ccc; padding: 5px 15px;" (click)="adicionarResponsavel()">          + Adicionar Responsável          </button>          }      </div>      @for (resp of form.responsaveis; track $index; let i = $index) {      <div class="responsavel-block mb-4 p-3 border rounded position-relative">        <div class="d-flex justify-content-between mb-3">          <h5 class="m-0 text-muted">Responsável {{ i + 1 }}</h5>          @if (form.responsaveis.length > 1) {          <button type="button" class="btn btn-ghost-icon p-0 text-danger" (click)="removerResponsavel(i)">            <svg lucideTrash2 [size]="20" stroke-width="2"></svg>          </button>          }        </div>        <div class="form-row">          <div class="form-group form-group-half">            <label class="form-label">Nome do Responsável *</label>            <input type="text" class="form-input" placeholder="Nome completo" [(ngModel)]="form.responsaveis[i].nome" />          </div>          <div class="form-group form-group-half">            <label class="form-label">Parentesco *</label>            <div class="select-wrapper">              <select class="form-select" [(ngModel)]="form.responsaveis[i].parentesco">                <option value="" disabled selected>Selecione</option>                <option value="Mãe">Mãe</option>                <option value="Pai">Pai</option>                <option value="Avó/Avô">Avó/Avô</option>                <option value="Tia/Tio">Tia/Tio</option>                <option value="Outro">Outro</option>              </select>            </div>          </div>        </div>        <div class="form-row">          <div class="form-group form-group-half">            <label class="form-label">E-mail</label>            <input type="email" class="form-input" placeholder="email@exemplo.com"              [(ngModel)]="form.responsaveis[i].email" />          </div>          <div class="form-group form-group-half">            <label class="form-label">Telefone *</label>            <input type="tel" class="form-input" placeholder="(00) 00000-0000"              [(ngModel)]="form.responsaveis[i].telefone" (input)="aplicaMascaraTelefone($event, i)" maxlength="15" />          </div>        </div>      </div>      }    </div>    }    <!-- Step 3: Sintomas -->    @if (currentStep === 3) {    <div class="step-content card-step p-4">      <h2 class="step-title mb-4">Sintomas</h2>      <!-- Add Diagnosis Select -->      <div class="form-group mb-4">        <label class="form-label">Adicionar Diagnóstico</label>        <div class="select-wrapper">          <select class="form-select" (change)="onDiagnosticoSelect($event)">            <option value="" disabled selected>Selecione um diagnóstico</option>            @for (diag of availableDiagnosticos; track diag.value) {            <option [value]="diag.value">{{ diag.label }}</option>            }          </select>        </div>      </div>      <!-- Diagnosis Cards -->      <div class="diagnosticos-list">        @for (diag of form.diagnosticos; track diag.diagnostico; let i = $index) {        <div class="diagnostico-card">          <div class="diagnostico-card-header">            <h3 class="diagnostico-card-title">{{ getDiagnosticoLabel(diag.diagnostico) }}</h3>            <button type="button" class="btn-remove-diagnostico" (click)="removeDiagnostico(i)">              <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>            </button>          </div>          <div class="diagnostico-card-body">            <label class="form-label">Descrição</label>            <textarea class="form-textarea"              placeholder="Descreva detalhadamente o diagnóstico e necessidades especiais do aluno..."              [value]="diag.descricao" (input)="diag.descricao = $any($event.target).value; autoResize($event)"              rows="3"></textarea>          </div>        </div>        }      </div>      @if (form.diagnosticos.length === 0) {      <div class="empty-state">        <p class="text-muted mb-0">Nenhum diagnóstico adicionado. Selecione um diagnóstico acima para começar.</p>      </div>      }    </div>    }    <!-- Navigation Buttons -->    <div class="step-actions d-flex justify-content-between mt-4">      <button class="btn btn-cancelar" type="button" (click)="voltar()">        Cancelar      </button>      <div class="d-flex gap-2">        @if (currentStep > 1) {        <button class="btn btn-outline" type="button" (click)="previousStep()">          Voltar        </button>        }        @if (currentStep < 3) { <button class="btn btn-salvar" type="button" (click)="nextStep()"          [disabled]="!isCurrentStepValid" [style.opacity]="!isCurrentStepValid ? \'0.5\' : \'1\'"          [style.cursor]="!isCurrentStepValid ? \'not-allowed\' : \'pointer\'">          Próximo          </button>          } @else {          <button class="btn btn-salvar" type="button" (click)="save()" [disabled]="!isFormValid"            [style.opacity]="!isFormValid ? \'0.5\' : \'1\'" [style.cursor]="!isFormValid ? \'not-allowed\' : \'pointer\'">            Salvar Aluno          </button>          }      </div>    </div>  </div>  <app-modal-crop [isOpen]="isCropModalOpen" [imageSrc]="tempImageSrc" (cropComplete)="onCropComplete($event)"    (closed)="onCropClosed()"></app-modal-crop>  <app-modal-confirmacao [isOpen]="isConfirmacaoModalOpen" [nomeAluno]="form.nomeCompleto"    (confirmed)="onConfirmacaoConfirmed()" (dismissed)="onConfirmacaoDismissed()"></app-modal-confirmacao></div></div>'
+    var COMPONENTS = [{'name': 'AdicionarAluno', 'selector': 'app-adicionar-aluno'},{'name': 'Alunos', 'selector': 'app-alunos'},{'name': 'App', 'selector': 'app-root'},{'name': 'Calendario', 'selector': 'app-calendario'},{'name': 'CardAluno', 'selector': 'app-card-aluno'},{'name': 'Configuracoes', 'selector': 'app-configuracoes'},{'name': 'DetalheAluno', 'selector': 'app-detalhe-aluno'},{'name': 'Documentos', 'selector': 'app-documentos'},{'name': 'EditarAluno', 'selector': 'app-editar-aluno'},{'name': 'Home', 'selector': 'app-home'},{'name': 'ModalAluno', 'selector': 'app-modal-aluno'},{'name': 'ModalConfirmacao', 'selector': 'app-modal-confirmacao'},{'name': 'ModalConfirmarExclusao', 'selector': 'app-modal-confirmar-exclusao'},{'name': 'ModalCrop', 'selector': 'app-modal-crop'},{'name': 'ModalDadosAdicionais', 'selector': 'app-modal-dados-adicionais'},{'name': 'ModalDocumento', 'selector': 'app-modal-documento'},{'name': 'Navbar', 'selector': 'app-navbar'},{'name': 'Tarefas', 'selector': 'app-tarefas'},{'name': 'TemplatePlaygroundComponent', 'selector': 'template-playground-root'},{'name': 'Toast', 'selector': 'app-toast'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'AdicionarAluno'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'AdicionarAluno.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

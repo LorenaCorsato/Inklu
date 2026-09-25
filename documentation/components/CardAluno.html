@@ -1,0 +1,1613 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  CardAluno</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/alunos/card-aluno/card-aluno.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-card-aluno</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>    <code>LucideEllipsisVertical</code>
+</div>
+                        <div>    <code>LucideUser</code>
+</div>
+                        <div>    <code>LucidePencil</code>
+</div>
+                        <div>    <code>LucideUserRoundX</code>
+</div>
+                        <div>    <code>LucideShare2</code>
+</div>
+                        <div>    <code>LucideUserCheck</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./card-aluno.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./card-aluno.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./card-aluno.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../components/Alunos.html" target="_self" >Alunos</a></code>
+                                </li>
+                        </ul>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                        <code>LucideEllipsisVertical</code>
+                                </li>
+                                <li>
+                                        <code>LucideUser</code>
+                                </li>
+                                <li>
+                                        <code>LucidePencil</code>
+                                </li>
+                                <li>
+                                        <code>LucideUserRoundX</code>
+                                </li>
+                                <li>
+                                        <code>LucideShare2</code>
+                                </li>
+                                <li>
+                                        <code>LucideUserCheck</code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#isOptionsMenuOpen" >isOptionsMenuOpen</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#closeOptionsMenu" >closeOptionsMenu</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#getDeficienciaDisplay" >getDeficienciaDisplay</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onAtivarClick" >onAtivarClick</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onCardClick" >onCardClick</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier"></span>
+                                <a href="#onDocumentClick" >onDocumentClick</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onEditarClick" >onEditarClick</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onExcluirClick" >onExcluirClick</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#shouldShowDeficienciaLabel" >shouldShowDeficienciaLabel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#toggleOptionsMenu" >toggleOptionsMenu</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#aluno" >aluno</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#ativar" >ativar</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#editar" >editar</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#excluir" >excluir</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>HostListeners</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">HL</span><a href="#document:click" >document:click</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, elementRef: <a href="https://angular.dev/api/core/ElementRef" target="_blank">ElementRef</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:29</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>elementRef</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/core/ElementRef" target="_blank" >ElementRef</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="aluno"></a>
+                        <b>aluno</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/Aluno.html" target="_self" >Aluno</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Required : </i>&nbsp;<b>true</b>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:24</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="ativar"></a>
+                        <b>ativar</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:27</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="editar"></a>
+                        <b>editar</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:25</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="excluir"></a>
+                        <b>excluir</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:26</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+    <section data-compodoc="block-methods">
+    <h3>HostListeners</h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="document:click"></a>
+                    <span class="name">
+                        <span ><b>document:click</b></span>
+                        <a href="#document:click"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <i>Arguments : </i><code>'$event' </code>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>document:click(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="34"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeOptionsMenu"></a>
+                    <span class="name">
+                        <span ><b>closeOptionsMenu</b></span>
+                        <a href="#closeOptionsMenu"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>closeOptionsMenu()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="67"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getDeficienciaDisplay"></a>
+                    <span class="name">
+                        <span ><b>getDeficienciaDisplay</b></span>
+                        <a href="#getDeficienciaDisplay"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getDeficienciaDisplay()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="76"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:76</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onAtivarClick"></a>
+                    <span class="name">
+                        <span ><b>onAtivarClick</b></span>
+                        <a href="#onAtivarClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onAtivarClick(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCardClick"></a>
+                    <span class="name">
+                        <span ><b>onCardClick</b></span>
+                        <a href="#onCardClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onCardClick()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="40"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onDocumentClick"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>onDocumentClick</b></span>
+                        <a href="#onDocumentClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onDocumentClick(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@HostListener(&#x27;document:click&#x27;, [&#x27;$event&#x27;])<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="34"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onEditarClick"></a>
+                    <span class="name">
+                        <span ><b>onEditarClick</b></span>
+                        <a href="#onEditarClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onEditarClick(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="44"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onExcluirClick"></a>
+                    <span class="name">
+                        <span ><b>onExcluirClick</b></span>
+                        <a href="#onExcluirClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onExcluirClick(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="56"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="shouldShowDeficienciaLabel"></a>
+                    <span class="name">
+                        <span ><b>shouldShowDeficienciaLabel</b></span>
+                        <a href="#shouldShowDeficienciaLabel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>shouldShowDeficienciaLabel()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="71"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleOptionsMenu"></a>
+                    <span class="name">
+                        <span ><b>toggleOptionsMenu</b></span>
+                        <a href="#toggleOptionsMenu"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleOptionsMenu(event: <a href="https://angular.dev/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="62"
+                                    class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isOptionsMenuOpen"></a>
+                    <span class="name">
+                        <span ><b>isOptionsMenuOpen</b></span>
+                        <a href="#isOptionsMenuOpen"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/alunos/card-aluno/card-aluno.ts:29</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Router } from &#x27;@angular/router&#x27;;
+import { LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2, LucideUserCheck } from &#x27;@lucide/angular&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { Component, Input, Output, EventEmitter, ElementRef, HostListener } from &#x27;@angular/core&#x27;;
+
+export interface Aluno {
+  id: any; 
+  nome: string;
+  ano: string;
+  deficiencia: string;
+  genero: string;
+  fotoUrl?: string;
+  originalData?: any;
+  status?: number; 
+}
+
+@Component({
+  selector: &#x27;app-card-aluno&#x27;,
+  imports: [CommonModule, LucideEllipsisVertical, LucideUser, LucidePencil, LucideUserRoundX, LucideShare2, LucideUserCheck],
+  templateUrl: &#x27;./card-aluno.html&#x27;,
+  styleUrl: &#x27;./card-aluno.scss&#x27;,
+})
+export class CardAluno {
+  @Input({ required: true }) aluno!: Aluno;
+  @Output() editar &#x3D; new EventEmitter&lt;Aluno&gt;();
+  @Output() excluir &#x3D; new EventEmitter&lt;Aluno&gt;();
+  @Output() ativar &#x3D; new EventEmitter&lt;Aluno&gt;();
+
+  isOptionsMenuOpen &#x3D; false;
+
+  constructor(private router: Router, private elementRef: ElementRef) { }
+
+  @HostListener(&#x27;document:click&#x27;, [&#x27;$event&#x27;])
+  onDocumentClick(event: Event) {
+    if (this.isOptionsMenuOpen &amp;&amp; !this.elementRef.nativeElement.contains(event.target)) {
+      this.isOptionsMenuOpen &#x3D; false;
+    }
+  }
+
+  onCardClick() {
+    this.router.navigate([&#x27;/alunos&#x27;, this.aluno.id]);
+  }
+
+  onEditarClick(event: Event) {
+    event.stopPropagation();
+    this.editar.emit(this.aluno);
+    this.closeOptionsMenu();
+  }
+
+  onAtivarClick(event: Event) {
+    event.stopPropagation();
+    this.ativar.emit(this.aluno);
+    this.closeOptionsMenu();
+  }
+
+  onExcluirClick(event: Event) {
+    event.stopPropagation();
+    this.excluir.emit(this.aluno);
+    this.closeOptionsMenu();
+  }
+
+  toggleOptionsMenu(event: Event) {
+    event.stopPropagation();
+    this.isOptionsMenuOpen &#x3D; !this.isOptionsMenuOpen;
+  }
+
+  closeOptionsMenu() {
+    this.isOptionsMenuOpen &#x3D; false;
+  }
+
+  shouldShowDeficienciaLabel(): boolean {
+    if (!this.aluno?.deficiencia) return false;
+    return !this.aluno.deficiencia.toLowerCase().startsWith(&#x27;deficiência&#x27;);
+  }
+
+  getDeficienciaDisplay(): string {
+    if (!this.aluno?.deficiencia) return &#x27;&#x27;;
+    return this.aluno.deficiencia.replace(/^Deficiência\s*/i, &#x27;&#x27;);
+  }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;card-aluno&quot; (click)&#x3D;&quot;onCardClick()&quot;&gt;
+  &lt;div class&#x3D;&quot;card-aluno-foto&quot;&gt;
+    @if (aluno.fotoUrl) {
+      &lt;img [src]&#x3D;&quot;aluno.fotoUrl&quot; [alt]&#x3D;&quot;aluno.nome&quot; class&#x3D;&quot;aluno-imagem&quot; /&gt;
+    } @else {
+      &lt;div class&#x3D;&quot;aluno-placeholder&quot;&gt;
+        &lt;svg lucideUser [size]&#x3D;&quot;48&quot; color&#x3D;&quot;#8d8d8d&quot; [strokeWidth]&#x3D;&quot;1.5&quot;&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    }
+  &lt;/div&gt;
+
+  &lt;div class&#x3D;&quot;card-aluno-info&quot;&gt;
+    &lt;div class&#x3D;&quot;card-aluno-header&quot;&gt;
+      &lt;div class&#x3D;&quot;card-aluno-ano&quot;&gt;
+        &lt;span class&#x3D;&quot;ano-badge&quot;&gt;{{ aluno.ano }}&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class&#x3D;&quot;btn-options dropdown&quot; (click)&#x3D;&quot;$event.stopPropagation()&quot;&gt;
+        &lt;button
+          class&#x3D;&quot;btn-options-btn&quot;
+          type&#x3D;&quot;button&quot;
+          (click)&#x3D;&quot;toggleOptionsMenu($event)&quot;
+          [attr.aria-expanded]&#x3D;&quot;isOptionsMenuOpen&quot;
+          aria-haspopup&#x3D;&quot;true&quot;
+        &gt;
+          &lt;svg lucideEllipsisVertical [size]&#x3D;&quot;16&quot; [strokeWidth]&#x3D;&quot;2&quot;&gt;&lt;/svg&gt;
+        &lt;/button&gt;
+        @if (isOptionsMenuOpen) {
+          &lt;div class&#x3D;&quot;dropdown-menu dropdown-menu-end show&quot;&gt;
+           &lt;!-- Mude a tag do botão de editar para isto: --&gt;
+&lt;button class&#x3D;&quot;dropdown-item&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;onEditarClick($event)&quot;&gt;
+  &lt;svg lucidePencil class&#x3D;&quot;dropdown-item-icon&quot;&gt;&lt;/svg&gt;
+  Editar
+&lt;/button&gt;
+            @if (aluno.status &#x3D;&#x3D;&#x3D; 2) {
+              &lt;button class&#x3D;&quot;dropdown-item&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;onAtivarClick($event)&quot;&gt;
+                &lt;svg lucideUserCheck class&#x3D;&quot;dropdown-item-icon&quot;&gt;&lt;/svg&gt;
+                Ativar
+              &lt;/button&gt;
+            } @else {
+              &lt;button class&#x3D;&quot;dropdown-item&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;onExcluirClick($event)&quot;&gt;
+                &lt;svg lucideUserRoundX class&#x3D;&quot;dropdown-item-icon&quot;&gt;&lt;/svg&gt;
+                Inativar
+              &lt;/button&gt;
+            }
+            &lt;button class&#x3D;&quot;dropdown-item&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;closeOptionsMenu()&quot;&gt;
+              &lt;svg lucideShare2 class&#x3D;&quot;dropdown-item-icon&quot;&gt;&lt;/svg&gt;
+              Compartilhar
+            &lt;/button&gt;
+          &lt;/div&gt;
+        }
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;h3 class&#x3D;&quot;card-aluno-nome&quot;&gt;{{ aluno.nome }}&lt;/h3&gt;
+
+    &lt;div class&#x3D;&quot;card-aluno-detalhes&quot;&gt;
+      &lt;!-- Deficiência --&gt;
+  &lt;div class&#x3D;&quot;detalhe-item&quot;&gt;
+    &lt;!-- Só exibe o label se não começar com &quot;Deficiência&quot; --&gt;
+    &lt;span class&#x3D;&quot;detalhe-label&quot;&gt;Deficiência&lt;/span&gt;
+    
+    &lt;!-- Exibe o nome já sem a palavra &#x27;Deficiência&#x27; no início --&gt;
+    &lt;span class&#x3D;&quot;detalhe-valor&quot;&gt;{{ getDeficienciaDisplay() }}&lt;/span&gt;
+  &lt;/div&gt;
+      &lt;div class&#x3D;&quot;detalhe-item&quot;&gt;
+        &lt;span class&#x3D;&quot;detalhe-label&quot;&gt;Gênero&lt;/span&gt;
+        &lt;span class&#x3D;&quot;detalhe-valor&quot;&gt;{{ aluno.genero }}&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./card-aluno.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">:host {
+  display: block;
+}
+
+.card-aluno {
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  
+  /* --- NOVAS PROPRIEDADES PARA IGUALAR ALTURA --- */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Garante que o card ocupe toda a altura da célula do grid */
+  /* ---------------------------------------------- */
+
+  &amp;:hover {
+    transform: scale(1.01);
+  }
+}
+
+.card-aluno-foto {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  background-color: var(--ds-neutral-100);
+  flex-shrink: 0; /* Impede que a imagem seja esmagada */
+}
+
+.aluno-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.aluno-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--ds-primary-soft) 0%, var(--ds-neutral-100) 100%);
+}
+
+.card-aluno-info {
+  padding: var(--ds-spacing-3);
+  
+  /* --- NOVA PROPRIEDADE PARA EXPANDIR O CONTEÚDO --- */
+  flex: 1; /* Faz a área de info crescer para preencher o espaço vazio */
+  display: flex;
+  flex-direction: column;
+  /* ------------------------------------------------ */
+}
+
+.card-aluno-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.ano-badge {
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  color: var(--ds-primary);
+  background-color: var(--ds-primary-soft);
+  padding: 2px 8px;
+  border-radius: var(--ds-radius-sm);
+}
+
+.btn-options {
+  position: relative;
+  z-index: 10;
+
+  .btn-options-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: var(--ds-radius-sm);
+    color: var(--ds-muted);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &amp;:hover {
+      background-color: var(--ds-neutral-100);
+      color: var(--ds-body);
+    }
+  }
+
+  .dropdown-menu {
+    top: calc(100% + var(--ds-spacing-1));
+    right: 0;
+    min-width: 11rem;
+  }
+
+  .dropdown-item {
+    cursor: pointer;
+  }
+}
+
+.card-aluno-nome {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-body);
+  margin: 0 0 var(--ds-spacing-3) 0;
+  line-height: 1.3;
+}
+
+.card-aluno-detalhes {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+  margin-top: auto; /* Empurra os detalhes para o final do card, mantendo o alinhamento na base */
+}
+
+.detalhe-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 80px;
+}
+
+.detalhe-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// ... (todo o código anterior permanece igual até a parte dos detalhes)
+
+.card-aluno-detalhes {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.detalhe-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 80px;
+  flex: 1; /* Permite que o item cresça para ocupar o espaço disponível */
+  min-width: 0; /* ESSENCIAL: Permite que o conteúdo encolha abaixo do tamanho do texto para a elipse funcionar */
+}
+
+.detalhe-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap; /* Garante que o rótulo nunca quebre de linha */
+}
+
+.detalhe-valor {
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  color: var(--ds-neutral-600);
+  
+  /* --- NOVAS PROPRIEDADES PARA A ELIPSE --- */
+  white-space: nowrap;      /* Força o texto a ficar em uma única linha */
+  overflow: hidden;         /* Esconde o texto que ultrapassar a caixa */
+  text-overflow: ellipsis;  /* Adiciona os &quot;...&quot; no final */
+  /* --------------------------------------- */
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="card-aluno" (click)="onCardClick()">  <div class="card-aluno-foto">    @if (aluno.fotoUrl) {      <img [src]="aluno.fotoUrl" [alt]="aluno.nome" class="aluno-imagem" />    } @else {      <div class="aluno-placeholder">        <svg lucideUser [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>      </div>    }  </div>  <div class="card-aluno-info">    <div class="card-aluno-header">      <div class="card-aluno-ano">        <span class="ano-badge">{{ aluno.ano }}</span>      </div>      <div class="btn-options dropdown" (click)="$event.stopPropagation()">        <button          class="btn-options-btn"          type="button"          (click)="toggleOptionsMenu($event)"          [attr.aria-expanded]="isOptionsMenuOpen"          aria-haspopup="true"        >          <svg lucideEllipsisVertical [size]="16" [strokeWidth]="2"></svg>        </button>        @if (isOptionsMenuOpen) {          <div class="dropdown-menu dropdown-menu-end show">           <!-- Mude a tag do botão de editar para isto: --><button class="dropdown-item" type="button" (click)="onEditarClick($event)">  <svg lucidePencil class="dropdown-item-icon"></svg>  Editar</button>            @if (aluno.status === 2) {              <button class="dropdown-item" type="button" (click)="onAtivarClick($event)">                <svg lucideUserCheck class="dropdown-item-icon"></svg>                Ativar              </button>            } @else {              <button class="dropdown-item" type="button" (click)="onExcluirClick($event)">                <svg lucideUserRoundX class="dropdown-item-icon"></svg>                Inativar              </button>            }            <button class="dropdown-item" type="button" (click)="closeOptionsMenu()">              <svg lucideShare2 class="dropdown-item-icon"></svg>              Compartilhar            </button>          </div>        }      </div>    </div>    <h3 class="card-aluno-nome">{{ aluno.nome }}</h3>    <div class="card-aluno-detalhes">      <!-- Deficiência -->  <div class="detalhe-item">    <!-- Só exibe o label se não começar com "Deficiência" -->    <span class="detalhe-label">Deficiência</span>        <!-- Exibe o nome já sem a palavra \'Deficiência\' no início -->    <span class="detalhe-valor">{{ getDeficienciaDisplay() }}</span>  </div>      <div class="detalhe-item">        <span class="detalhe-label">Gênero</span>        <span class="detalhe-valor">{{ aluno.genero }}</span>      </div>    </div>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AdicionarAluno', 'selector': 'app-adicionar-aluno'},{'name': 'Alunos', 'selector': 'app-alunos'},{'name': 'App', 'selector': 'app-root'},{'name': 'Calendario', 'selector': 'app-calendario'},{'name': 'CardAluno', 'selector': 'app-card-aluno'},{'name': 'Configuracoes', 'selector': 'app-configuracoes'},{'name': 'DetalheAluno', 'selector': 'app-detalhe-aluno'},{'name': 'Documentos', 'selector': 'app-documentos'},{'name': 'EditarAluno', 'selector': 'app-editar-aluno'},{'name': 'Home', 'selector': 'app-home'},{'name': 'ModalAluno', 'selector': 'app-modal-aluno'},{'name': 'ModalConfirmacao', 'selector': 'app-modal-confirmacao'},{'name': 'ModalConfirmarExclusao', 'selector': 'app-modal-confirmar-exclusao'},{'name': 'ModalCrop', 'selector': 'app-modal-crop'},{'name': 'ModalDadosAdicionais', 'selector': 'app-modal-dados-adicionais'},{'name': 'ModalDocumento', 'selector': 'app-modal-documento'},{'name': 'Navbar', 'selector': 'app-navbar'},{'name': 'Tarefas', 'selector': 'app-tarefas'},{'name': 'TemplatePlaygroundComponent', 'selector': 'template-playground-root'},{'name': 'Toast', 'selector': 'app-toast'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'CardAluno'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CardAluno.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

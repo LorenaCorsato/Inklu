@@ -1,0 +1,762 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  DocumentoFile</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api"><section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-3">
+                    <h6><b>Properties</b></h6>
+                </td>
+                <td class="col-md-9">
+                    <ul class="index-list">
+                        <li>
+                                <a href="#data" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">data</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#name" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">name</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#progress" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">progress</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#size" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">size</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#status" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">status</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#type" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">type</span>
+                                </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+    <section data-compodoc="block-properties">
+        <h3 id="inputs">Properties</h3>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="data"></a>
+                                <span class="name "><b>data</b>
+                                    <a href="#data">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>data:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts:16</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="name"></a>
+                                <span class="name "><b>name</b>
+                                    <a href="#name">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>name:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts:13</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="progress"></a>
+                                <span class="name "><b>progress</b>
+                                    <a href="#progress">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>progress:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts:17</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="size"></a>
+                                <span class="name "><b>size</b>
+                                    <a href="#size">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>size:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts:14</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="status"></a>
+                                <span class="name "><b>status</b>
+                                    <a href="#status">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>status:     <code>&quot;uploading&quot; | &quot;done&quot; | &quot;error&quot;</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>&quot;uploading&quot; | &quot;done&quot; | &quot;error&quot;</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts:18</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="type"></a>
+                                <span class="name "><b>type</b>
+                                    <a href="#type">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>type:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/app/alunos/detalhe-aluno/modal-documento/modal-documento.ts:15</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+    </section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, EventEmitter, Input, Output } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { HttpClient } from &#x27;@angular/common/http&#x27;;
+import {
+  LucideX,
+  LucideUploadCloud,
+  LucideTrash2,
+  LucideXCircle,
+  LucideAlertTriangle,
+} from &#x27;@lucide/angular&#x27;;
+
+export interface DocumentoFile {
+  name: string;
+  size: number;
+  type: string;
+  data: string;
+  progress: number;
+  status: &#x27;uploading&#x27; | &#x27;done&#x27; | &#x27;error&#x27;;
+}
+
+const ALLOWED_MIME_TYPES &#x3D; [
+  &#x27;application/pdf&#x27;,
+  &#x27;image/jpeg&#x27;,
+  &#x27;image/png&#x27;,
+  &#x27;application/vnd.openxmlformats-officedocument.wordprocessingml.document&#x27;,
+];
+
+const ALLOWED_EXTENSIONS &#x3D; [&#x27;.pdf&#x27;, &#x27;.jpg&#x27;, &#x27;.jpeg&#x27;, &#x27;.png&#x27;, &#x27;.docx&#x27;];
+
+@Component({
+  selector: &#x27;app-modal-documento&#x27;,
+  imports: [CommonModule, LucideX, LucideUploadCloud, LucideTrash2, LucideXCircle, LucideAlertTriangle],
+  templateUrl: &#x27;./modal-documento.html&#x27;,
+  styleUrl: &#x27;./modal-documento.scss&#x27;,
+})
+export class ModalDocumento {
+  @Input() isOpen &#x3D; false;
+  @Input() alunoId: number | string | null | undefined;
+  @Output() closed &#x3D; new EventEmitter&lt;void&gt;();
+  @Output() saved &#x3D; new EventEmitter&lt;void&gt;();
+
+  files: DocumentoFile[] &#x3D; [];
+  isDragOver &#x3D; false;
+  maxFileSize &#x3D; 1024 * 1024 * 1024; // 1 GB
+  errorMessage: string | null &#x3D; null;
+  isSaving &#x3D; false;
+
+  constructor(private http: HttpClient) {}
+
+  onBackdropClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains(&#x27;modal-overlay&#x27;)) {
+      this.close();
+    }
+  }
+
+  close() {
+    if (this.isSaving) return;
+    this.files &#x3D; [];
+    this.closed.emit();
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver &#x3D; true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver &#x3D; false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver &#x3D; false;
+    if (event.dataTransfer?.files) {
+      this.addFiles(event.dataTransfer.files);
+    }
+  }
+
+  onFileSelect(event: Event) {
+    const input &#x3D; event.target as HTMLInputElement;
+    if (input.files) {
+      this.addFiles(input.files);
+    }
+    input.value &#x3D; &#x27;&#x27;;
+  }
+
+  browseFiles() {
+    const input &#x3D; document.getElementById(&#x27;doc-file-input&#x27;) as HTMLInputElement;
+    input?.click();
+  }
+
+  private addFiles(fileList: FileList) {
+    this.errorMessage &#x3D; null;
+    const invalidFiles: string[] &#x3D; [];
+
+    for (let i &#x3D; 0; i &lt; fileList.length; i++) {
+      const file &#x3D; fileList[i];
+      if (!this.isAllowedType(file)) {
+        invalidFiles.push(file.name);
+        continue;
+      }
+      if (file.size &gt; this.maxFileSize) continue;
+
+      const docFile: DocumentoFile &#x3D; {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        data: &#x27;&#x27;,
+        progress: 0,
+        status: &#x27;uploading&#x27;,
+      };
+      this.files.push(docFile);
+      this.readFile(docFile, file);
+    }
+
+    if (invalidFiles.length &gt; 0) {
+      this.errorMessage &#x3D; &#x60;Formato não permitido: ${invalidFiles.join(&#x27;, &#x27;)}. Use apenas PDF, JPG, PNG ou DOCX.&#x60;;
+    }
+  }
+
+  private isAllowedType(file: File): boolean {
+    if (ALLOWED_MIME_TYPES.includes(file.type)) return true;
+    const ext &#x3D; &#x27;.&#x27; + file.name.split(&#x27;.&#x27;).pop()?.toLowerCase();
+    return ALLOWED_EXTENSIONS.includes(ext);
+  }
+
+  clearError() {
+    this.errorMessage &#x3D; null;
+  }
+
+  private readFile(documento: DocumentoFile, file: File) {
+    const reader &#x3D; new FileReader();
+    reader.onload &#x3D; () &#x3D;&gt; {
+      documento.data &#x3D; reader.result as string;
+      documento.progress &#x3D; 100;
+      documento.status &#x3D; &#x27;done&#x27;;
+    };
+    reader.onerror &#x3D; () &#x3D;&gt; {
+      documento.status &#x3D; &#x27;error&#x27;;
+      this.errorMessage &#x3D; &#x60;Não foi possível ler o arquivo ${file.name}.&#x60;;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  save() {
+    if (this.isSaving) return;
+
+    if (!this.alunoId) {
+      this.errorMessage &#x3D; &#x27;Aluno não identificado.&#x27;;
+      return;
+    }
+
+    const filesToSave &#x3D; this.files.filter(file &#x3D;&gt; file.status &#x3D;&#x3D;&#x3D; &#x27;done&#x27; &amp;&amp; file.data);
+    if (filesToSave.length &#x3D;&#x3D;&#x3D; 0) {
+      this.errorMessage &#x3D; &#x27;Aguarde o carregamento dos arquivos.&#x27;;
+      return;
+    }
+
+    this.isSaving &#x3D; true;
+    let savedCount &#x3D; 0;
+    filesToSave.forEach(file &#x3D;&gt; {
+      this.http.post(&#x60;http://localhost:3000/api/arquivos/alunos/${this.alunoId}&#x60;, {
+        nomeArquivo: file.name,
+        tipoArquivo: file.type || &#x27;application/octet-stream&#x27;,
+        arquivo: file.data,
+      }).subscribe({
+        next: () &#x3D;&gt; {
+          savedCount++;
+          if (savedCount &#x3D;&#x3D;&#x3D; filesToSave.length) {
+            this.isSaving &#x3D; false;
+            alert(&#x27;Documentos salvos com sucesso!&#x27;);
+            this.saved.emit();
+            this.close();
+          }
+        },
+        error: (error) &#x3D;&gt; {
+          console.error(&#x27;Erro ao salvar documento:&#x27;, error);
+          this.isSaving &#x3D; false;
+          this.errorMessage &#x3D; &#x60;Não foi possível salvar ${file.name}.&#x60;;
+        },
+      });
+    });
+  }
+
+  removeFile(index: number) {
+    this.files.splice(index, 1);
+  }
+
+  formatSize(bytes: number): string {
+    if (bytes &lt; 1024) return bytes + &#x27; B&#x27;;
+    if (bytes &lt; 1024 * 1024) return (bytes / 1024).toFixed(0) + &#x27; KB&#x27;;
+    if (bytes &lt; 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(0) + &#x27; MB&#x27;;
+    return (bytes / (1024 * 1024 * 1024)).toFixed(1) + &#x27; GB&#x27;;
+  }
+
+  formatSizeWithTotal(file: DocumentoFile): string {
+    if (file.status &#x3D;&#x3D;&#x3D; &#x27;uploading&#x27;) {
+      return &#x60;${this.formatSize(file.size * file.progress / 100)} of ${this.formatSize(file.size)}&#x60;;
+    }
+    return this.formatSize(file.size);
+  }
+
+  getFileIcon(file: DocumentoFile): string {
+    if (file.type.includes(&#x27;pdf&#x27;)) return &#x27;PDF&#x27;;
+    if (file.type.includes(&#x27;zip&#x27;) || file.type.includes(&#x27;compressed&#x27;)) return &#x27;ZIP&#x27;;
+    return &#x27;FILE&#x27;;
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'DocumentoFile.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

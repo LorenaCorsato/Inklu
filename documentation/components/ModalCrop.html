@@ -1,0 +1,1392 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  ModalCrop</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/alunos/modal-crop/modal-crop.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-modal-crop</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>    <code>LucideX</code>
+</div>
+                        <div>    <code>LucideCrop</code>
+</div>
+                        <div>    <code>LucideCheck</code>
+</div>
+                        <div>    <code>ImageCropperModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./modal-crop.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./modal-crop.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./modal-crop.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../components/AdicionarAluno.html" target="_self" >AdicionarAluno</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/EditarAluno.html" target="_self" >EditarAluno</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/ModalAluno.html" target="_self" >ModalAluno</a></code>
+                                </li>
+                        </ul>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>LucideX</code>
+                                </li>
+                                <li>
+                                        <code>LucideCrop</code>
+                                </li>
+                                <li>
+                                        <code>LucideCheck</code>
+                                </li>
+                                <li>
+                                        <code>ImageCropperModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier"></span>
+                                <a href="#cropperComponent" >cropperComponent</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#cropperSettings" >cropperSettings</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#data" >data</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#applyCrop" >applyCrop</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#close" >close</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#loadImage" >loadImage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnChanges" >ngOnChanges</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#onBackdropClick" >onBackdropClick</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#imageSrc" >imageSrc</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#isOpen" >isOpen</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#closed" >closed</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#cropComplete" >cropComplete</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(cdr: <a href="https://angular.dev/api/core/ChangeDetectorRef" target="_blank">ChangeDetectorRef</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:32</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>cdr</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/core/ChangeDetectorRef" target="_blank" >ChangeDetectorRef</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="imageSrc"></a>
+                        <b>imageSrc</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:24</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isOpen"></a>
+                        <b>isOpen</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:23</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="closed"></a>
+                        <b>closed</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:27</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="cropComplete"></a>
+                        <b>cropComplete</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:26</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyCrop"></a>
+                    <span class="name">
+                        <span ><b>applyCrop</b></span>
+                        <a href="#applyCrop"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>applyCrop()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="82"
+                                    class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:82</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="close"></a>
+                    <span class="name">
+                        <span ><b>close</b></span>
+                        <a href="#close"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>close()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="72"
+                                    class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadImage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>loadImage</b></span>
+                        <a href="#loadImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadImage(src: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="60"
+                                    class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>src</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnChanges"></a>
+                    <span class="name">
+                        <span ><b>ngOnChanges</b></span>
+                        <a href="#ngOnChanges"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnChanges(changes: <a href="https://angular.dev/api/core/SimpleChanges" target="_blank">SimpleChanges</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>changes</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/core/SimpleChanges" target="_blank" >SimpleChanges</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onBackdropClick"></a>
+                    <span class="name">
+                        <span ><b>onBackdropClick</b></span>
+                        <a href="#onBackdropClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onBackdropClick(event: MouseEvent)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="76"
+                                    class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:76</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                        <code>MouseEvent</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cropperComponent"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>cropperComponent</b></span>
+                        <a href="#cropperComponent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>ImageCropperComponent</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(&#x27;cropper&#x27;, {static: false})<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:29</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cropperSettings"></a>
+                    <span class="name">
+                        <span ><b>cropperSettings</b></span>
+                        <a href="#cropperSettings"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>CropperSettings</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="data"></a>
+                    <span class="name">
+                        <span ><b>data</b></span>
+                        <a href="#data"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/app/alunos/modal-crop/modal-crop.ts:31</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  ChangeDetectorRef,
+} from &#x27;@angular/core&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { LucideX, LucideCrop, LucideCheck } from &#x27;@lucide/angular&#x27;;
+import { ImageCropperModule, CropperSettings, ImageCropperComponent } from &#x27;ngx-img-cropper&#x27;;
+
+@Component({
+  selector: &#x27;app-modal-crop&#x27;,
+  standalone: true,
+  imports: [FormsModule, LucideX, LucideCrop, LucideCheck, ImageCropperModule],
+  templateUrl: &#x27;./modal-crop.html&#x27;,
+  styleUrl: &#x27;./modal-crop.scss&#x27;,
+})
+export class ModalCrop implements OnChanges {
+  @Input() isOpen &#x3D; false;
+  @Input() imageSrc: string | null &#x3D; null;
+
+  @Output() cropComplete &#x3D; new EventEmitter&lt;string&gt;();
+  @Output() closed &#x3D; new EventEmitter&lt;void&gt;();
+
+  @ViewChild(&#x27;cropper&#x27;, { static: false }) cropperComponent!: ImageCropperComponent;
+
+  data: any &#x3D; {};
+  cropperSettings: CropperSettings;
+
+  constructor(private cdr: ChangeDetectorRef) {
+    this.cropperSettings &#x3D; new CropperSettings();
+    this.cropperSettings.width &#x3D; 250;
+    this.cropperSettings.height &#x3D; 250;
+    this.cropperSettings.croppedWidth &#x3D; 500;
+    this.cropperSettings.croppedHeight &#x3D; 500;
+    this.cropperSettings.canvasWidth &#x3D; 320;
+    this.cropperSettings.canvasHeight &#x3D; 320;
+    this.cropperSettings.minWidth &#x3D; 50;
+    this.cropperSettings.minHeight &#x3D; 50;
+    this.cropperSettings.rounded &#x3D; false;
+    this.cropperSettings.keepAspect &#x3D; true;
+    this.cropperSettings.noFileInput &#x3D; true;
+    this.cropperSettings.fileType &#x3D; &#x27;image/jpeg&#x27;;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes[&#x27;imageSrc&#x27;] || changes[&#x27;isOpen&#x27;]) {
+      if (this.isOpen &amp;&amp; this.imageSrc) {
+        setTimeout(() &#x3D;&gt; {
+          this.loadImage(this.imageSrc!);
+        }, 50);
+      }
+    }
+  }
+
+  private loadImage(src: string): void {
+    const img &#x3D; new Image();
+    img.crossOrigin &#x3D; &#x27;anonymous&#x27;;
+    img.onload &#x3D; () &#x3D;&gt; {
+      if (this.cropperComponent) {
+        this.cropperComponent.setImage(img);
+        this.cdr.detectChanges();
+      }
+    };
+    img.src &#x3D; src;
+  }
+
+  close(): void {
+    this.closed.emit();
+  }
+
+  onBackdropClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains(&#x27;crop-modal-overlay&#x27;)) {
+      this.close();
+    }
+  }
+
+  applyCrop(): void {
+    if (this.data &amp;&amp; this.data.image) {
+      this.cropComplete.emit(this.data.image);
+    }
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">@if (isOpen) {
+  &lt;div class&#x3D;&quot;crop-modal-overlay&quot; (click)&#x3D;&quot;onBackdropClick($event)&quot;&gt;
+    &lt;div class&#x3D;&quot;crop-modal-container&quot;&gt;
+      &lt;!-- Header --&gt;
+      &lt;div class&#x3D;&quot;crop-modal-header&quot;&gt;
+        &lt;div class&#x3D;&quot;crop-title-group&quot;&gt;
+          &lt;svg lucideCrop [size]&#x3D;&quot;20&quot; class&#x3D;&quot;crop-header-icon&quot;&gt;&lt;/svg&gt;
+          &lt;h2 class&#x3D;&quot;crop-modal-title&quot;&gt;Cortar Foto do Aluno&lt;/h2&gt;
+        &lt;/div&gt;
+        &lt;button class&#x3D;&quot;btn-close&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;close()&quot;&gt;
+          &lt;svg lucideX [size]&#x3D;&quot;20&quot; [strokeWidth]&#x3D;&quot;2&quot;&gt;&lt;/svg&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Instruction --&gt;
+      &lt;p class&#x3D;&quot;crop-instruction&quot;&gt;
+        Ajuste a área de corte na proporção &lt;strong&gt;1:1 (quadrada)&lt;/strong&gt;.
+      &lt;/p&gt;
+
+      &lt;!-- Viewport Body --&gt;
+      &lt;div class&#x3D;&quot;crop-modal-body&quot;&gt;
+        &lt;div class&#x3D;&quot;crop-cropper-container&quot;&gt;
+          &lt;img-cropper
+            #cropper
+            [image]&#x3D;&quot;data&quot;
+            [settings]&#x3D;&quot;cropperSettings&quot;
+          &gt;&lt;/img-cropper&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Footer --&gt;
+      &lt;div class&#x3D;&quot;crop-modal-footer&quot;&gt;
+        &lt;button class&#x3D;&quot;btn btn-cancelar&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;close()&quot;&gt;
+          Cancelar
+        &lt;/button&gt;
+        &lt;button class&#x3D;&quot;btn btn-salvar&quot; type&#x3D;&quot;button&quot; (click)&#x3D;&quot;applyCrop()&quot;&gt;
+          &lt;svg lucideCheck [size]&#x3D;&quot;18&quot; style&#x3D;&quot;margin-right: 6px;&quot;&gt;&lt;/svg&gt;
+          Aplicar Corte
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./modal-crop.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">// ─── Modal Overlay ──────────────────────────────────────────────────────────
+.crop-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.2s ease;
+  padding: var(--ds-spacing-4, 16px);
+}
+
+// ─── Modal Container ────────────────────────────────────────────────────────
+.crop-modal-container {
+  background-color: var(--ds-surface, #ffffff);
+  border-radius: var(--ds-radius-lg, 12px);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.25s ease;
+  overflow: hidden;
+}
+
+// ─── Modal Header ───────────────────────────────────────────────────────────
+.crop-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-4, 16px) var(--ds-spacing-5, 20px);
+  border-bottom: 1px solid var(--ds-border-subtle, #e2e8f0);
+}
+
+.crop-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2, 8px);
+}
+
+.crop-header-icon {
+  color: var(--ds-primary, #4f46e5);
+}
+
+.crop-modal-title {
+  font-size: var(--ds-font-size-base, 16px);
+  font-weight: 700;
+  color: var(--ds-body, #1e293b);
+  margin: 0;
+}
+
+.btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--ds-radius-sm, 6px);
+  color: var(--ds-muted, #64748b);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &amp;:hover {
+    background-color: var(--ds-neutral-100, #f1f5f9);
+    color: var(--ds-body, #1e293b);
+  }
+}
+
+// ─── Instruction ────────────────────────────────────────────────────────────
+.crop-instruction {
+  margin: 0;
+  padding: 12px 20px 0 20px;
+  font-size: var(--ds-font-size-sm, 14px);
+  color: var(--ds-muted, #64748b);
+  text-align: center;
+
+  strong {
+    color: var(--ds-body, #1e293b);
+  }
+}
+
+// ─── Modal Body &amp; Cropper Container ─────────────────────────────────────────
+.crop-modal-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.crop-cropper-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #0f172a;
+  border-radius: var(--ds-radius-md, 8px);
+  padding: 12px;
+  overflow: hidden;
+
+  img-cropper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    canvas {
+      border-radius: 4px;
+      max-width: 100%;
+      height: auto !important;
+    }
+  }
+}
+
+// ─── Modal Footer ───────────────────────────────────────────────────────────
+.crop-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--ds-border-subtle, #e2e8f0);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--ds-radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+  color: var(--ds-body, #1e293b);
+  background-color: var(--ds-surface, #ffffff);
+  border: 1px solid var(--ds-border, #cbd5e1);
+
+  &amp;:hover {
+    background-color: var(--ds-neutral-100, #f1f5f9);
+  }
+}
+
+.btn-salvar {
+  color: white;
+  background-color: var(--ds-primary, #4f46e5);
+  border: 1px solid var(--ds-primary, #4f46e5);
+
+  &amp;:hover {
+    background-color: var(--ds-primary-hover, #4338ca);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  }
+
+  &amp;:active {
+    transform: scale(0.98);
+  }
+}
+
+// ─── Animations ─────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div>@if (isOpen) {  <div class="crop-modal-overlay" (click)="onBackdropClick($event)">    <div class="crop-modal-container">      <!-- Header -->      <div class="crop-modal-header">        <div class="crop-title-group">          <svg lucideCrop [size]="20" class="crop-header-icon"></svg>          <h2 class="crop-modal-title">Cortar Foto do Aluno</h2>        </div>        <button class="btn-close" type="button" (click)="close()">          <svg lucideX [size]="20" [strokeWidth]="2"></svg>        </button>      </div>      <!-- Instruction -->      <p class="crop-instruction">        Ajuste a área de corte na proporção <strong>1:1 (quadrada)</strong>.      </p>      <!-- Viewport Body -->      <div class="crop-modal-body">        <div class="crop-cropper-container">          <img-cropper            #cropper            [image]="data"            [settings]="cropperSettings"          ></img-cropper>        </div>      </div>      <!-- Footer -->      <div class="crop-modal-footer">        <button class="btn btn-cancelar" type="button" (click)="close()">          Cancelar        </button>        <button class="btn btn-salvar" type="button" (click)="applyCrop()">          <svg lucideCheck [size]="18" style="margin-right: 6px;"></svg>          Aplicar Corte        </button>      </div>    </div>  </div>}</div>'
+    var COMPONENTS = [{'name': 'AdicionarAluno', 'selector': 'app-adicionar-aluno'},{'name': 'Alunos', 'selector': 'app-alunos'},{'name': 'App', 'selector': 'app-root'},{'name': 'Calendario', 'selector': 'app-calendario'},{'name': 'CardAluno', 'selector': 'app-card-aluno'},{'name': 'Configuracoes', 'selector': 'app-configuracoes'},{'name': 'DetalheAluno', 'selector': 'app-detalhe-aluno'},{'name': 'Documentos', 'selector': 'app-documentos'},{'name': 'EditarAluno', 'selector': 'app-editar-aluno'},{'name': 'Home', 'selector': 'app-home'},{'name': 'ModalAluno', 'selector': 'app-modal-aluno'},{'name': 'ModalConfirmacao', 'selector': 'app-modal-confirmacao'},{'name': 'ModalConfirmarExclusao', 'selector': 'app-modal-confirmar-exclusao'},{'name': 'ModalCrop', 'selector': 'app-modal-crop'},{'name': 'ModalDadosAdicionais', 'selector': 'app-modal-dados-adicionais'},{'name': 'ModalDocumento', 'selector': 'app-modal-documento'},{'name': 'Navbar', 'selector': 'app-navbar'},{'name': 'Tarefas', 'selector': 'app-tarefas'},{'name': 'TemplatePlaygroundComponent', 'selector': 'template-playground-root'},{'name': 'Toast', 'selector': 'app-toast'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'ModalCrop'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ModalCrop.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

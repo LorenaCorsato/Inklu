@@ -1,0 +1,887 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  Arquivo</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/alunos/detalhe-aluno/detalhe-aluno.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api"><section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-3">
+                    <h6><b>Properties</b></h6>
+                </td>
+                <td class="col-md-9">
+                    <ul class="index-list">
+                        <li>
+                                <a href="#alteracao" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">alteracao</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#data" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">data</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#materia" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">materia</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#nome" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">nome</span>
+                                </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+    <section data-compodoc="block-properties">
+        <h3 id="inputs">Properties</h3>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="alteracao"></a>
+                                <span class="name "><b>alteracao</b>
+                                    <a href="#alteracao">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>alteracao:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/app/alunos/detalhe-aluno/detalhe-aluno.ts:34</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="data"></a>
+                                <span class="name "><b>data</b>
+                                    <a href="#data">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>data:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/alunos/detalhe-aluno/detalhe-aluno.ts:32</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="materia"></a>
+                                <span class="name "><b>materia</b>
+                                    <a href="#materia">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>materia:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/alunos/detalhe-aluno/detalhe-aluno.ts:35</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="nome"></a>
+                                <span class="name "><b>nome</b>
+                                    <a href="#nome">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>nome:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/app/alunos/detalhe-aluno/detalhe-aluno.ts:33</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+    </section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, ElementRef, ChangeDetectorRef } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { ActivatedRoute, Router } from &#x27;@angular/router&#x27;;
+import {
+  LucideArrowLeft,
+  LucideUser,
+  LucideDownload,
+  LucideMoreVertical,
+  LucideGraduationCap,
+  LucideAccessibility,
+  LucideCalendar,
+  LucideLoader2,
+  LucideTrendingUp,
+  LucidePencil,
+  LucideUserRoundX,
+  LucideShare2,
+  LucideFilePlus,
+  LucideFilter,
+  LucideX,
+  LucideCheck,
+  LucidePen,
+  LucideUserCheck,
+} from &#x27;@lucide/angular&#x27;;
+import { Aluno } from &#x27;../card-aluno/card-aluno&#x27;;
+import { ModalDocumento } from &#x27;./modal-documento/modal-documento&#x27;;
+import { ModalDadosAdicionais, DadosAdicionais } from &#x27;./modal-dados-adicionais/modal-dados-adicionais&#x27;;
+import { ModalConfirmarExclusao } from &#x27;../modal-confirmar-exclusao/modal-confirmar-exclusao&#x27;;
+import { AlunoService } from &#x27;../aluno.service&#x27;;
+
+export interface Arquivo {
+  data: string;
+  nome: string;
+  alteracao: string;
+  materia: string;
+}
+
+@Component({
+  selector: &#x27;app-detalhe-aluno&#x27;,
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideArrowLeft,
+    LucideUser,
+    LucideDownload,
+    LucideMoreVertical,
+    LucideGraduationCap,
+    LucideAccessibility,
+    LucideCalendar,
+    LucideLoader2,
+    LucidePencil,
+    LucideUserRoundX,
+    LucideShare2,
+    LucideFilePlus,
+    LucideFilter,
+    LucidePen,
+    LucideX,
+    LucideCheck,
+    LucideUserCheck,
+    ModalDocumento,
+    ModalDadosAdicionais,
+    ModalConfirmarExclusao,
+  ],
+  templateUrl: &#x27;./detalhe-aluno.html&#x27;,
+  styleUrl: &#x27;./detalhe-aluno.scss&#x27;,
+})
+export class DetalheAluno {
+  aluno: Aluno | null &#x3D; null;
+  isOptionsMenuOpen &#x3D; false;
+  isDocumentoModalOpen &#x3D; false;
+  isDadosAdicionaisModalOpen &#x3D; false;
+  isConfirmModalOpen &#x3D; false;
+
+  dadosAdicionais: DadosAdicionais &#x3D; { interesses: [], preferencias: &#x27;&#x27; };
+
+  searchQuery &#x3D; &#x27;&#x27;;
+  isFilterOpen &#x3D; false;
+  selectedMaterias: Set&lt;string&gt; &#x3D; new Set();
+  dateFrom &#x3D; &#x27;&#x27;;
+  dateTo &#x3D; &#x27;&#x27;;
+
+  materias &#x3D; [&#x27;Matemática&#x27;, &#x27;Artes&#x27;, &#x27;Português&#x27;, &#x27;Ciências&#x27;];
+
+  arquivos: Arquivo[] &#x3D; [];
+
+  get filteredArquivos(): Arquivo[] {
+    return this.arquivos.filter(arquivo &#x3D;&gt; {
+      if (this.searchQuery) {
+        const q &#x3D; this.searchQuery.toLowerCase();
+        const matchesSearch &#x3D;
+          arquivo.nome.toLowerCase().includes(q) ||
+          arquivo.alteracao.toLowerCase().includes(q) ||
+          arquivo.materia.toLowerCase().includes(q);
+        if (!matchesSearch) return false;
+      }
+
+      if (this.selectedMaterias.size &gt; 0 &amp;&amp; !this.selectedMaterias.has(arquivo.materia)) {
+        return false;
+      }
+
+      if (this.dateFrom || this.dateTo) {
+        const arquivoDate &#x3D; new Date(arquivo.data);
+        if (this.dateFrom) {
+          const from &#x3D; new Date(this.dateFrom);
+          if (arquivoDate &lt; from) return false;
+        }
+        if (this.dateTo) {
+          const to &#x3D; new Date(this.dateTo);
+          if (arquivoDate &gt; to) return false;
+        }
+      }
+
+      return true;
+    });
+  }
+
+  private readonly onDocumentClick: (event: Event) &#x3D;&gt; void;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private elementRef: ElementRef,
+    private alunoService: AlunoService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.onDocumentClick &#x3D; (event: Event) &#x3D;&gt; {
+      if (this.isOptionsMenuOpen &amp;&amp; !this.elementRef.nativeElement.contains(event.target)) {
+        this.isOptionsMenuOpen &#x3D; false;
+      }
+      if (this.isFilterOpen &amp;&amp; !this.elementRef.nativeElement.contains(event.target)) {
+        this.isFilterOpen &#x3D; false;
+      }
+    };
+  }
+
+  alunoOriginal: any &#x3D; null;
+  diagnosticosLista: Array&lt;{diagnóstico?: string, diagnostico?: string, descricao: string}&gt; &#x3D; [];
+  interessesList: string[] &#x3D; [];
+  preferenciasList: string[] &#x3D; [];
+  isLoading &#x3D; true;
+
+  ngOnInit() {
+    document.addEventListener(&#x27;click&#x27;, this.onDocumentClick, true);
+    this.route.paramMap.subscribe(params &#x3D;&gt; {
+      const id &#x3D; params.get(&#x27;id&#x27;);
+      if (id) {
+        this.carregarAluno(id);
+      }
+    });
+
+    this.route.queryParamMap.subscribe(queryParams &#x3D;&gt; {
+      if (queryParams.get(&#x27;preencher&#x27;) &#x3D;&#x3D;&#x3D; &#x27;true&#x27;) {
+        this.isDadosAdicionaisModalOpen &#x3D; true;
+      }
+    });
+  }
+
+  carregarAluno(id: string) {
+    this.isLoading &#x3D; true;
+
+    this.alunoService.buscarAlunoPorId(id).subscribe({
+      next: (dados) &#x3D;&gt; {
+        const alunoDb &#x3D; Array.isArray(dados) ? dados[0] : dados;
+        this.alunoOriginal &#x3D; alunoDb;
+
+        this.processarDiagnosticos(alunoDb.diagnostico);
+
+        try {
+          this.interessesList &#x3D; alunoDb.interesses ? JSON.parse(alunoDb.interesses) : [];
+        } catch(e) {
+          this.interessesList &#x3D; [];
+        }
+
+        if (alunoDb.preferencias) {
+           this.preferenciasList &#x3D; alunoDb.preferencias.split(&#x27;\n&#x27;).filter((p: string) &#x3D;&gt; p.trim() !&#x3D;&#x3D; &#x27;&#x27;);
+        } else {
+           this.preferenciasList &#x3D; [];
+        }
+
+        this.dadosAdicionais &#x3D; {
+           interesses: this.interessesList,
+           preferencias: alunoDb.preferencias || &#x27;&#x27;
+        };
+
+        this.aluno &#x3D; {
+          id: alunoDb.id,
+          nome: alunoDb.nome_completo ?? &#x27;Sem nome&#x27;,
+          ano: alunoDb.turma ? &#x60;${alunoDb.turma.serie} ${alunoDb.turma.nome}&#x60; : &#x27;Não informada&#x27;,
+          deficiencia: this.diagnosticosLista.length &gt; 0
+            ? (this.diagnosticosLista[0].diagnóstico || this.diagnosticosLista[0].diagnostico || &#x27;Ver detalhes&#x27;)
+            : &#x27;Não informado&#x27;,
+          genero: alunoDb.genero ?? &#x27;Não informado&#x27;,
+          fotoUrl: alunoDb.fotoUrl ?? alunoDb.foto ?? undefined,
+          originalData: alunoDb
+        };
+
+        this.carregarArquivos(alunoDb.id);
+
+        this.isLoading &#x3D; false;
+        this.cdr.detectChanges();
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Erro ao buscar aluno:&#x27;, err);
+        this.isLoading &#x3D; false;
+        alert(&#x27;Erro ao carregar os dados do aluno.&#x27;);
+        this.voltar();
+      }
+    });
+  }
+
+  carregarArquivos(alunoId: string | number) {
+    this.alunoService.listarArquivosPorAluno(alunoId).subscribe({
+      next: (materiais) &#x3D;&gt; {
+        this.arquivos &#x3D; materiais
+          .map(material &#x3D;&gt; ({
+            data: material.data_de_upload ?? material.data_upload,
+            nome: material.nome_do_arquivo ?? material.nome_arquivo,
+            alteracao: material.tipo_de_material ?? material.tipo_material ?? &#x27;Original&#x27;,
+            materia: material.nome_materia ?? &#x27;Sem matéria&#x27;,
+          }))
+          .sort((first, second) &#x3D;&gt; new Date(second.data).getTime() - new Date(first.data).getTime());
+        this.cdr.detectChanges();
+      },
+      error: (error) &#x3D;&gt; {
+        console.error(&#x27;Erro ao carregar arquivos:&#x27;, error);
+        this.arquivos &#x3D; [];
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  processarDiagnosticos(diagnosticoDb: any) {
+    if (!diagnosticoDb) {
+      this.diagnosticosLista &#x3D; [];
+      return;
+    }
+
+    try {
+      this.diagnosticosLista &#x3D; typeof diagnosticoDb &#x3D;&#x3D;&#x3D; &#x27;string&#x27;
+        ? JSON.parse(diagnosticoDb)
+        : diagnosticoDb;
+    } catch (e) {
+      console.error(&#x27;Erro ao ler diagnósticos:&#x27;, e);
+      this.diagnosticosLista &#x3D; [];
+    }
+  }
+
+  ngOnDestroy() {
+    document.removeEventListener(&#x27;click&#x27;, this.onDocumentClick, true);
+  }
+
+  voltar() {
+    this.router.navigate([&#x27;/alunos&#x27;]);
+  }
+
+  toggleOptionsMenu(event: Event) {
+    event.stopPropagation();
+    this.isOptionsMenuOpen &#x3D; !this.isOptionsMenuOpen;
+  }
+
+  closeOptionsMenu() {
+    this.isOptionsMenuOpen &#x3D; false;
+  }
+
+  editarAluno() {
+    this.closeOptionsMenu();
+    if (this.aluno?.id !&#x3D;&#x3D; undefined &amp;&amp; this.aluno.id !&#x3D;&#x3D; null) {
+      this.router.navigate([&#x27;/alunos&#x27;, this.aluno.id, &#x27;editar&#x27;]);
+    }
+  }
+
+  inativarAluno() {
+    this.closeOptionsMenu();
+    if (!this.aluno?.id) return;
+
+    const deveMostrarModal &#x3D; localStorage.getItem(&#x27;naoMostrarModalExclusao&#x27;) !&#x3D;&#x3D; &#x27;true&#x27;;
+    if (deveMostrarModal) {
+      this.isConfirmModalOpen &#x3D; true;
+    } else {
+      this.executarInativacao();
+    }
+  }
+
+  ativarAluno() {
+    this.closeOptionsMenu();
+    if (this.aluno) {
+      this.isLoading &#x3D; true;
+      this.alunoService.atualizarAluno(this.aluno.id, { status: 1 }).subscribe({
+        next: () &#x3D;&gt; {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (erro) &#x3D;&gt; {
+          console.error(&#x27;Erro ao ativar aluno:&#x27;, erro);
+          alert(&#x27;Falha ao ativar o aluno.&#x27;);
+          this.isLoading &#x3D; false;
+          this.cdr.detectChanges();
+        },
+      });
+    }
+  }
+
+  onConfirmarExclusao(naoMostrarNovamente: boolean) {
+    if (naoMostrarNovamente) {
+      localStorage.setItem(&#x27;naoMostrarModalExclusao&#x27;, &#x27;true&#x27;);
+    }
+    this.fecharModalConfirmacao();
+    this.executarInativacao();
+  }
+
+  fecharModalConfirmacao() {
+    this.isConfirmModalOpen &#x3D; false;
+  }
+
+  private executarInativacao() {
+    if (!this.aluno?.id) return;
+    this.isLoading &#x3D; true;
+
+    this.alunoService.excluirAluno(this.aluno.id).subscribe({
+      next: () &#x3D;&gt; {
+        alert(&#x27;Aluno inativado com sucesso!&#x27;);
+        this.router.navigate([&#x27;/alunos&#x27;]);
+      },
+      error: (erro) &#x3D;&gt; {
+        console.error(&#x27;Erro ao inativar aluno:&#x27;, erro);
+        alert(&#x27;Falha ao inativar o aluno.&#x27;);
+        this.isLoading &#x3D; false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  toggleFilter(event: Event) {
+    event.stopPropagation();
+    this.isFilterOpen &#x3D; !this.isFilterOpen;
+  }
+
+  toggleMateria(materia: string) {
+    if (this.selectedMaterias.has(materia)) {
+      this.selectedMaterias.delete(materia);
+    } else {
+      this.selectedMaterias.add(materia);
+    }
+  }
+
+  isMateriaSelected(materia: string): boolean {
+    return this.selectedMaterias.has(materia);
+  }
+
+  clearFilters() {
+    this.selectedMaterias.clear();
+    this.dateFrom &#x3D; &#x27;&#x27;;
+    this.dateTo &#x3D; &#x27;&#x27;;
+    this.searchQuery &#x3D; &#x27;&#x27;;
+  }
+
+  get hasActiveFilters(): boolean {
+    return this.selectedMaterias.size &gt; 0 || !!this.dateFrom || !!this.dateTo;
+  }
+
+  formatDate(dateStr: string): string {
+    const d &#x3D; new Date(dateStr);
+    return d.toLocaleDateString(&#x27;pt-BR&#x27;);
+  }
+
+  calcularIdade(dataNascimento: string | null | undefined): string {
+    if (!dataNascimento) return &#x27;Não informada&#x27;;
+
+    const hoje &#x3D; new Date();
+    const nascimento &#x3D; new Date(dataNascimento);
+
+    if (isNaN(nascimento.getTime())) return &#x27;Data inválida&#x27;;
+
+    let idade &#x3D; hoje.getFullYear() - nascimento.getFullYear();
+    const diferencaMeses &#x3D; hoje.getMonth() - nascimento.getMonth();
+
+    if (diferencaMeses &lt; 0 || (diferencaMeses &#x3D;&#x3D;&#x3D; 0 &amp;&amp; hoje.getDate() &lt; nascimento.getDate())) {
+      idade--;
+    }
+
+    return &#x60;${idade} anos&#x60;;
+  }
+
+  openDocumentoModal() {
+    this.isDocumentoModalOpen &#x3D; true;
+  }
+
+  closeDocumentoModal() {
+    this.isDocumentoModalOpen &#x3D; false;
+  }
+
+  onDocumentoSaved() {
+    if (this.aluno?.id) {
+      this.carregarArquivos(this.aluno.id);
+    }
+  }
+
+  openDadosAdicionaisModal() {
+    this.isDadosAdicionaisModalOpen &#x3D; true;
+  }
+
+  closeDadosAdicionaisModal() {
+    this.isDadosAdicionaisModalOpen &#x3D; false;
+  }
+
+  onDadosAdicionaisSaved(dados: DadosAdicionais) {
+    this.dadosAdicionais &#x3D; dados;
+
+    if (this.aluno &amp;&amp; this.aluno.id) {
+      const payload &#x3D; {
+        interesses: JSON.stringify(dados.interesses),
+        preferencias: dados.preferencias
+      };
+
+      this.alunoService.atualizarAluno(this.aluno.id, payload).subscribe({
+        next: () &#x3D;&gt; {
+          this.carregarAluno(this.aluno!.id);
+        },
+        error: (err) &#x3D;&gt; {
+          console.error(&#x27;Erro ao salvar dados adicionais:&#x27;, err);
+          alert(&#x27;Erro ao salvar dados adicionais.&#x27;);
+        }
+      });
+    }
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'Arquivo.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

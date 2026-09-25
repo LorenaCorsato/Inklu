@@ -1,0 +1,938 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inklu documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">inklu documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content class">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Classes</li>
+  <li class="breadcrumb-item" >AlunoController</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>backend/src/controllers/aluno.controller.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api">
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#atualizar" >atualizar</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#buscarPorId" >buscarPorId</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#cadastrar" >cadastrar</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#excluir" >excluir</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#listar" >listar</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="atualizar"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>atualizar</b></span>
+                        <a href="#atualizar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>atualizar(req: Request, res: Response)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="78"
+                                    class="link-to-prism">backend/src/controllers/aluno.controller.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>req</td>
+                                            <td>
+                                                        <code>Request</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>res</td>
+                                            <td>
+                                                        <code>Response</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="buscarPorId"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>buscarPorId</b></span>
+                        <a href="#buscarPorId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>buscarPorId(req: Request, res: Response)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="180"
+                                    class="link-to-prism">backend/src/controllers/aluno.controller.ts:180</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>req</td>
+                                            <td>
+                                                        <code>Request</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>res</td>
+                                            <td>
+                                                        <code>Response</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cadastrar"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>cadastrar</b></span>
+                        <a href="#cadastrar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>cadastrar(req: Request, res: Response)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="6"
+                                    class="link-to-prism">backend/src/controllers/aluno.controller.ts:6</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>req</td>
+                                            <td>
+                                                        <code>Request</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>res</td>
+                                            <td>
+                                                        <code>Response</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="excluir"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>excluir</b></span>
+                        <a href="#excluir"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>excluir(req: Request, res: Response)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="159"
+                                    class="link-to-prism">backend/src/controllers/aluno.controller.ts:159</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>req</td>
+                                            <td>
+                                                        <code>Request</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>res</td>
+                                            <td>
+                                                        <code>Response</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listar"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>listar</b></span>
+                        <a href="#listar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>listar(req: Request, res: Response)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="141"
+                                    class="link-to-prism">backend/src/controllers/aluno.controller.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>req</td>
+                                            <td>
+                                                        <code>Request</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>res</td>
+                                            <td>
+                                                        <code>Response</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Request, Response } from &#x27;express&#x27;; 
+import { supabase } from &#x27;../config/supabase&#x27;;
+
+export class AlunoController {   
+  
+  async cadastrar(req: Request, res: Response): Promise&lt;any&gt; {     
+    try {       
+      // Extraindo os responsáveis do payload para não conflitar com a tabela aluno
+      const { responsaveis, ...dadosAluno } &#x3D; req.body;       
+      
+      dadosAluno.status &#x3D; dadosAluno.status || 1;
+
+      if (dadosAluno.foto &amp;&amp; dadosAluno.foto.startsWith(&#x27;data:image&#x27;)) {         
+        const base64Data &#x3D; dadosAluno.foto.replace(/^data:image\/\w+;base64,/, &quot;&quot;);         
+        const fotoBuffer &#x3D; Buffer.from(base64Data, &#x27;base64&#x27;);                  
+        const fileName &#x3D; &#x60;${Date.now()}-foto.jpg&#x60;;         
+        
+        const { data: uploadData, error: uploadError } &#x3D; await supabase.storage           
+          .from(&#x27;fotos-alunos&#x27;)           
+          .upload(fileName, fotoBuffer, {             
+            contentType: &#x27;image/jpeg&#x27;,             
+            upsert: false           
+          });         
+          
+        if (uploadError) {           
+          console.error(&quot;Erro ao subir foto no Storage:&quot;, uploadError);           
+          return res.status(400).json({ erro: &quot;Erro ao fazer upload da foto.&quot; });         
+        }         
+        
+        const { data: publicUrlData } &#x3D; supabase.storage           
+          .from(&#x27;fotos-alunos&#x27;)           
+          .getPublicUrl(fileName);         
+          
+        dadosAluno.foto &#x3D; publicUrlData.publicUrl;       
+      }       
+
+      // 1. Cadastra o aluno
+      const { data: alunoData, error: alunoError } &#x3D; await supabase         
+        .from(&#x27;aluno&#x27;)         
+        .insert([dadosAluno])         
+        .select();       
+        
+      if (alunoError) {         
+        console.error(&quot;Erro ao inserir aluno no Supabase:&quot;, alunoError);         
+        return res.status(400).json({ erro: alunoError.message });       
+      }       
+
+      const alunoId &#x3D; alunoData[0].id; // Pegando a FK recém gerada
+
+      // 2. Cadastra os responsáveis associados
+      if (responsaveis &amp;&amp; responsaveis.length &gt; 0) {
+        // Formata para bater com as colunas do seu banco
+        const responsaveisPayload &#x3D; responsaveis.map((r: any) &#x3D;&gt; ({
+          id_aluno: alunoId, 
+          nome: r.nome,
+          parentesco: r.parentesco,
+          email: r.email,
+          telefone: r.telefone
+        }));
+
+        const { error: responsavelError } &#x3D; await supabase
+          .from(&#x27;responsaveis&#x27;)
+          .insert(responsaveisPayload);
+
+        if (responsavelError) {
+          console.error(&quot;Erro ao inserir responsaveis:&quot;, responsavelError);
+        }
+      }
+      
+      return res.status(201).json(alunoData);     
+      
+    } catch (err) {       
+      console.error(&quot;Erro interno do servidor:&quot;, err);       
+      return res.status(500).json({ erro: &#x27;Erro interno no servidor&#x27; });     
+    }
+  } 
+
+  async atualizar(req: Request, res: Response): Promise&lt;any&gt; {
+    try {
+      const id &#x3D; req.params.id; 
+      const { responsaveis, ...dadosAluno } &#x3D; req.body;
+
+      if (dadosAluno.foto &amp;&amp; dadosAluno.foto.startsWith(&#x27;data:image&#x27;)) {
+        const base64Data &#x3D; dadosAluno.foto.replace(/^data:image\/\w+;base64,/, &quot;&quot;);
+        const fotoBuffer &#x3D; Buffer.from(base64Data, &#x27;base64&#x27;);
+        const fileName &#x3D; &#x60;${Date.now()}-foto.jpg&#x60;;
+
+        const { error: uploadError } &#x3D; await supabase.storage
+          .from(&#x27;fotos-alunos&#x27;)
+          .upload(fileName, fotoBuffer, {
+            contentType: &#x27;image/jpeg&#x27;,
+            upsert: false
+          });
+
+        if (uploadError) {
+          return res.status(400).json({ erro: &quot;Erro ao fazer upload da foto.&quot; });
+        }
+
+        const { data: publicUrlData } &#x3D; supabase.storage
+          .from(&#x27;fotos-alunos&#x27;)
+          .getPublicUrl(fileName);
+
+        dadosAluno.foto &#x3D; publicUrlData.publicUrl;
+      }
+
+      // Atualiza os dados do Aluno
+      const { data: alunoData, error: alunoError } &#x3D; await supabase
+        .from(&#x27;aluno&#x27;)
+        .update(dadosAluno)
+        .eq(&#x27;id&#x27;, id)
+        .select();
+
+      if (alunoError) {
+        return res.status(400).json({ erro: alunoError.message });
+      }
+
+      // Atualiza os responsáveis (limpa os antigos e adiciona os novos editados)
+      if (responsaveis) {
+        await supabase.from(&#x27;responsaveis&#x27;).delete().eq(&#x27;id_aluno&#x27;, id);
+
+        if (responsaveis.length &gt; 0) {
+          const responsaveisPayload &#x3D; responsaveis.map((r: any) &#x3D;&gt; ({
+            id_aluno: id,
+            nome: r.nome,
+            parentesco: r.parentesco,
+            email: r.email,
+            telefone: r.telefone
+          }));
+
+          await supabase.from(&#x27;responsaveis&#x27;).insert(responsaveisPayload);
+        }
+      }
+
+      return res.status(200).json(alunoData);
+    } catch (err) {
+      console.error(&quot;Erro ao atualizar:&quot;, err);
+      return res.status(500).json({ erro: &#x27;Erro interno ao atualizar aluno&#x27; });
+    }
+  }
+
+  async listar(req: Request, res: Response): Promise&lt;any&gt; {     
+    try {       
+      const { data, error } &#x3D; await supabase         
+        .from(&#x27;aluno&#x27;)         
+        .select(&#x27;*, turma(*)&#x27;)         
+        .order(&#x27;data_de_criacao&#x27;, { ascending: false });       
+        
+      if (error) {         
+        return res.status(400).json({ erro: error.message });       
+      }       
+      
+      return res.status(200).json(data);     
+      
+    } catch (err) {       
+      return res.status(500).json({ erro: &#x27;Erro interno ao buscar alunos&#x27; });     
+    }
+  } 
+
+  async excluir(req: Request, res: Response): Promise&lt;any&gt; {
+    try {
+      const id &#x3D; req.params.id;
+
+      const { data, error } &#x3D; await supabase
+        .from(&#x27;aluno&#x27;)
+        .update({ status: 2 })
+        .eq(&#x27;id&#x27;, id)
+        .select();
+
+      if (error) {
+        return res.status(400).json({ erro: error.message });
+      }
+
+      return res.status(200).json({ mensagem: &#x27;Aluno inativado com sucesso&#x27;, data });
+    } catch (err) {
+      console.error(&#x27;Erro ao excluir:&#x27;, err);
+      return res.status(500).json({ erro: &#x27;Erro interno ao excluir aluno&#x27; });
+    }
+  }
+
+  async buscarPorId(req: Request, res: Response): Promise&lt;any&gt; {
+    try {
+      const id &#x3D; req.params.id;
+
+      // O &#x27;responsaveis(*)&#x27; e &#x27;turma(*)&#x27; fazem o JOIN automático do Supabase
+      const { data, error } &#x3D; await supabase
+        .from(&#x27;aluno&#x27;)
+        .select(&#x27;*, responsaveis(*), turma(*)&#x27;) 
+        .eq(&#x27;id&#x27;, id)
+        .single(); 
+
+      if (error) {
+        console.error(&quot;Erro ao buscar aluno por ID no Supabase:&quot;, error);
+        return res.status(400).json({ erro: error.message });
+      }
+
+      if (!data) {
+        return res.status(404).json({ erro: &#x27;Aluno não encontrado&#x27; });
+      }
+
+      return res.status(200).json(data);
+
+    } catch (err) {
+      console.error(&quot;Erro interno ao buscar aluno por ID:&quot;, err);
+      return res.status(500).json({ erro: &#x27;Erro interno ao buscar detalhes do aluno&#x27; });
+    }
+  }
+}</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'AlunoController.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
