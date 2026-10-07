@@ -28,6 +28,11 @@ export const routes: Routes = [
     component: EditarAluno,
   },
   {
+    path: 'alunos/:alunoId/planos/:tipo/:id',
+    loadComponent: () => import('./documentos/editor/documento-editor').then(m => m.DocumentoEditor),
+    canDeactivate: [pendingChangesGuard],
+  },
+  {
     path: 'alunos/:id',
     component: DetalheAluno,
   },

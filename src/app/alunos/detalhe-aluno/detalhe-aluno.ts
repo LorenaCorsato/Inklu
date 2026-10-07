@@ -28,6 +28,7 @@ import { ModalDocumento } from './modal-documento/modal-documento';
 import { ModalDadosAdicionais, DadosAdicionais } from './modal-dados-adicionais/modal-dados-adicionais';
 import { ModalConfirmarExclusao } from '../modal-confirmar-exclusao/modal-confirmar-exclusao';
 import { AlunoService } from '../aluno.service';
+import { PlanosAluno } from './planos-aluno/planos-aluno';
 
 export interface Arquivo {
   id: string | number;
@@ -63,6 +64,7 @@ export interface Arquivo {
     ModalDocumento,
     ModalDadosAdicionais,
     ModalConfirmarExclusao,
+    PlanosAluno,
   ],
   templateUrl: './detalhe-aluno.html',
   styleUrl: './detalhe-aluno.scss',

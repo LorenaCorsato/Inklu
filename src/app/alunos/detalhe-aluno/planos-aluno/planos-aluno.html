@@ -1,0 +1,62 @@
+<section class="plans-panel" aria-labelledby="plans-title">
+  <div class="plans-header">
+    <div><h2 id="plans-title">Planos educacionais</h2><p>PEI e PAEE deste aluno, organizados por bimestre e versão.</p></div>
+    <div class="plans-actions">
+      <a class="btn btn-primary" [routerLink]="['/alunos', alunoId, 'planos', 'pei', 'novo']">Criar PEI</a>
+      <a class="btn btn-primary-outline" [routerLink]="['/alunos', alunoId, 'planos', 'paee', 'novo']">Criar PAEE</a>
+    </div>
+  </div>
+  <div class="plan-filters" role="group" aria-label="Filtrar planos educacionais">
+    <label>Tipo de documento
+      <select class="form-select" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
+        <option value="">Todos os tipos</option><option value="pei">PEI</option><option value="paee">PAEE</option>
+      </select>
+    </label>
+    <label>Bimestre
+      <select class="form-select" [ngModel]="bimestreFilter()" (ngModelChange)="bimestreFilter.set($event)">
+        <option value="">Todos os bimestres</option>
+        <option value="1">1º bimestre</option><option value="2">2º bimestre</option><option value="3">3º bimestre</option><option value="4">4º bimestre</option>
+      </select>
+    </label>
+    <label>Ano letivo
+      <select class="form-select" [ngModel]="yearFilter()" (ngModelChange)="yearFilter.set($event)">
+        <option value="">Todos os anos</option>
+        @for (year of years(); track year) { <option [value]="year">{{ year }}</option> }
+      </select>
+    </label>
+    @if (hasFilters()) { <button class="btn btn-primary-outline" type="button" (click)="clearFilters()">Limpar filtros</button> }
+  </div>
+  <label class="history-toggle"><input type="checkbox" [checked]="showHistory()" (change)="showHistory.set(!showHistory())"> Mostrar todas as versões anteriores</label>
+  @if (loading()) { <p role="status">Carregando planos...</p> }
+  @else if (error()) { <p role="alert">{{ error() }} <button class="btn btn-primary-outline" type="button" (click)="load()">Tentar novamente</button></p> }
+  @else {
+    <div class="plans-table-wrapper"><table class="table">
+      <thead><tr><th>Plano</th><th>Período</th><th>Status</th><th>Atualizado em</th><th>Ações</th></tr></thead>
+      <tbody>
+        @for (plan of paginatedPlans(); track plan.id) {
+          <tr><td>{{ plan.name }} · Versão {{ plan.versionNumber ?? 1 }}<small>{{ plan.type === 'pei' ? 'PEI' : 'PAEE' }}</small></td>
+            <td>{{ plan.bimestre }}º bimestre / {{ plan.anoLetivo }}</td>
+            <td>{{ plan.status === 'rascunho' ? 'Rascunho' : 'Finalizado' }}</td>
+            <td>{{ (plan.modifiedAt || plan.createdAt) | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td><div class="plans-actions">
+              <a class="btn btn-primary-outline" [routerLink]="['/alunos', alunoId, 'planos', plan.type, plan.id]" [queryParams]="{leitura: '1'}">Visualizar</a>
+              <a class="btn btn-primary-outline" [routerLink]="['/alunos', alunoId, 'planos', plan.type, plan.id]">Editar</a>
+            </div></td>
+          </tr>
+        } @empty { <tr><td colspan="5">{{ hasFilters() ? 'Nenhum plano encontrado com os filtros selecionados.' : 'Nenhum PEI ou PAEE registrado para este aluno.' }}</td></tr> }
+      </tbody>
+    </table></div>
+    @if (visiblePlans().length) {
+      <nav class="plans-pagination" aria-label="Paginação dos planos educacionais">
+        <span class="plans-pagination-summary" role="status">
+          Mostrando {{ pageStart() + 1 }} a {{ pageEnd() }} de {{ visiblePlans().length }} documentos
+        </span>
+        <div class="plans-pagination-controls">
+          <button class="btn btn-primary-outline" type="button" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+          <span>Página {{ currentPage() }} de {{ pageCount() }}</span>
+          <button class="btn btn-primary-outline" type="button" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === pageCount()">Próxima</button>
+        </div>
+      </nav>
+    }
+  }
+</section>

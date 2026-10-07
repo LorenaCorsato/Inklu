@@ -17,6 +17,15 @@
   font-family: var(--ds-font-family-base);
 }
 
+.plan-controls { display: flex; flex: 0 0 auto; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .75rem 1rem; border-bottom: 1px solid var(--ds-border); background: var(--ds-surface); }
+.plan-export-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.plan-controls label { display: flex; align-items: center; gap: .5rem; font-size: .875rem; }
+.plan-controls input, .plan-controls select { border: 1px solid var(--ds-border); background: var(--ds-surface); color: var(--ds-body); border-radius: 4px; padding: .4rem; }
+.plan-controls input { width: 6rem; }
+.plan-controls span { font-size: .8rem; color: var(--ds-muted); }
+.plan-hint { margin: 0; padding: .35rem 1rem; font-size: .8rem; color: var(--ds-muted); background: var(--ds-surface); }
+.plan-success { margin: 0; padding: .5rem 1rem; background: var(--ds-success-soft); color: var(--ds-success); }
+
 // ─── Cabeçalho ──────────────────────────────────────────────────────────────
 .editor-header {
   display: flex;

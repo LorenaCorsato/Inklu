@@ -14,14 +14,24 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
+    "@xmldom/xmldom": "^0.8.15",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "html-to-docx": "^1.8.0",
+    "jszip": "^3.10.2",
+    "mammoth": "^1.13.0",
+    "node-html-parser": "^9.0.4",
+    "pdf-parse": "^2.4.5",
+    "puppeteer": "^25.12.0",
+    "sanitize-html": "^2.18.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/html-to-docx": "^1.8.1",
     "@types/node": "^26.2.0",
+    "@types/sanitize-html": "^2.16.2",
     "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   }

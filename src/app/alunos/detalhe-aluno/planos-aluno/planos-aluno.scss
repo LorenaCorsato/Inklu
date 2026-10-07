@@ -1,0 +1,12 @@
+.plans-panel { border: 1px solid var(--ds-border); border-radius: var(--ds-radius-sm); background: var(--ds-surface); padding: 1rem; margin-bottom: 1rem; }
+.plans-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+h2 { font-size: 1.25rem; margin: 0 0 .3rem; } p { color: var(--ds-muted); }
+.plans-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.plan-filters { display: flex; align-items: flex-end; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+.plan-filters label { display: flex; flex-direction: column; gap: .3rem; flex: 1 1 10rem; font-size: .875rem; }
+.plan-filters select { width: 100%; }
+.history-toggle { display: flex; align-items: center; gap: .5rem; margin: 1rem 0; }
+.plans-table-wrapper { overflow: auto; } small { display: block; color: var(--ds-muted); }
+.plans-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; font-size: .875rem; }
+.plans-pagination-summary { color: var(--ds-muted); }
+.plans-pagination-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }

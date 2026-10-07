@@ -21,7 +21,7 @@ export class App {
 
   constructor(_theme: ThemeService, router: Router) {
     router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      this.isEditorRoute.set(router.url.startsWith('/documentos/editor'));
+      this.isEditorRoute.set(router.url.startsWith('/documentos/editor') || /^\/alunos\/[^/]+\/planos\//.test(router.url));
     });
   }
 }
