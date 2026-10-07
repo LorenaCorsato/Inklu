@@ -82,3 +82,32 @@ export const DEFAULT_TOOLBAR_STATE: EditorToolbarState = {
 
 /** Tamanhos de fonte disponíveis no seletor da toolbar. */
 export const FONT_SIZES = ['9', '10', '11', '12', '14', '18', '24'] as const;
+
+/** Opções de margem predefinidas. */
+export type MarginPreset = 'normal' | 'narrow' | 'letter' | 'custom';
+
+/** Tamanhos de papel suportados. */
+export type PaperSize = 'A4' | 'A3' | 'A2' | 'Letter' | 'Custom';
+
+/** Orientação da página. */
+export type PageOrientation = 'portrait' | 'landscape';
+
+/** Configurações de página para o editor. */
+export interface PageSettings {
+  margin: MarginPreset;
+  customMargin?: { top: number; right: number; bottom: number; left: number };
+  paperSize: PaperSize;
+  customPaperSize?: { width: number; height: number };
+  lineSpacing: number;
+  showPageNumber: boolean;
+  orientation: PageOrientation;
+}
+
+/** Configurações padrão de página. */
+export const DEFAULT_PAGE_SETTINGS: PageSettings = {
+  margin: 'normal',
+  paperSize: 'A4',
+  lineSpacing: 1.6,
+  showPageNumber: false,
+  orientation: 'portrait',
+};

@@ -3,19 +3,16 @@
   display: block;
   flex: 0 0 auto;
   align-self: flex-start;
-  margin: var(--ds-spacing-4) 0 var(--ds-spacing-4) var(--ds-spacing-4);
 }
 
 .pages-island {
   display: flex;
   width: 172px;
-  max-height: calc(100% - 2 * var(--ds-spacing-4));
+  height: 100%;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--ds-border);
-  border-radius: var(--ds-radius-lg);
+  border-right: 1px solid var(--ds-border);
   background: var(--ds-surface);
-  box-shadow: var(--ds-shadow-md);
 }
 
 .pages-header {

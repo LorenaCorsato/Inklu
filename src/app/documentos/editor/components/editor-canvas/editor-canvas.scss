@@ -33,17 +33,24 @@
 
 .a4-sheet {
   box-sizing: border-box;
-  width: 21cm;
-  min-height: 29.7cm;
-  padding: 2.5cm;
   background: #ffffff;
   box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+  transition: width 0.2s ease, min-height 0.2s ease, padding 0.2s ease;
+}
+
+// Orientações
+.a4-sheet.orientation-landscape {
+  /* Landscape usa largura/altura trocadas via estilos inline */
+}
+
+.a4-sheet.orientation-portrait {
+  /* Portrait usa dimensões padrão via estilos inline */
 }
 
 // O ProseMirror é injetado em runtime dentro da folha; por isso `::ng-deep`
 // para que os estilos não sejam isolados pelo encapsulamento do componente.
 :host ::ng-deep .ProseMirror {
-  min-height: 24.7cm;
+  min-height: 100%;
   outline: none;
   color: #1a1a1a;
   font-family: Calibri, Arial, sans-serif;
@@ -145,6 +152,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .canvas-zoom-container {
+    transition: none;
+  }
+
+  .a4-sheet {
     transition: none;
   }
 }

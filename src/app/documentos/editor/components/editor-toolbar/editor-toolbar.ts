@@ -10,6 +10,7 @@ import {
   LucideItalic,
   LucideTable,
   LucideUnderline,
+  LucideFilePen
 } from '@lucide/angular';
 import {
   DEFAULT_TOOLBAR_STATE,
@@ -37,6 +38,7 @@ import {
     LucideItalic,
     LucideTable,
     LucideUnderline,
+    LucideFilePen
   ],
   templateUrl: './editor-toolbar.html',
   styleUrl: './editor-toolbar.scss',
@@ -48,10 +50,15 @@ export class EditorToolbar {
 
   @Output() command = new EventEmitter<EditorCommandName>();
   @Output() fontSizeChange = new EventEmitter<string>();
+  @Output() editPage = new EventEmitter<void>();
 
   readonly fontSizes = FONT_SIZES;
 
   onFontSizeChange(event: Event): void {
     this.fontSizeChange.emit((event.target as HTMLSelectElement).value);
+  }
+
+  onEditPage(): void {
+    this.editPage.emit();
   }
 }

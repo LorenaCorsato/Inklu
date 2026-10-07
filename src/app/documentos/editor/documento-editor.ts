@@ -32,6 +32,7 @@ import { EditorCanvas } from './components/editor-canvas/editor-canvas';
 import { EditorPages } from './components/editor-pages/editor-pages';
 import { EditorToolbar } from './components/editor-toolbar/editor-toolbar';
 import { ModalSaida } from './components/modal-saida/modal-saida';
+import { ModalPagina } from './components/modal-pagina/modal-pagina';
 import { DocumentConverterService } from './services/document-converter.service';
 import { EditorStateService } from './services/editor-state.service';
 import { PendingChangesAware } from './pending-changes.guard';
@@ -44,14 +45,29 @@ import {
   EditorCommandName,
   EditorToolbarState,
   TextAlignment,
+  PageSettings,
+  DEFAULT_PAGE_SETTINGS,
 } from './models/editor-document.model';
 
 /** Altura de uma página A4 (29,7 cm) em pixels CSS (1 cm = 96/2,54 px). */
 const PX_PER_CM = 96 / 2.54;
-/** Altura útil de conteúdo da folha: A4 menos as margens de 2,5 cm. */
-const PAGE_CONTENT_HEIGHT_PX = (29.7 - 2 * 2.5) * PX_PER_CM;
 /** Respiro superior ao rolar para uma página. */
 const PAGE_SCROLL_MARGIN = 24;
+
+/** Tamanhos de papel em cm (largura x altura). */
+const PAPER_SIZES_CM: Record<string, { width: number; height: number }> = {
+  A4: { width: 21, height: 29.7 },
+  A3: { width: 29.7, height: 42 },
+  A2: { width: 42, height: 59.4 },
+  Letter: { width: 21.6, height: 27.9 },
+};
+
+/** Margens predefinidas em cm. */
+const MARGIN_PRESETS_CM: Record<string, { top: number; right: number; bottom: number; left: number }> = {
+  normal: { top: 2.5, right: 2.5, bottom: 2.5, left: 2.5 },
+  narrow: { top: 1.27, right: 1.27, bottom: 1.27, left: 1.27 },
+  letter: { top: 2.54, right: 2.54, bottom: 2.54, left: 2.54 },
+};
 
 /**
  * Tela de edição de documentos (rota em tela cheia).
@@ -73,6 +89,7 @@ const PAGE_SCROLL_MARGIN = 24;
     EditorCanvas,
     EditorPages,
     ModalSaida,
+    ModalPagina,
   ],
   templateUrl: './documento-editor.html',
   styleUrl: './documento-editor.scss',
@@ -106,6 +123,7 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   readonly hasUnsavedChanges = this.state.hasUnsavedChanges;
   readonly zoomLevel = this.state.zoomLevel;
   readonly fontSize = this.state.fontSize;
+  readonly pageSettings = this.state.pageSettings;
 
   readonly documentId = signal<string | null>(null);
   readonly originalFormat = signal<EditableDocumentFormat>('docx');
@@ -127,11 +145,12 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   readonly isExporting = signal(false);
   readonly canExport = computed(() => !!this.baseVersionId() && !this.hasUnsavedChanges() && !this.isLoading() && !this.isSaving() && !this.isExporting() && !this.saveDialogOpen());
 
-  // ─── Páginas e modal de saída ─────────────────────────────────────────────
+  // ─── Páginas e modais ─────────────────────────────────────────────────────
   readonly pageCount = signal(1);
   readonly currentPage = signal(1);
   readonly exitDialogOpen = signal(false);
   readonly saveDialogOpen = signal(false);
+  readonly pageDialogOpen = signal(false);
 
   /** Só permite salvar quando há alterações reais e conteúdo não vazio. */
   readonly canSave = computed(
@@ -139,6 +158,31 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
       ? this.editorReady() && !this.isLoading() && !this.isSaving() && !this.readOnly() && !this.saveDialogOpen()
       : !this.isSaving() && this.hasUnsavedChanges() && this.wordCount() > 0,
   );
+
+  /** Altura útil de conteúdo da página em pixels CSS, baseada nas configurações atuais. */
+  readonly pageContentHeightPx = computed(() => {
+    const settings = this.pageSettings();
+    const paperSize = settings.paperSize;
+    const orientation = settings.orientation;
+
+    // Obtém dimensões do papel
+    let dimensions = PAPER_SIZES_CM[paperSize] ?? PAPER_SIZES_CM['A4'];
+    if (settings.paperSize === 'Custom' && settings.customPaperSize) {
+      dimensions = settings.customPaperSize;
+    }
+
+    // Troca largura/altura se landscape
+    const pageHeightCm = orientation === 'landscape' ? dimensions.width : dimensions.height;
+
+    // Obtém margens
+    let margins = MARGIN_PRESETS_CM[settings.margin] ?? MARGIN_PRESETS_CM['normal'];
+    if (settings.margin === 'custom' && settings.customMargin) {
+      margins = settings.customMargin;
+    }
+
+    const contentHeightCm = pageHeightCm - margins.top - margins.bottom;
+    return contentHeightCm * PX_PER_CM;
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -302,27 +346,40 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   // ─── Páginas ──────────────────────────────────────────────────────────────
 
   /** Recalcula a quantidade de páginas a partir da altura do conteúdo. */
-  private recomputePages(): void {
-    const content = this.editorContent();
+private recomputePages(): void {
+  const content = this.editorContent();
 
-    if (!content) {
-      this.pageCount.set(1);
-      return;
-    }
-
-    const signatures = content.querySelector<HTMLElement>('[data-plan-fixed="footer"]');
-    if (signatures) {
-      // O editor é contínuo: reserva o restante da página antes das assinaturas.
-      signatures.style.paddingTop = '0';
-      const zoom = this.zoomLevel() / 100;
-      const offset = (signatures.getBoundingClientRect().top - content.getBoundingClientRect().top) / zoom;
-      const nextPage = Math.ceil(offset / PAGE_CONTENT_HEIGHT_PX) * PAGE_CONTENT_HEIGHT_PX;
-      signatures.style.paddingTop = `${Math.max(0, nextPage - offset)}px`;
-    }
-    const count = Math.max(1, Math.ceil((content.scrollHeight - 1) / PAGE_CONTENT_HEIGHT_PX));
-    this.pageCount.set(count);
-    this.currentPage.set(Math.min(this.currentPage(), count));
+  if (!content) {
+    this.pageCount.set(1);
+    return;
   }
+
+  const pageHeight = this.pageContentHeightPx();
+  const signatures = content.querySelector<HTMLElement>(
+    '[data-plan-fixed="footer"]'
+  );
+
+  if (signatures) {
+    signatures.style.paddingTop = '0';
+
+    const zoom = this.zoomLevel() / 100;
+    const offset = (
+      signatures.getBoundingClientRect().top -
+      content.getBoundingClientRect().top
+    ) / zoom;
+
+    const nextPage = Math.ceil(offset / pageHeight) * pageHeight;
+    signatures.style.paddingTop = `${Math.max(0, nextPage - offset)}px`;
+  }
+
+  const count = Math.max(
+    1,
+    Math.ceil((content.scrollHeight - 1) / pageHeight)
+  );
+
+  this.pageCount.set(count);
+  this.currentPage.set(Math.min(this.currentPage(), count));
+}
 
   /** Rola o viewport até a página selecionada na ilha lateral. */
   goToPage(page: number): void {
@@ -330,7 +387,7 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
     const content = this.editorContent();
     if (!viewport || !content) return;
 
-    const pageHeight = PAGE_CONTENT_HEIGHT_PX * (this.zoomLevel() / 100);
+    const pageHeight = this.pageContentHeightPx() * (this.zoomLevel() / 100);
     const offset = content.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
     const delta = offset + (page - 1) * pageHeight - PAGE_SCROLL_MARGIN;
 
@@ -348,7 +405,7 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
     const content = this.editorContent();
     if (!viewport || !content) return;
 
-    const pageHeight = PAGE_CONTENT_HEIGHT_PX * (this.zoomLevel() / 100);
+    const pageHeight = this.pageContentHeightPx() * (this.zoomLevel() / 100);
     const offset =
       viewport.getBoundingClientRect().top -
       content.getBoundingClientRect().top +
@@ -623,6 +680,37 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
     this.pendingExitPromise = null;
     this.exitDialogOpen.set(false);
     resolve?.(canLeave);
+  }
+
+  // ─── Modal de configurações de página ───────────────────────────────────────
+
+  /** Abre o modal de configurações de página. */
+  onEditPage(): void {
+    this.pageDialogOpen.set(true);
+  }
+
+  /** Fecha o modal de configurações de página sem salvar. */
+  onPageCancel(): void {
+    this.pageDialogOpen.set(false);
+  }
+
+  /** Salva as configurações de página e atualiza o canvas. */
+  onPageSave(settings: PageSettings): void {
+    this.state.setPageSettings(settings);
+    this.applyPageSettings(settings);
+    this.pageDialogOpen.set(false);
+    this.recomputePages();
+  }
+
+  /** Aplica as configurações de página ao editor e canvas. */
+  private applyPageSettings(settings: PageSettings): void {
+    const editor = this.editor;
+    const canvas = this.canvas;
+    if (!editor || !canvas) return;
+
+    // Atualiza o espaçamento entre linhas no conteúdo do editor
+    const lineHeight = settings.lineSpacing ?? DEFAULT_PAGE_SETTINGS.lineSpacing;
+    editor.chain().focus().setLineHeight(`${lineHeight}`).run();
   }
 
   // ─── Utilidades ───────────────────────────────────────────────────────────

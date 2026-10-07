@@ -145,4 +145,18 @@
       <svg lucideTable [size]="16" aria-hidden="true"></svg>
     </button>
   </div>
+
+  <span class="toolbar-divider" aria-hidden="true"></span>
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="btn-tool"
+      [disabled]="disabled"
+      title="Editar página"
+      aria-label="Editar página"
+      (click)="onEditPage()"
+    >
+      <svg lucideFilePen [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
 </div>

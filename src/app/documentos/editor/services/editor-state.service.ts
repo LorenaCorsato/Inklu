@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { EditableDocument } from '../models/editor-document.model';
+import { EditableDocument, PageSettings, DEFAULT_PAGE_SETTINGS } from '../models/editor-document.model';
 
 /**
  * Estado compartilhado da tela de editor (dirty check, zoom, metadados).
@@ -16,6 +16,7 @@ export class EditorStateService {
   private readonly _hasUnsavedChanges = signal(false);
   private readonly _zoomLevel = signal(100);
   private readonly _fontSize = signal('11');
+  private readonly _pageSettings = signal<PageSettings>(DEFAULT_PAGE_SETTINGS);
 
   readonly document = this._document.asReadonly();
   readonly documentName = this._documentName.asReadonly();
@@ -23,6 +24,7 @@ export class EditorStateService {
   readonly hasUnsavedChanges = this._hasUnsavedChanges.asReadonly();
   readonly zoomLevel = this._zoomLevel.asReadonly();
   readonly fontSize = this._fontSize.asReadonly();
+  readonly pageSettings = this._pageSettings.asReadonly();
 
   /** Define o documento carregado e limpa o flag de alterações pendentes. */
   setDocument(document: EditableDocument): void {
@@ -54,6 +56,17 @@ export class EditorStateService {
     this._fontSize.set(size);
   }
 
+  /** Atualiza as configurações de página. */
+  setPageSettings(settings: Partial<PageSettings>): void {
+    this._pageSettings.update((current) => ({ ...current, ...settings }));
+    this.markDirty();
+  }
+
+  /** Reseta as configurações de página para os valores padrão. */
+  resetPageSettings(): void {
+    this._pageSettings.set(DEFAULT_PAGE_SETTINGS);
+  }
+
   zoomIn(): void {
     this._zoomLevel.update((value) => Math.min(value + 10, 200));
   }
@@ -70,5 +83,6 @@ export class EditorStateService {
     this._hasUnsavedChanges.set(false);
     this._zoomLevel.set(100);
     this._fontSize.set('11');
+    this._pageSettings.set(DEFAULT_PAGE_SETTINGS);
   }
 }

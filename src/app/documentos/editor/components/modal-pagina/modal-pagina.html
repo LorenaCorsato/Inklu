@@ -1,0 +1,206 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="pagina-title">
+      <div class="modal-header">
+        <span class="modal-icon" aria-hidden="true">
+          <svg lucideFilePen [size]="24" [strokeWidth]="2"></svg>
+        </span>
+        <h2 class="modal-title" id="pagina-title">Configurações da página</h2>
+        <button class="btn-close" type="button" aria-label="Fechar" (click)="closed.emit()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Margem -->
+        <fieldset class="form-section">
+          <legend class="section-title">Margem</legend>
+          <div class="form-field">
+            <select
+              class="form-select"
+              [value]="settings.margin"
+              (change)="onMarginChange($any($event.target).value)"
+              aria-label="Predefinição de margem"
+            >
+              @for (preset of marginPresets; track preset.value) {
+                <option [value]="preset.value">{{ preset.label }}</option>
+              }
+            </select>
+          </div>
+
+          @if (settings.margin === 'custom') {
+            <div class="custom-margin-grid">
+              <div class="form-field">
+                <label class="form-label" for="margin-top">Superior (cm)</label>
+                <input
+                  id="margin-top"
+                  type="number"
+                  class="form-input"
+                  [value]="customMargin.top"
+                  (input)="customMargin.top = $event.target.valueAsNumber"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  aria-label="Margem superior"
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="margin-right">Direita (cm)</label>
+                <input
+                  id="margin-right"
+                  type="number"
+                  class="form-input"
+                  [value]="customMargin.right"
+                  (input)="customMargin.right = $event.target.valueAsNumber"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  aria-label="Margem direita"
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="margin-bottom">Inferior (cm)</label>
+                <input
+                  id="margin-bottom"
+                  type="number"
+                  class="form-input"
+                  [value]="customMargin.bottom"
+                  (input)="customMargin.bottom = $event.target.valueAsNumber"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  aria-label="Margem inferior"
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="margin-left">Esquerda (cm)</label>
+                <input
+                  id="margin-left"
+                  type="number"
+                  class="form-input"
+                  [value]="customMargin.left"
+                  (input)="customMargin.left = $event.target.valueAsNumber"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  aria-label="Margem esquerda"
+                />
+              </div>
+            </div>
+          }
+        </fieldset>
+
+        <!-- Tamanho do papel -->
+        <fieldset class="form-section">
+          <legend class="section-title">Tamanho do papel</legend>
+          <div class="form-field">
+            <select
+              class="form-select"
+              [value]="settings.paperSize"
+              (change)="onPaperSizeChange($any($event.target).value)"
+              aria-label="Tamanho do papel"
+            >
+              @for (size of paperSizes; track size.value) {
+                <option [value]="size.value">{{ size.label }}</option>
+              }
+            </select>
+          </div>
+
+          @if (settings.paperSize === 'Custom') {
+            <div class="custom-paper-grid">
+              <div class="form-field">
+                <label class="form-label" for="paper-width">Largura (cm)</label>
+                <input
+                  id="paper-width"
+                  type="number"
+                  class="form-input"
+                  [value]="customPaperSize.width"
+                  (input)="customPaperSize.width = $event.target.valueAsNumber"
+                  min="5"
+                  max="100"
+                  step="0.1"
+                  aria-label="Largura do papel"
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="paper-height">Altura (cm)</label>
+                <input
+                  id="paper-height"
+                  type="number"
+                  class="form-input"
+                  [value]="customPaperSize.height"
+                  (input)="customPaperSize.height = $event.target.valueAsNumber"
+                  min="5"
+                  max="100"
+                  step="0.1"
+                  aria-label="Altura do papel"
+                />
+              </div>
+            </div>
+          }
+        </fieldset>
+
+        <!-- Espaço entre linhas -->
+        <fieldset class="form-section">
+          <legend class="section-title">Espaço entre linhas</legend>
+          <div class="form-field">
+            <input
+              type="number"
+              class="form-input"
+              [value]="lineSpacing"
+              (input)="onLineSpacingChange($event.target.valueAsNumber)"
+              min="1"
+              max="3"
+              step="0.1"
+              aria-label="Espaçamento entre linhas"
+            />
+            <span class="form-hint">Valor personalizado (ex: 1.5, 1.6, 2.0)</span>
+          </div>
+        </fieldset>
+
+        <!-- Número da página -->
+        <fieldset class="form-section">
+          <legend class="section-title">Número da página</legend>
+          <div class="checkbox-field">
+            <input
+              type="checkbox"
+              id="page-number"
+              class="form-checkbox"
+              [checked]="settings.showPageNumber"
+              (change)="onPageNumberToggle($event.target.checked)"
+              aria-label="Mostrar número da página"
+            />
+            <label for="page-number" class="checkbox-label">Mostrar número da página</label>
+          </div>
+        </fieldset>
+
+        <!-- Orientação -->
+        <fieldset class="form-section">
+          <legend class="section-title">Orientação</legend>
+          <div class="orientation-options">
+            @for (orientation of orientations; track orientation.value) {
+              <button
+                type="button"
+                class="orientation-btn"
+                [class.active]="settings.orientation === orientation.value"
+                (click)="onOrientationChange(orientation.value)"
+              >
+                @if (orientation.icon === 'maximize') {
+                  <svg lucideMaximize2 [size]="20" aria-hidden="true"></svg>
+                } @else {
+                  <svg lucideMinimize2 [size]="20" aria-hidden="true"></svg>
+                }
+                <span>{{ orientation.label }}</span>
+              </button>
+            }
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-cancel" type="button" (click)="closed.emit()">Cancelar</button>
+        <button class="btn btn-save" type="button" (click)="onSave()">Salvar</button>
+      </div>
+    </div>
+  </div>
+}
