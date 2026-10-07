@@ -15,15 +15,14 @@ export function createPlanoRouter(service: PlanoService, generator = new Documen
   });
   router.post('/:tipo/importar', async (req, res) => { res.json(await service.import(alunoId(req), tipoPlano(req.params.tipo), req.body ?? {})); });
   router.get('/:tipo/:id', async (req, res) => { res.json((await service.get(alunoId(req), tipoPlano(req.params.tipo), String(req.params.id))).document); });
-  router.post('/:tipo', async (req, res) => { res.status(201).json(await service.save(alunoId(req), tipoPlano(req.params.tipo), req.body ?? {})); });
+  router.post('/:tipo', async (req, res) => { res.status(req.body?.saveMode === 'overwrite' ? 200 : 201).json(await service.save(alunoId(req), tipoPlano(req.params.tipo), req.body ?? {})); });
   router.post('/:tipo/:id/exportar', async (req, res) => {
     const format = req.body?.format;
     if (format !== 'pdf' && format !== 'docx' && format !== 'html') throw new PlanoError(400, 'Formato de exportação inválido.');
-    const { content, document } = await service.get(alunoId(req), tipoPlano(req.params.tipo), String(req.params.id));
-    if (content.status !== 'finalizado') throw new PlanoError(409, 'Finalize uma versão antes de exportar.');
+    const { document } = await service.get(alunoId(req), tipoPlano(req.params.tipo), String(req.params.id));
     const buffer = await generator.generateFromHtml(document.htmlContent, format, document.name);
     const mime = format === 'pdf' ? 'application/pdf' : format === 'docx' ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'text/html;charset=utf-8';
-    const name = document.name.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const name = `${document.name.replace(/\.(docx|pdf)$/i, '')}_versao_${document.versionNumber}`.replace(/[^a-zA-Z0-9_-]/g, '_');
     res.setHeader('Content-Type', mime);
     res.setHeader('Content-Disposition', `attachment; filename="${name}.${format}"`);
     res.send(buffer);

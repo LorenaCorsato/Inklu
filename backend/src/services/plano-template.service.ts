@@ -30,7 +30,8 @@ const definitions: Record<TipoPlano, Array<[string, string, boolean]>> = {
 };
 
 export class PlanoTemplateService {
-  private readonly templates = new Map<TipoPlano, Promise<{ fields: CampoPlano[]; signatures: string[]; supportHint: string }>>();
+  private readonly templates = new Map<TipoPlano, Promise<{ fields: CampoPlano[]; signatures: string[]; supportHint: string; supportOptions: string[] }>>();
+  private readonly crest = readFile(new URL('../../templates/brasao-sp.jpeg', import.meta.url)).then(buffer => buffer.toString('base64'));
   constructor(private readonly parser = new DocumentParserService()) {}
 
   async template(type: TipoPlano) {
@@ -55,22 +56,34 @@ export class PlanoTemplateService {
     const signatures = paragraphs.filter(text => /^(Nome.*Assinatura|Assinatura dos Professores|CIÊNCIA DO RESPONSÁVEL)/i.test(text));
     const supportStart = paragraphs.findIndex(text => text.startsWith('III - Apoios'));
     const supportEnd = paragraphs.findIndex(text => text.startsWith('Descrever os motivos'));
-    const supportHint = type === 'paee' ? paragraphs.slice(supportStart + 1, supportEnd).filter(Boolean).map(text => `<p>${escapeHtml(text)}</p>`).join('') : '';
-    return { fields, signatures, supportHint };
+    const supportOptions: string[] = [];
+    const supportHint = type === 'paee' ? paragraphs.slice(supportStart + 1, supportEnd).filter(Boolean).map(text => {
+      if (!/^\(\s*\)/.test(text)) return `<p>${escapeHtml(text)}</p>`;
+      const id = `servico-${supportOptions.length + 1}`;
+      supportOptions.push(id);
+      return `<p data-plan-option="${id}">${escapeHtml(text)}</p>`;
+    }).join('') : '';
+    return { fields, signatures, supportHint, supportOptions };
   }
 
   async render(type: TipoPlano, content: ConteudoPlano, bimestre: string, ano: number) {
     const template = await this.template(type);
     const title = type === 'pei' ? 'PLANO EDUCACIONAL INDIVIDUALIZADO – PEI' : 'PLANO DE ATENDIMENTO EDUCACIONAL ESPECIALIZADO / PAEE';
-    const subtitle = type === 'pei' ? '<p>Registro de Adaptação/Flexibilidade Curricular</p>' : '';
+    const subtitle = type === 'pei' ? '<p style="text-align: center; font-size: 14pt"><strong>Registro de Adaptação/Flexibilidade Curricular</strong></p>' : '';
     const p = content.perfil;
     const profile = type === 'paee'
       ? `<h2>I - Informações do estudante</h2><h3>1- Dados pessoais e escolares</h3><p>a) Identificação do estudante</p>${this.line('Nome Completo', p.nome)}${this.line('Data de Nascimento', p.nascimento)}${this.line('Sexo', p.genero)}<p>b) Escolaridade</p>${this.line('Escola', p.escola)}${this.line('Turno', p.turno)}${this.line('Turma', p.turma)}${this.line('Ano/Série', p.serie)}<p>c) Estudante elegível aos serviços da Educação Especial</p>${this.line('Deficiência / diagnóstico', p.diagnostico)}`
       : `${this.line('Nome do Estudante', p.nome)}<p>Nome do Professor Regente: __________________________________</p><p>Nome do Professor Especializado da Educação Especial: __________________________________</p>${this.line('Turma / Ano/Série', [p.turma, p.serie].filter(Boolean).join(' / '))}${this.line('Deficiência / diagnóstico', p.diagnostico)}`;
-    const header = `<div data-plan-fixed="header"><h1>${title}</h1>${subtitle}<p>Anexo ${type === 'pei' ? 'IV' : 'III'} da Resolução SEDUC nº 129/2025</p><p><strong>Período: ${escapeHtml(bimestre)}º Bimestre · Ano letivo: ${ano}</strong></p>${profile}${this.line('Preferências', p.preferencias)}${this.line('Interesses', p.interesses)}</div>`;
+    const letterhead = `<div data-plan-letterhead="true"><table><tbody><tr><td><img src="data:image/jpeg;base64,${await this.crest}" width="85" height="81" alt="Brasão do Estado de São Paulo"></td><td>${['GOVERNO DO ESTADO DE SÃO PAULO', 'SECRETARIA DE ESTADO DA EDUCAÇÃO', 'UNIDADE REGIONAL DE ENSINO DE ITU', `EE ${p.escola || '______________________________________'}`].map(text => `<p style="text-align: center"><strong>${escapeHtml(text)}</strong></p>`).join('')}</td></tr></tbody></table></div>`;
+    const header = `<div data-plan-fixed="header">${letterhead}<div data-plan-title="true"><h1 style="text-align: center; font-size: 14pt">${title}</h1>${subtitle}<p style="text-align: center; font-size: 14pt"><strong>Anexo ${type === 'pei' ? 'IV' : 'III'} da Resolução SEDUC nº 129/2025</strong></p></div><p data-plan-period="true"><strong>Período: ${escapeHtml(bimestre)}º Bimestre · Ano letivo: ${ano}</strong></p>${profile}${this.line('Preferências', p.preferencias)}${this.line('Interesses', p.interesses)}</div>`;
     const fields = [...template.fields, ...(content.fields.importado ? [{ id: 'importado', label: 'Conteúdo importado — revise e distribua nas seções do modelo', required: false }] : [])];
-    const body = fields.map(field => `<div data-plan-field="${field.id}"><h3>${escapeHtml(field.label)}${field.required ? ' *' : ''}</h3>${field.id === 'apoiosServicos' ? `<div data-plan-hint="true">${template.supportHint}</div>` : ''}<div data-plan-content="true">${content.fields[field.id] || '<p></p>'}</div></div>`).join('');
-    const footer = `<div data-plan-fixed="footer"><h2>Assinaturas</h2>${template.signatures.map(text => `<p>________________________________________________</p><p>${escapeHtml(text)}</p>`).join('')}</div>`;
+    const selected = (content.selectedSupports ?? []).filter(id => template.supportOptions.includes(id));
+    const supportHint = parse(template.supportHint);
+    for (const option of supportHint.querySelectorAll('[data-plan-option]')) {
+      if (selected.includes(option.getAttribute('data-plan-option')!)) option.set_content(option.innerHTML.replace(/^\(\s*\)/, '(X)'));
+    }
+    const body = fields.map(field => `<div data-plan-field="${field.id}"${field.id === 'apoiosServicos' ? ` data-plan-selected="${selected.join(',')}"` : ''}><h3>${escapeHtml(field.label)}${field.required ? ' *' : ''}</h3>${field.id === 'apoiosServicos' ? `<div data-plan-hint="true">${supportHint.toString()}</div>` : ''}<div data-plan-content="true">${content.fields[field.id] || '<p></p>'}</div></div>`).join('');
+    const footer = `<div data-plan-fixed="footer">${type === 'paee' ? '<h2 style="text-align: center">Assinaturas:</h2>' : ''}${template.signatures.map(text => `<div data-plan-signature="true"><p style="text-align: center">________________________________________________</p><p style="text-align: center">${escapeHtml(text)}</p></div>`).join('')}</div>`;
     return { htmlContent: header + body + footer, fields };
   }
 
@@ -98,11 +111,23 @@ export class PlanoTemplateService {
       fields[id] = sanitizeDocument(content.innerHTML);
     }
     if (finalizing) {
-      const missing = template.fields.filter(field => field.required && !parse(fields[field.id] || '').textContent.replace(/[_\s\u00a0]/g, ''));
+      const selected = await this.extractSelectedSupports(type, html);
+      const missing = template.fields.filter(field => field.required && !(field.id === 'apoiosServicos' && selected.length) && !parse(fields[field.id] || '').textContent.replace(/[_\s\u00a0]/g, ''));
       if (missing.length) throw new PlanoError(422, `Preencha os campos obrigatórios antes de finalizar: ${missing.map(field => field.label).join('; ')}`);
     }
     for (const field of template.fields) fields[field.id] ??= '<p></p>';
     return fields;
+  }
+
+  async extractSelectedSupports(type: TipoPlano, html: string): Promise<string[]> {
+    if (type !== 'paee') return [];
+    const value = parse(sanitizeDocument(html)).querySelector('[data-plan-field="apoiosServicos"]')?.getAttribute('data-plan-selected') ?? '';
+    const selected = value ? value.split(',') : [];
+    const { supportOptions } = await this.template(type);
+    if (selected.some(id => !supportOptions.includes(id)) || new Set(selected).size !== selected.length) {
+      throw new PlanoError(400, 'O documento contém opções de apoio inválidas ou duplicadas.');
+    }
+    return selected;
   }
 
   async importFields(type: TipoPlano, html: string) {

@@ -2,6 +2,7 @@ import { EditableDocument } from './editor-document.model';
 
 export type TipoPlano = 'pei' | 'paee';
 export type StatusPlano = 'rascunho' | 'finalizado';
+export type PlanoSaveMode = 'overwrite' | 'version';
 
 export interface PlanoSummary {
   id: string;
@@ -13,6 +14,7 @@ export interface PlanoSummary {
   status: StatusPlano;
   rootId: string;
   parentId: string | null;
+  versionNumber?: number;
   createdAt: string;
   modifiedAt?: string;
 }
@@ -25,6 +27,7 @@ export interface EditablePlano extends EditableDocument {
   status: StatusPlano;
   rootId: string;
   parentId: string | null;
+  versionNumber?: number;
   createdAt?: string;
   warnings: string[];
   fields: Array<{ id: string; label: string; required: boolean }>;
@@ -38,4 +41,5 @@ export interface SavePlano {
   htmlContent: string;
   baseVersionId: string | null;
   originalFormat: 'docx' | 'pdf';
+  saveMode?: PlanoSaveMode;
 }

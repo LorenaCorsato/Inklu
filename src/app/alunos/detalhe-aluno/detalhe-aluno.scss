@@ -324,6 +324,10 @@
 // Arquivos Section
 .detalhe-arquivos-section {
   margin-top: var(--ds-spacing-4);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-surface);
+  padding: 1rem;
 }
 
 .detalhe-arquivos-title {

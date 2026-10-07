@@ -26,10 +26,12 @@ export interface ConteudoPlano {
   schemaVersion: 1;
   rootId: string;
   parentId: string | null;
+  versionNumber?: number;
   status: StatusPlano;
   name: string;
   perfil: PerfilPlano;
   fields: Record<string, string>;
+  selectedSupports?: string[];
   originalFormat: 'docx' | 'pdf';
   warnings: string[];
 }

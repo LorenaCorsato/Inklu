@@ -20,19 +20,22 @@ export class ModalSaida {
   @Input() title = 'Sair sem salvar?';
   @Input() message = 'Existem alterações não salvas neste documento. O que deseja fazer?';
   @Input() saving = false;
+  @Input() dialogId = 'saida-title';
+  @Input() discardLabel = 'Sair sem salvar';
+  @Input() saveLabel = 'Salvar e sair';
 
   @Output() closed = new EventEmitter<void>();
   @Output() discard = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
 
   onBackdropClick(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
+    if (!this.saving && (event.target as HTMLElement).classList.contains('modal-overlay')) {
       this.closed.emit();
     }
   }
 
   onEscape(): void {
-    if (this.isOpen) {
+    if (this.isOpen && !this.saving) {
       this.closed.emit();
     }
   }

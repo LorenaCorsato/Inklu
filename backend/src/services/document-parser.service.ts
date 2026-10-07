@@ -12,7 +12,8 @@ export function sanitizeDocument(html: string): string {
     allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img', 'section', 'h1', 'h2'],
     allowedAttributes: {
       '*': ['style'],
-      div: ['data-plan-field', 'data-plan-content', 'data-plan-fixed', 'data-plan-hint'],
+      div: ['data-plan-field', 'data-plan-content', 'data-plan-fixed', 'data-plan-hint', 'data-plan-letterhead', 'data-plan-title', 'data-plan-signature', 'data-plan-selected'],
+      p: ['data-plan-option', 'data-plan-period'],
       section: ['data-plan-field'],
       img: ['src', 'alt', 'width', 'height'],
       td: ['colspan', 'rowspan'], th: ['colspan', 'rowspan'],

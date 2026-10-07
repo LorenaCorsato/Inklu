@@ -38,6 +38,7 @@ export class PlanoService {
     return {
       id: this.id(type, row), type, alunoId: row.id_aluno, bimestre: row.bimestre, anoLetivo: row.ano_letivo,
       name: content.name, status: content.status, rootId: content.rootId, parentId: content.parentId,
+      versionNumber: Number.isInteger(content.versionNumber) && content.versionNumber! > 0 ? content.versionNumber! : 0,
       createdAt: row.data_de_criacao, modifiedAt: row.data_de_alteracao,
     };
   }
@@ -49,13 +50,32 @@ export class PlanoService {
       if (error) throw new PlanoError(500, 'Não foi possível consultar os planos.');
       return (data as PlanoRow[]).map(row => this.summary(type, row));
     }));
-    return results.flat().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const plans = results.flat();
+    const histories = new Map<string, typeof plans>();
+    for (const plan of plans) {
+      const key = `${plan.type}:${plan.rootId}`;
+      const history = histories.get(key) ?? [];
+      history.push(plan);
+      histories.set(key, history);
+    }
+    for (const history of histories.values()) {
+      const pending = [...history].sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+      let latestVersion = 0;
+      while (pending.length) {
+        // Pais vêm antes dos filhos, inclusive quando as datas de criação coincidem.
+        const next = pending.findIndex(plan => !pending.some(parent => parent.id === plan.parentId));
+        const [plan] = pending.splice(next < 0 ? 0 : next, 1);
+        plan.versionNumber ||= latestVersion + 1;
+        latestVersion = Math.max(latestVersion, plan.versionNumber);
+      }
+    }
+    return plans.sort((a, b) => (b.modifiedAt || b.createdAt).localeCompare(a.modifiedAt || a.createdAt));
   }
 
   async fresh(alunoId: string, type: TipoPlano) {
     const aluno = await this.aluno(alunoId);
     const content: ConteudoPlano = {
-      schemaVersion: 1, rootId: randomUUID(), parentId: null, status: 'rascunho',
+      schemaVersion: 1, rootId: randomUUID(), parentId: null, versionNumber: 1, status: 'rascunho',
       name: `${type.toUpperCase()} – ${aluno.nome_completo}`, perfil: perfilAluno(aluno), fields: {}, originalFormat: 'docx', warnings: [],
     };
     return content;
@@ -66,6 +86,7 @@ export class PlanoService {
       id: id || 'novo', type, alunoId, bimestre, anoLetivo: ano, name: content.name,
       originalFormat: content.originalFormat, status: content.status,
       rootId: content.rootId, parentId: content.parentId, createdAt,
+      versionNumber: content.versionNumber ?? 1,
       warnings: content.warnings, ...(await this.templates.render(type, content, bimestre, ano)),
     };
   }
@@ -77,6 +98,9 @@ export class PlanoService {
     if (!data) throw new PlanoError(404, 'Plano não encontrado para este aluno.');
     const row = data as PlanoRow;
     const content = this.content(type, row);
+    if (!Number.isInteger(content.versionNumber) || content.versionNumber! < 1) {
+      content.versionNumber = (await this.list(alunoId)).find(plan => plan.type === type && plan.id === id)?.versionNumber ?? 1;
+    }
     // Registros legados não possuíam um retrato do perfil.
     if (!content.perfil.nome) content.perfil = perfilAluno(await this.aluno(alunoId));
     return { row, content, document: await this.editable(alunoId, type, content, row.bimestre, row.ano_letivo, id, row.data_de_criacao) };
@@ -115,19 +139,25 @@ export class PlanoService {
   async save(alunoId: string, type: TipoPlano, body: Record<string, unknown>) {
     const { bimestre, ano } = this.period(body);
     if (body.status !== 'rascunho' && body.status !== 'finalizado') throw new PlanoError(400, 'Status inválido.');
+    const saveMode = body.saveMode ?? 'version';
+    if (saveMode !== 'version' && saveMode !== 'overwrite') throw new PlanoError(400, 'Modo de salvamento inválido.');
+    if (saveMode === 'overwrite' && !body.baseVersionId) throw new PlanoError(400, 'Escolha um documento existente para sobrescrever.');
     if (typeof body.htmlContent !== 'string') throw new PlanoError(400, 'Conteúdo do plano obrigatório.');
     const fields = await this.templates.extractFields(type, body.htmlContent, body.status === 'finalizado');
     let content: ConteudoPlano;
     if (body.baseVersionId) {
       validarUuid(body.baseVersionId);
       const base = await this.get(alunoId, type, body.baseVersionId);
-      if (base.row.bimestre !== bimestre || base.row.ano_letivo !== ano) throw new PlanoError(409, 'Para outro período, crie um novo plano.');
-      // Cada salvamento é INSERT. Nem uma versão antiga nem uma finalizada é sobrescrita.
-      content = { ...base.content, parentId: body.baseVersionId };
+      content = { ...base.content, parentId: saveMode === 'overwrite' ? base.content.parentId : body.baseVersionId };
+      if (saveMode === 'version') {
+        const history = (await this.list(alunoId)).filter(plan => plan.type === type && plan.rootId === content.rootId);
+        content.versionNumber = Math.max(0, ...history.map(plan => plan.versionNumber)) + 1;
+      }
     } else { content = await this.fresh(alunoId, type); }
-    const id = randomUUID();
+    const id = saveMode === 'overwrite' ? String(body.baseVersionId) : randomUUID();
     if (!body.baseVersionId) content.rootId = id;
     content.fields = fields;
+    content.selectedSupports = await this.templates.extractSelectedSupports(type, body.htmlContent);
     content.status = body.status;
     if (typeof body.name === 'string' && body.name.trim()) content.name = body.name.trim().slice(0, 200);
     if (!body.baseVersionId && (body.originalFormat === 'docx' || body.originalFormat === 'pdf')) {
@@ -137,13 +167,17 @@ export class PlanoService {
     const now = new Date().toISOString();
     const text = JSON.stringify(content);
     const secondary = parse(fields[type === 'pei' ? 'conteudosHabilidades' : 'habilidades'] || '').textContent;
-    const payload: Record<string, unknown> = {
-      [`id_${type}`]: id, id_aluno: alunoId, id_professor: null, bimestre, ano_letivo: ano,
+    const changes: Record<string, unknown> = {
+      bimestre, ano_letivo: ano,
       ...(type === 'pei' ? { contexto: text, metas: secondary } : { conteudo: text, habilidades: secondary }),
-      data_de_criacao: now, data_de_alteracao: now,
+      data_de_alteracao: now,
     };
-    const { data, error } = await this.db.from(type).insert(payload).select('*').single();
+    const query = saveMode === 'overwrite'
+      ? this.db.from(type).update(changes).eq(`id_${type}`, id).eq('id_aluno', alunoId)
+      : this.db.from(type).insert({ ...changes, [`id_${type}`]: id, id_aluno: alunoId, id_professor: null, bimestre, ano_letivo: ano, data_de_criacao: now });
+    const { data, error } = await query.select('*').single();
     if (error) throw new PlanoError(500, 'Não foi possível salvar o plano. Tente novamente.');
+    if (!data) throw new PlanoError(404, 'Plano não encontrado para este aluno.');
     return this.editable(alunoId, type, content, bimestre, ano, this.id(type, data), data.data_de_criacao);
   }
 }

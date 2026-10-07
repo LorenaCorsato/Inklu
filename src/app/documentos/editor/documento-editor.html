@@ -5,8 +5,9 @@
       <button
         type="button"
         class="btn-back"
-        title="Voltar para Documentos"
-        aria-label="Voltar para Documentos"
+        [title]="alunoId() ? 'Voltar para o aluno' : 'Voltar para Documentos'"
+        [attr.aria-label]="alunoId() ? 'Voltar para o aluno' : 'Voltar para Documentos'"
+        [disabled]="isSaving() || saveDialogOpen()"
         (click)="goBack()"
       >
         <svg lucideArrowLeft [size]="20" aria-hidden="true"></svg>
@@ -23,6 +24,7 @@
           [disabled]="readOnly() || isSaving()"
         />
         <span class="badge-format">{{ planoType() ? (planoType()! | uppercase) : (originalFormat() | uppercase) }}</span>
+        @if (planoType()) { <span class="badge-format">Versão {{ versionNumber() }}</span> }
       </div>
     </div>
 
@@ -52,7 +54,7 @@
       @if (!readOnly()) {
         <button type="button" class="btn-save" [disabled]="!canSave()" (click)="save()">
           <svg lucideSave [size]="16" aria-hidden="true"></svg>
-          {{ isSaving() ? 'Salvando...' : planoType() ? 'Salvar Rascunho' : 'Salvar' }}
+          {{ isSaving() ? 'Salvando...' : 'Salvar' }}
         </button>
       }
     </div>
@@ -61,28 +63,27 @@
   @if (planoType()) {
     <div class="plan-controls">
       <label>Bimestre
-        <select [ngModel]="bimestre()" (ngModelChange)="bimestre.set($event); onPeriodChange()" [disabled]="readOnly() || !!baseVersionId() || isSaving() || isLoading()">
+        <select [ngModel]="bimestre()" (ngModelChange)="bimestre.set($event); onPeriodChange()" [disabled]="readOnly() || isSaving() || isLoading() || saveDialogOpen()">
           <option value="1">1º bimestre</option><option value="2">2º bimestre</option><option value="3">3º bimestre</option><option value="4">4º bimestre</option>
         </select>
       </label>
       <label>Ano letivo
-        <input type="number" min="2000" max="2100" [ngModel]="anoLetivo()" (ngModelChange)="anoLetivo.set($event); onPeriodChange()" [disabled]="readOnly() || !!baseVersionId() || isSaving() || isLoading()">
+        <input type="number" min="2000" max="2100" [ngModel]="anoLetivo()" (ngModelChange)="anoLetivo.set($event); onPeriodChange()" [disabled]="readOnly() || isSaving() || isLoading() || saveDialogOpen()">
       </label>
-      <span>{{ readOnly() ? 'Modo leitura' : planoStatus() === 'finalizado' ? 'Finalizado · alterações geram uma nova versão' : 'Rascunho · preencha no seu ritmo' }}</span>
+      <span>{{ readOnly() ? 'Modo leitura' : planoStatus() === 'finalizado' ? 'Finalizado' : 'Rascunho · preencha no seu ritmo' }}</span>
       @if (!readOnly()) {
-        @if (!baseVersionId()) {
-          <input #planFile type="file" accept=".pdf,.docx" hidden (change)="importPlano($event)">
-          <button class="btn btn-primary-outline" type="button" [disabled]="isLoading() || isSaving()" (click)="planFile.click()">Importar PDF/DOCX</button>
-        }
         <button class="btn-save" type="button" [disabled]="!canSave()" (click)="save('finalizado')">Finalizar plano</button>
       }
-      <button class="btn btn-primary-outline" type="button" [disabled]="!canExport()" (click)="exportPlano('pdf')">Exportar PDF</button>
-      <button class="btn btn-primary-outline" type="button" [disabled]="!canExport()" (click)="exportPlano('docx')">Exportar DOCX</button>
+      <div class="plan-export-actions" role="group" aria-label="Exportar documento">
+        <button class="btn btn-primary-outline" type="button" [disabled]="!canExport()" (click)="exportPlano('pdf')">Exportar PDF</button>
+        <button class="btn btn-primary-outline" type="button" [disabled]="!canExport()" (click)="exportPlano('docx')">Exportar Word (DOCX)</button>
+      </div>
+      @if (!baseVersionId() || hasUnsavedChanges()) { <span>Salve o documento para exportar.</span> }
     </div>
     @if (!readOnly()) {
       <p class="plan-hint">Os dados do aluno já estão preenchidos. Responda às perguntas no documento; campos com * são obrigatórios para finalizar. O rascunho pode ficar incompleto.</p>
       @if (planoType() === 'paee') {
-        <p class="plan-hint">Em Apoios, Recursos e Serviços, indique recursos pedagógicos, acessibilidade, tecnologia assistiva, Libras, instrutor-mediador e/ou apoio escolar (alimentação, higiene, locomoção, autocuidado, atividades, comunicação e socialização). Informe o nível de apoio, quando aplicável.</p>
+        <p class="plan-hint">Em Apoios, Recursos e Serviços, marque as opções necessárias e use o campo abaixo para observações. Informe o nível de apoio, quando aplicável.</p>
       }
     }
   }
@@ -147,5 +148,16 @@
     (closed)="onExitCancel()"
     (discard)="onExitDiscard()"
     (save)="onExitSave()"
+  ></app-modal-saida>
+  <app-modal-saida
+    [isOpen]="saveDialogOpen()"
+    dialogId="salvar-plano-title"
+    title="Como deseja salvar as alterações?"
+    message="Sobrescrever atualiza o documento atual. Criar uma nova versão mantém o documento anterior no histórico."
+    discardLabel="Sobrescrever documento atual"
+    saveLabel="Criar nova versão"
+    (closed)="onSaveModeChoice(null)"
+    (discard)="onSaveModeChoice('overwrite')"
+    (save)="onSaveModeChoice('version')"
   ></app-modal-saida>
 </div>

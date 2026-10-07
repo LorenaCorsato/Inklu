@@ -14,10 +14,12 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
+    "@xmldom/xmldom": "^0.8.15",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "html-to-docx": "^1.8.0",
+    "jszip": "^3.10.2",
     "mammoth": "^1.13.0",
     "node-html-parser": "^9.0.4",
     "pdf-parse": "^2.4.5",

@@ -18,17 +18,17 @@ export class PlanoService {
   save(alunoId: string, type: TipoPlano, body: SavePlano) {
     return firstValueFrom(this.http.post<EditablePlano>(`${this.url(alunoId)}/${type}`, body));
   }
-  import(alunoId: string, type: TipoPlano, file: File, bimestre: string, anoLetivo: number): Promise<EditablePlano> {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(new Error('Não foi possível ler o arquivo.'));
-      reader.readAsDataURL(file);
-    }).then(fileBase64 => firstValueFrom(this.http.post<EditablePlano>(`${this.url(alunoId)}/${type}/importar`, {
-      fileName: file.name, fileBase64, bimestre, anoLetivo,
-    })));
-  }
   export(alunoId: string, type: TipoPlano, id: string, format: 'docx' | 'pdf') {
     return firstValueFrom(this.http.post(`${this.url(alunoId)}/${type}/${id}/exportar`, { format }, { responseType: 'blob' }));
+  }
+  async download(alunoId: string, type: TipoPlano, id: string, format: 'docx' | 'pdf', name: string): Promise<void> {
+    const blob = await this.export(alunoId, type, id, format);
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${name.replace(/\.(docx|pdf)$/i, '')}.${format}`;
+    document.body.append(anchor);
+    try { anchor.click(); }
+    finally { anchor.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
   }
 }

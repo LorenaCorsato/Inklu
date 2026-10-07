@@ -36,7 +36,7 @@ import { DocumentConverterService } from './services/document-converter.service'
 import { EditorStateService } from './services/editor-state.service';
 import { PendingChangesAware } from './pending-changes.guard';
 import { PlanoService } from './services/plano.service';
-import { EditablePlano, StatusPlano, TipoPlano } from './models/plano.model';
+import { EditablePlano, PlanoSaveMode, StatusPlano, TipoPlano } from './models/plano.model';
 import { PlanField, PlanFixed } from './plan-nodes';
 import {
   DEFAULT_TOOLBAR_STATE,
@@ -95,6 +95,8 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   private pendingContent: string | null = null;
   /** Resolve a navegação pendente aguardando a resposta do modal de saída. */
   private pendingExit: ((canLeave: boolean) => void) | null = null;
+  private pendingExitPromise: Promise<boolean> | null = null;
+  private pendingSaveMode: ((mode: PlanoSaveMode | null) => void) | null = null;
   /** Evita abrir o modal duas vezes quando a saída já foi confirmada. */
   private skipGuard = false;
 
@@ -115,6 +117,7 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   readonly planoType = signal<TipoPlano | null>(null);
   readonly alunoId = signal<string | null>(null);
   readonly baseVersionId = signal<string | null>(null);
+  readonly versionNumber = signal(1);
   readonly bimestre = signal('1');
   readonly anoLetivo = signal(new Date().getFullYear());
   readonly planoStatus = signal<StatusPlano>('rascunho');
@@ -122,17 +125,18 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   readonly warnings = signal<string[]>([]);
   readonly successMessage = signal('');
   readonly isExporting = signal(false);
-  readonly canExport = computed(() => this.planoStatus() === 'finalizado' && !!this.baseVersionId() && !this.hasUnsavedChanges() && !this.isSaving() && !this.isExporting());
+  readonly canExport = computed(() => !!this.baseVersionId() && !this.hasUnsavedChanges() && !this.isLoading() && !this.isSaving() && !this.isExporting() && !this.saveDialogOpen());
 
   // ─── Páginas e modal de saída ─────────────────────────────────────────────
   readonly pageCount = signal(1);
   readonly currentPage = signal(1);
   readonly exitDialogOpen = signal(false);
+  readonly saveDialogOpen = signal(false);
 
   /** Só permite salvar quando há alterações reais e conteúdo não vazio. */
   readonly canSave = computed(
     () => this.planoType()
-      ? this.editorReady() && !this.isLoading() && !this.isSaving() && !this.readOnly()
+      ? this.editorReady() && !this.isLoading() && !this.isSaving() && !this.readOnly() && !this.saveDialogOpen()
       : !this.isSaving() && this.hasUnsavedChanges() && this.wordCount() > 0,
   );
 
@@ -173,6 +177,8 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   }
 
   ngOnDestroy(): void {
+    this.onSaveModeChoice(null);
+    this.resolveExit(false);
     this.editor?.destroy();
     this.editor = null;
     this.state.reset();
@@ -241,7 +247,8 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
       editable: !this.readOnly() && !this.isSaving(),
       content,
       editorProps: { attributes: { class: 'editor-content' } },
-      onUpdate: () => {
+      onUpdate: ({ transaction }) => {
+        if (!transaction.docChanged) return;
         // Qualquer edição marca o documento como "sujo" e atualiza a UI.
         this.state.markDirty();
         this.successMessage.set('');
@@ -303,6 +310,15 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
       return;
     }
 
+    const signatures = content.querySelector<HTMLElement>('[data-plan-fixed="footer"]');
+    if (signatures) {
+      // O editor é contínuo: reserva o restante da página antes das assinaturas.
+      signatures.style.paddingTop = '0';
+      const zoom = this.zoomLevel() / 100;
+      const offset = (signatures.getBoundingClientRect().top - content.getBoundingClientRect().top) / zoom;
+      const nextPage = Math.ceil(offset / PAGE_CONTENT_HEIGHT_PX) * PAGE_CONTENT_HEIGHT_PX;
+      signatures.style.paddingTop = `${Math.max(0, nextPage - offset)}px`;
+    }
     const count = Math.max(1, Math.ceil((content.scrollHeight - 1) / PAGE_CONTENT_HEIGHT_PX));
     this.pageCount.set(count);
     this.currentPage.set(Math.min(this.currentPage(), count));
@@ -419,50 +435,30 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
 
   private setPlanoMetadata(plano: EditablePlano): void {
     this.baseVersionId.set(plano.id === 'novo' ? null : plano.id);
+    this.versionNumber.set(plano.versionNumber ?? 1);
     this.bimestre.set(plano.bimestre);
     this.anoLetivo.set(plano.anoLetivo);
     this.planoStatus.set(plano.status);
     this.warnings.set(plano.warnings);
   }
 
-  async onPeriodChange(): Promise<void> {
-    const alunoId = this.alunoId(); const type = this.planoType();
-    if (!alunoId || !type || this.baseVersionId()) return;
+  onPeriodChange(): void {
+    const editor = this.editor;
+    if (!editor || !this.alunoId() || !this.planoType() || this.readOnly() || this.isSaving() || this.isLoading() || this.saveDialogOpen()) return;
     this.state.markDirty();
-    if (!Number.isInteger(this.anoLetivo()) || this.anoLetivo() < 2000 || this.anoLetivo() > 2100) return;
-    const bimestre = this.bimestre(); const ano = this.anoLetivo();
-    try {
-      const template = await this.planos.template(alunoId, type, bimestre, ano);
-      if (bimestre !== this.bimestre() || ano !== this.anoLetivo() || !this.editor) return;
-      const dom = new DOMParser().parseFromString(DOMPurify.sanitize(template.htmlContent), 'text/html');
-      const header = dom.querySelector('[data-plan-fixed="header"]')?.innerHTML;
-      if (!header) return;
-      const transaction = this.editor.state.tr;
-      this.editor.state.doc.forEach((node, position) => {
-        if (node.type.name === 'planFixed' && node.attrs['role'] === 'header') transaction.setNodeMarkup(position, undefined, { ...node.attrs, html: header });
-      });
-      this.editor.view.dispatch(transaction);
-    } catch (error) { this.errorMessage.set(this.errorText(error, 'Não foi possível atualizar o período.')); }
-  }
-
-  async importPlano(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0]; input.value = '';
-    const alunoId = this.alunoId(); const type = this.planoType();
-    if (!file || !alunoId || !type || this.isSaving() || this.baseVersionId()) return;
-    if (!/\.(docx|pdf)$/i.test(file.name) || file.size > 15 * 1024 * 1024) {
-      this.errorMessage.set('Envie um arquivo PDF ou DOCX com até 15 MB.'); return;
-    }
-    if (this.hasUnsavedChanges() && !window.confirm('Substituir as respostas atuais pelo arquivo importado?')) return;
-    this.isLoading.set(true); this.errorMessage.set(null);
-    try {
-      const plano = await this.planos.import(alunoId, type, file, this.bimestre(), this.anoLetivo());
-      this.setPlanoMetadata(plano); this.state.setDocument(plano);
-      this.originalFormat.set(plano.originalFormat);
-      this.initEditor(DOMPurify.sanitize(plano.htmlContent));
-      this.state.markDirty();
-    } catch (error) { this.errorMessage.set(this.errorText(error, 'Não foi possível importar o arquivo.')); }
-    finally { this.isLoading.set(false); }
+    if (!/^[1-4]$/.test(this.bimestre()) || !Number.isInteger(this.anoLetivo()) || this.anoLetivo() < 2000 || this.anoLetivo() > 2100) return;
+    const transaction = editor.state.tr.setMeta('addToHistory', false);
+    editor.state.doc.forEach((node, position) => {
+      if (node.type.name !== 'planFixed' || node.attrs['role'] !== 'header') return;
+      const dom = new DOMParser().parseFromString(DOMPurify.sanitize(String(node.attrs['html'])), 'text/html');
+      const period = dom.querySelector('[data-plan-period]') ?? Array.from(dom.querySelectorAll('p')).find(p => p.textContent?.startsWith('Período:'));
+      if (!period) return;
+      const text = document.createElement('strong');
+      text.textContent = `Período: ${this.bimestre()}º Bimestre · Ano letivo: ${this.anoLetivo()}`;
+      period.replaceChildren(text);
+      transaction.setNodeMarkup(position, undefined, { ...node.attrs, html: dom.body.innerHTML });
+    });
+    if (transaction.docChanged) editor.view.dispatch(transaction);
   }
 
   async exportPlano(format: 'pdf' | 'docx'): Promise<void> {
@@ -470,10 +466,7 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
     if (!alunoId || !type || !id || !this.canExport()) return;
     this.isExporting.set(true); this.errorMessage.set(null);
     try {
-      const blob = await this.planos.export(alunoId, type, id, format);
-      const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
-      anchor.href = url; anchor.download = `${this.documentName().replace(/\.[^.]+$/, '')}.${format}`; anchor.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      await this.planos.download(alunoId, type, id, format, `${this.documentName().replace(/\.(docx|pdf)$/i, '')} - Versão ${this.versionNumber()}`);
     } catch (error) { this.errorMessage.set(this.errorText(error, 'Não foi possível exportar o plano.')); }
     finally { this.isExporting.set(false); }
   }
@@ -505,54 +498,78 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
 
   // ─── Salvamento / navegação ───────────────────────────────────────────────
 
-  async save(status: StatusPlano = 'rascunho'): Promise<void> {
+  async save(status: StatusPlano = this.planoStatus(), returnToStudent = true): Promise<boolean> {
     const editor = this.editor;
     const id = this.documentId();
-    if (!editor || !id || this.isSaving() || this.readOnly() || this.isLoading()) return;
+    if (!editor || !id || this.isSaving() || this.readOnly() || this.isLoading() || this.saveDialogOpen()) return false;
+
+    const alunoId = this.alunoId(); const type = this.planoType();
+    if (alunoId && type && this.baseVersionId() && !this.hasUnsavedChanges() && status === this.planoStatus()) {
+      if (returnToStudent) await this.router.navigate(['/alunos', alunoId], { replaceUrl: true });
+      return true;
+    }
+    const saveMode = alunoId && type && this.baseVersionId() ? await this.requestSaveMode() : 'version';
+    if (!saveMode) return false;
 
     this.state.setSaving(true);
     this.errorMessage.set(null);
-    editor.setEditable(false);
+    editor.setEditable(false, false);
+    let saved = false;
 
     try {
       const html = editor.getHTML();
-      const alunoId = this.alunoId(); const type = this.planoType();
       if (alunoId && type) {
         const plano = await this.planos.save(alunoId, type, {
           name: this.documentName(), bimestre: this.bimestre(), anoLetivo: this.anoLetivo(),
-          status, htmlContent: html, baseVersionId: this.baseVersionId(), originalFormat: this.originalFormat(),
+          status, htmlContent: html, baseVersionId: this.baseVersionId(), originalFormat: this.originalFormat(), saveMode,
         });
         this.setPlanoMetadata(plano);
         this.state.setDocument(plano);
-        this.initEditor(DOMPurify.sanitize(plano.htmlContent));
-        this.successMessage.set(status === 'finalizado' ? 'Plano finalizado. Você já pode exportar esta versão.' : 'Rascunho salvo. As versões anteriores foram preservadas.');
-        // A URL identifica a versão persistida, inclusive depois de atualizar a página.
-        await this.router.navigate(['/alunos', alunoId, 'planos', type, plano.id], { replaceUrl: true });
-        return;
-      }
-      const result = await this.converter.saveDocument(id, html, 'docx', {
-        name: this.documentName(),
-        fontSize: Number.parseInt(this.fontSize(), 10),
-      });
+        this.documentId.set(plano.id);
+        this.state.markSaved();
+        this.successMessage.set('Plano salvo.');
+        saved = true;
+      } else {
+        const result = await this.converter.saveDocument(id, html, 'docx', {
+          name: this.documentName(),
+          fontSize: Number.parseInt(this.fontSize(), 10),
+        });
 
-      this.state.markSaved();
+        this.state.markSaved();
+        saved = true;
 
-      if (result.downloadUrl) {
-        window.open(result.downloadUrl, '_blank', 'noopener');
-      } else if (result.local) {
-        // Sem backend: oferece o HTML gerado como download local.
-        this.downloadLocalHtml(html);
+        if (result.downloadUrl) {
+          window.open(result.downloadUrl, '_blank', 'noopener');
+        } else if (result.local) {
+          // Sem backend: oferece o HTML gerado como download local.
+          this.downloadLocalHtml(html);
+        }
       }
     } catch (error) {
       console.error('Erro ao salvar documento:', error);
       this.errorMessage.set(this.errorText(error, 'Não foi possível salvar o documento.'));
     } finally {
       this.state.setSaving(false);
-      this.editor?.setEditable(!this.readOnly());
+      this.editor?.setEditable(!this.readOnly(), false);
     }
+    if (saved && alunoId && returnToStudent) await this.router.navigate(['/alunos', alunoId], { replaceUrl: true });
+    return saved;
+  }
+
+  private requestSaveMode(): Promise<PlanoSaveMode | null> {
+    this.saveDialogOpen.set(true);
+    return new Promise(resolve => { this.pendingSaveMode = resolve; });
+  }
+
+  onSaveModeChoice(mode: PlanoSaveMode | null): void {
+    const resolve = this.pendingSaveMode;
+    this.pendingSaveMode = null;
+    this.saveDialogOpen.set(false);
+    resolve?.(mode);
   }
 
   goBack(): void {
+    if (this.isSaving() || this.saveDialogOpen()) return;
     if (!this.hasUnsavedChanges()) {
       void this.router.navigate(this.alunoId() ? ['/alunos', this.alunoId()] : ['/documentos']);
       return;
@@ -570,16 +587,19 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
 
   /** Chamado pelo guard (ex.: voltar do navegador): só bloqueia com alterações. */
   canDeactivate(): boolean | Promise<boolean> {
+    if (this.isSaving() || this.saveDialogOpen()) return false;
     if (this.skipGuard || !this.hasUnsavedChanges()) return true;
     return this.requestExit();
   }
 
   /** Abre o modal de saída e resolve conforme a escolha do usuário. */
   private requestExit(): Promise<boolean> {
-    return new Promise<boolean>((resolve) => {
+    if (this.pendingExitPromise) return this.pendingExitPromise;
+    this.pendingExitPromise = new Promise<boolean>((resolve) => {
       this.pendingExit = resolve;
       this.exitDialogOpen.set(true);
     });
+    return this.pendingExitPromise;
   }
 
   onExitCancel(): void {
@@ -591,18 +611,16 @@ export class DocumentoEditor implements OnInit, AfterViewInit, OnDestroy, Pendin
   }
 
   async onExitSave(): Promise<void> {
-    const resolve = this.pendingExit;
-    this.pendingExit = null;
-
-    await this.save();
     this.exitDialogOpen.set(false);
-    // Permanece na tela se o salvamento não tiver concluído.
-    resolve?.(!this.hasUnsavedChanges());
+    // O guard conclui a navegação original; salvar aqui não inicia outra.
+    const saved = await this.save(this.planoStatus(), false);
+    this.resolveExit(saved);
   }
 
   private resolveExit(canLeave: boolean): void {
     const resolve = this.pendingExit;
     this.pendingExit = null;
+    this.pendingExitPromise = null;
     this.exitDialogOpen.set(false);
     resolve?.(canLeave);
   }
