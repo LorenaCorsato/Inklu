@@ -2,7 +2,7 @@
   <p class="mb-0 text-muted">Turmas</p>
 </div>
 
-<div class="turmas-page d-flex flex-column p-2 overflow-auto">
+<div class="turmas-page p-2">
   <div class="turmas-header d-flex align-items-center justify-content-between mb-3">
     <h1 class="turmas-title fw-bold mb-0">Turmas</h1>
     <button class="btn-add-turma btn btn-primary d-flex align-items-center gap-2" type="button" (click)="abrirAdicionarTurma()">
@@ -38,70 +38,72 @@
     <button class="btn btn-outline-secondary" type="button" (click)="limparFiltros()">Limpar filtros</button>
   </div>
 
-  @if (isLoading) {
-    <div class="loading-state d-flex flex-column align-items-center justify-content-center py-5">
-      <svg lucideLoader2 [size]="48" color="#8d8d8d" [strokeWidth]="1.5" class="spin-animation"></svg>
-      <p class="text-muted mt-3 mb-0">Carregando turmas...</p>
-    </div>
-  } @else {
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Série</th>
-          <th>Nome</th>
-          <th>Período</th>
-          <th>Qtd Alunos</th>
-          <th>Ano</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (turma of paginatedTurmas; track turma.id_turma) {
-          <tr>
-            <td>{{ turma.serie }}</td>
-            <td>{{ turma.nome }}</td>
-            <td>{{ turma.periodo || turma.turno || '-' }}</td>
-            <td>{{ turma.qtd_alunos ?? turma.quantidadeAlunos ?? '-' }}</td>
-            <td>{{ turma.ano }}</td>
-
-            <td>
-              <button class="btn btn-sm btn-outline-primary me-2" type="button" aria-label="Editar turma" title="Editar" (click)="editarTurma(turma)">
-                <svg lucideEdit [size]="16" [strokeWidth]="2"></svg>
-              </button>
-              @if (statusTurma(turma) === 2) {
-                <button class="btn btn-sm btn-outline-success" type="button" aria-label="Reativar turma" title="Reativar" (click)="reativarTurma(turma)" [disabled]="reactivatingId !== null">
-                  <svg lucideRotateCcw [size]="16" [strokeWidth]="2"></svg>
-                  {{ reactivatingId === turma.id_turma ? 'Reativando...' : 'Reativar' }}
-                </button>
-              } @else {
-                <button class="btn btn-sm btn-outline-danger" type="button" aria-label="Inativar turma" title="Inativar" (click)="excluirTurma(turma)">
-                  <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
-                </button>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-    @if (filteredTurmas.length > 0) {
-      <nav class="turmas-pagination d-flex flex-wrap justify-content-center align-items-center gap-2" aria-label="Paginação de turmas">
-        <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Página anterior" title="Página anterior" (click)="goToPage(page - 1)" [disabled]="page === 1">
-          <svg lucideChevronLeft [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
-          Anterior
-        </button>
-        <span>Página {{ page }} de {{ totalPages }}</span>
-        <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Próxima página" title="Próxima página" (click)="goToPage(page + 1)" [disabled]="page === totalPages">
-          <svg lucideChevronRight [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
-          Próxima
-        </button>
-      </nav>
-    }
-    @if (filteredTurmas.length === 0) {
-      <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
-        <svg lucideSearch [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
-        <p class="text-muted mt-3 mb-0">Nenhuma turma encontrada</p>
+  <div class="turmas-content">
+    @if (isLoading) {
+      <div class="loading-state d-flex flex-column align-items-center justify-content-center py-5">
+        <svg lucideLoader2 [size]="48" color="#8d8d8d" [strokeWidth]="1.5" class="spin-animation"></svg>
+        <p class="text-muted mt-3 mb-0">Carregando turmas...</p>
       </div>
+    } @else {
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Série</th>
+            <th>Nome</th>
+            <th>Período</th>
+            <th>Qtd Alunos</th>
+            <th>Ano</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (turma of paginatedTurmas; track turma.id_turma) {
+            <tr>
+              <td>{{ turma.serie }}</td>
+              <td>{{ turma.nome }}</td>
+              <td>{{ turma.periodo || turma.turno || '-' }}</td>
+              <td>{{ turma.qtd_alunos ?? turma.quantidadeAlunos ?? '-' }}</td>
+              <td>{{ turma.ano }}</td>
+
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-2" type="button" aria-label="Editar turma" title="Editar" (click)="editarTurma(turma)">
+                  <svg lucideEdit [size]="16" [strokeWidth]="2"></svg>
+                </button>
+                @if (statusTurma(turma) === 2) {
+                  <button class="btn btn-sm btn-outline-success" type="button" aria-label="Reativar turma" title="Reativar" (click)="reativarTurma(turma)" [disabled]="reactivatingId !== null">
+                    <svg lucideRotateCcw [size]="16" [strokeWidth]="2"></svg>
+                    {{ reactivatingId === turma.id_turma ? 'Reativando...' : 'Reativar' }}
+                  </button>
+                } @else {
+                  <button class="btn btn-sm btn-outline-danger" type="button" aria-label="Inativar turma" title="Inativar" (click)="excluirTurma(turma)">
+                    <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (filteredTurmas.length === 0) {
+        <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
+          <svg lucideSearch [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+          <p class="text-muted mt-3 mb-0">Nenhuma turma encontrada</p>
+        </div>
+      }
     }
+  </div>
+  @if (!isLoading && filteredTurmas.length > 0) {
+    <nav class="turmas-pagination d-flex flex-wrap justify-content-center align-items-center gap-2" aria-label="Paginação de turmas">
+      <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Página anterior" title="Página anterior" (click)="goToPage(page - 1)" [disabled]="page === 1">
+        <svg lucideChevronLeft [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        Anterior
+      </button>
+      <span>Página {{ page }} de {{ totalPages }}</span>
+      <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Próxima página" title="Próxima página" (click)="goToPage(page + 1)" [disabled]="page === totalPages">
+        <svg lucideChevronRight [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        Próxima
+      </button>
+    </nav>
   }
 </div>
 

@@ -11,19 +11,20 @@
 }
 
 .turmas-page {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+}
 
-  > * {
-    flex-shrink: 0;
-  }
+.turmas-page > .turmas-content {
+  min-height: 0;
+  overflow: auto;
 }
 
 .turmas-pagination {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  margin-top: 1rem;
+  flex-shrink: 0;
   padding: 0.75rem 0;
   background-color: var(--ds-surface);
   border-top: 1px solid var(--ds-border);
@@ -292,6 +293,14 @@
   min-height: 32px;
   padding: 4px 8px;
   line-height: 1;
+
+  &:disabled {
+    color: var(--ds-muted);
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-border);
+    opacity: 1;
+    box-shadow: none;
+  }
 
   svg {
     display: block;

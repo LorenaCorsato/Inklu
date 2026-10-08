@@ -203,15 +203,16 @@
     <!-- Arquivos Section -->
     <div class="detalhe-arquivos-section">
       <div class="d-flex justify-content-end mb-2">
+
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        
+        <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
+        <div class="arquivos-toolbar d-flex align-items-center gap-2">
         <button class="btn btn-success p-x-2 d-flex align-items-center gap-2" type="button" (click)="openDocumentoModal()">
           <svg lucideFilePlus [size]="16" [strokeWidth]="2"></svg>
           Adicionar Documento
         </button>
-      </div>
-      <div class="d-flex justify-content-between align-items-center">
-        <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
-        <div class="arquivos-toolbar d-flex align-items-center gap-2">
-
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
