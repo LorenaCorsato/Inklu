@@ -102,10 +102,39 @@ export class MateriaController {
   async Atualizar(req: Request, res: Response): Promise<Response> {
     try {
       const id = req.params.id;
-      const { nome, area_conhecimento } = req.body;
+      const { nome, area_conhecimento, status } = req.body as {
+        nome?: unknown;
+        area_conhecimento?: unknown;
+        status?: unknown;
+      };
+      const update: { nome?: string; area_conhecimento?: string; status?: string } = {};
+
+      if (nome !== undefined) {
+        if (typeof nome !== 'string' || !nome.trim()) {
+          return res.status(400).json({ erro: 'nome deve ser um texto não vazio' });
+        }
+        update.nome = nome.trim();
+      }
+      if (area_conhecimento !== undefined) {
+        if (typeof area_conhecimento !== 'string') {
+          return res.status(400).json({ erro: 'area_conhecimento deve ser um texto' });
+        }
+        update.area_conhecimento = area_conhecimento.trim();
+      }
+      if (status !== undefined) {
+        const statusStr = String(status);
+        if (statusStr !== '1' && statusStr !== '2') {
+          return res.status(400).json({ erro: 'status deve ser 1 (ativa) ou 2 (inativa)' });
+        }
+        update.status = statusStr;
+      }
+      if (Object.keys(update).length === 0) {
+        return res.status(400).json({ erro: 'Informe ao menos um campo da matéria para atualizar' });
+      }
+
       const { data, error } = await supabase
         .from('materia')
-        .update({ nome, area_conhecimento })
+        .update(update)
         .eq('id_materia', id)
         .select();
 

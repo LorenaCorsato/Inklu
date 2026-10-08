@@ -5,9 +5,13 @@ import { Observable } from 'rxjs';
 export interface Turma {
   id_turma: string;
   nome: string;
-  serie: string;
+  quantidadeAlunos?: number;
+  qtd_alunos?: number;
   turno?: string;
+  serie?: string;
+  periodo?: string;
   ano?: number;
+  status?: number;
 }
 
 @Injectable({
@@ -20,5 +24,17 @@ export class TurmaService {
 
   listarTurmas(): Observable<Turma[]> {
     return this.http.get<Turma[]>(this.apiUrl);
+  }
+
+  criarTurma(payload: Partial<Turma> & { nome: string; serie: string; periodo: string; ano: number; qtd_alunos?: number | string; status?: number }): Observable<Turma> {
+    return this.http.post<Turma>(this.apiUrl, payload);
+  }
+
+  excluirTurma(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  atualizarTurma(id: string, payload: Partial<Turma> & { nome?: string; serie?: string; periodo?: string; ano?: number; qtd_alunos?: number | string }): Observable<Turma> {
+    return this.http.put<Turma>(`${this.apiUrl}/${id}`, payload);
   }
 }

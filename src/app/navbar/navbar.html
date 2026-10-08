@@ -40,6 +40,18 @@
                     <span [class.hidden]="isCollapsed">Documentos</span>
                 </a>
             </li>
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/turmas" routerLinkActive="nav-active">
+                    <svg lucideFolder [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Turmas</span>
+                </a>
+            </li>
+            <li>
+                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/materias" routerLinkActive="nav-active">
+                    <svg lucideBookOpen [size]="24" [strokeWidth]="2"></svg>
+                    <span [class.hidden]="isCollapsed">Matérias</span>
+                </a>
+            </li>
         </ul>
     </div>
 

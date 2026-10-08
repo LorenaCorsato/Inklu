@@ -8,6 +8,8 @@ import { Configuracoes } from './configuracoes/configuracoes';
 import { Tarefas } from './tarefas/tarefas';
 import { Calendario } from './calendario/calendario';
 import { Documentos } from './documentos/documentos';
+import { Turmas } from './turmas/turmas';
+import { Materias } from './materias/materias';
 import { pendingChangesGuard } from './documentos/editor/pending-changes.guard';
 
 export const routes: Routes = [
@@ -60,5 +62,13 @@ export const routes: Routes = [
   {
     path: 'configuracoes',
     component: Configuracoes,
+  },
+  {
+    path: 'turmas',
+    component: Turmas,
+  },
+  {
+    path: 'materias',
+    component: Materias,
   },
 ];
