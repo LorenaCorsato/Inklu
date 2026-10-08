@@ -7,6 +7,7 @@ interface ArquivoPayload {
 	arquivo?: string;
 	tipoMaterial?: string;
 	idUsuario?: number | string | null;
+	idMateria?: number | string | null;
 }
 
 export class ArquivoController {
@@ -19,6 +20,7 @@ export class ArquivoController {
 				arquivo,
 				tipoMaterial = 'original',
 				idUsuario = null,
+				idMateria = null,
 			} = req.body as ArquivoPayload;
 
 			if (!alunoId || !nomeArquivo || !arquivo) {
@@ -39,6 +41,30 @@ export class ArquivoController {
 
 			if (!aluno) {
 				return res.status(404).json({ erro: 'Aluno não encontrado.' });
+			}
+
+			if (idMateria !== null) {
+				if (
+					(typeof idMateria !== 'string' && typeof idMateria !== 'number') ||
+					(typeof idMateria === 'string' && !idMateria.trim()) ||
+					(typeof idMateria === 'number' && !Number.isFinite(idMateria))
+				) {
+					return res.status(400).json({ erro: 'idMateria inválido.' });
+				}
+
+				const { data: materia, error: materiaError } = await supabase
+					.from('materia')
+					.select('id_materia')
+					.eq('id_materia', idMateria)
+					.maybeSingle();
+
+				if (materiaError) {
+					return res.status(400).json({ erro: materiaError.message });
+				}
+
+				if (!materia) {
+					return res.status(404).json({ erro: 'Matéria não encontrada.' });
+				}
 			}
 
 			const base64Data = arquivo.replace(/^data:[^;]+;base64,/, '');
@@ -66,7 +92,7 @@ export class ArquivoController {
 				.from('material')
 				.insert({
 					id_aluno: alunoId,
-					id_materia: null,
+					id_materia: idMateria,
 					id_usuario: null,
 					nome_do_arquivo: nomeArquivo,
 					tipo_do_arquivo: tipoArquivo || 'application/octet-stream',
