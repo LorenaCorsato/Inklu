@@ -1,5 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.alunos-breadcrumb {
+  flex-shrink: 0;
+}
+
 .turmas-page {
-  /* Add custom styles as needed */
+  flex: 1;
+  min-height: 0;
+
+  > * {
+    flex-shrink: 0;
+  }
+}
+
+.turmas-pagination {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  margin-top: 1rem;
+  padding: 0.75rem 0;
+  background-color: var(--ds-surface);
+  border-top: 1px solid var(--ds-border);
 }
 
 .turmas-title {
@@ -32,6 +59,18 @@
 
 .search-toolbar {
   flex-wrap: wrap;
+}
+
+.turmas-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--ds-spacing-3);
+}
+
+.filtro-group {
+  flex: 1 1 160px;
+  min-width: 0;
 }
 
 .search-wrapper {
@@ -248,6 +287,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   min-width: 32px;
   min-height: 32px;
   padding: 4px 8px;

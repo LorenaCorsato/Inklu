@@ -2,7 +2,7 @@
   <p class="mb-0 text-muted">Turmas</p>
 </div>
 
-<div class="turmas-page d-flex flex-column h-100 p-2 overflow-auto">
+<div class="turmas-page d-flex flex-column p-2 overflow-auto">
   <div class="turmas-header d-flex align-items-center justify-content-between mb-3">
     <h1 class="turmas-title fw-bold mb-0">Turmas</h1>
     <button class="btn-add-turma btn btn-primary d-flex align-items-center gap-2" type="button" (click)="abrirAdicionarTurma()">
@@ -14,21 +14,28 @@
   <div class="mb-2">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link" [class.active]="activeTab === 'ativas'" href="#" (click)="activeTab = 'ativas'; $event.preventDefault()">Ativas</a>
+        <a class="nav-link" [class.active]="activeTab === 'ativas'" href="#" (click)="activeTab = 'ativas'; limparFiltros(); $event.preventDefault()">Ativas</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [class.active]="activeTab === 'inativas'" href="#" (click)="activeTab = 'inativas'; $event.preventDefault()">Inativas</a>
+        <a class="nav-link" [class.active]="activeTab === 'inativas'" href="#" (click)="activeTab = 'inativas'; limparFiltros(); $event.preventDefault()">Inativas</a>
       </li>
     </ul>
   </div>
 
-  <div class="search-toolbar mb-3 d-flex align-items-center gap-2">
-    <div class="search-wrapper flex-grow-1">
-      <div class="search-input-wrapper">
-        <svg lucideSearch [size]="18" class="search-icon" [strokeWidth]="2"></svg>
-        <input type="text" class="search-input" placeholder="Buscar Turma" [(ngModel)]="searchTerm" />
+
+  <div class="turmas-filtros mb-3">
+    @for (filtro of camposFiltro; track filtro.campo) {
+      <div class="filtro-group">
+        <label class="form-label" [for]="'filtro-turma-' + filtro.campo">{{ filtro.label }}</label>
+        <select class="form-input" [id]="'filtro-turma-' + filtro.campo" [(ngModel)]="filtros[filtro.campo]" (ngModelChange)="page = 1">
+          <option value="">Todos</option>
+          @for (opcao of opcoesFiltro(filtro.campo); track opcao) {
+            <option [value]="opcao">{{ opcao }}</option>
+          }
+        </select>
       </div>
-    </div>
+    }
+    <button class="btn btn-outline-secondary" type="button" (click)="limparFiltros()">Limpar filtros</button>
   </div>
 
   @if (isLoading) {
@@ -40,35 +47,34 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Ano</th>
-          <th>Período</th>
           <th>Série</th>
+          <th>Nome</th>
+          <th>Período</th>
           <th>Qtd Alunos</th>
+          <th>Ano</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         @for (turma of paginatedTurmas; track turma.id_turma) {
           <tr>
-            <td>{{ turma.id_turma }}</td>
-            <td>{{ turma.nome }}</td>
-            <td>{{ turma.ano }}</td>
-            <td>{{ turma.periodo || turma.turno || '-' }}</td>
             <td>{{ turma.serie }}</td>
+            <td>{{ turma.nome }}</td>
+            <td>{{ turma.periodo || turma.turno || '-' }}</td>
             <td>{{ turma.qtd_alunos ?? turma.quantidadeAlunos ?? '-' }}</td>
+            <td>{{ turma.ano }}</td>
+
             <td>
               <button class="btn btn-sm btn-outline-primary me-2" type="button" aria-label="Editar turma" title="Editar" (click)="editarTurma(turma)">
                 <svg lucideEdit [size]="16" [strokeWidth]="2"></svg>
               </button>
-              @if (activeTab === 'inativas') {
-                <button class="btn btn-sm btn-outline-success" type="button" aria-label="Reativar turma" title="Reativar" (click)="reativarTurma(turma)" [disabled]="reactivatingId === turma.id_turma">
+              @if (statusTurma(turma) === 2) {
+                <button class="btn btn-sm btn-outline-success" type="button" aria-label="Reativar turma" title="Reativar" (click)="reativarTurma(turma)" [disabled]="reactivatingId !== null">
                   <svg lucideRotateCcw [size]="16" [strokeWidth]="2"></svg>
                   {{ reactivatingId === turma.id_turma ? 'Reativando...' : 'Reativar' }}
                 </button>
               } @else {
-                <button class="btn btn-sm btn-outline-danger" type="button" aria-label="Excluir turma" title="Excluir" (click)="excluirTurma(turma)">
+                <button class="btn btn-sm btn-outline-danger" type="button" aria-label="Inativar turma" title="Inativar" (click)="excluirTurma(turma)">
                   <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
                 </button>
               }
@@ -77,16 +83,18 @@
         }
       </tbody>
     </table>
-    @if (filteredTurmas.length > pageSize) {
-      <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+    @if (filteredTurmas.length > 0) {
+      <nav class="turmas-pagination d-flex flex-wrap justify-content-center align-items-center gap-2" aria-label="Paginação de turmas">
         <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Página anterior" title="Página anterior" (click)="goToPage(page - 1)" [disabled]="page === 1">
           <svg lucideChevronLeft [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+          Anterior
         </button>
         <span>Página {{ page }} de {{ totalPages }}</span>
         <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Próxima página" title="Próxima página" (click)="goToPage(page + 1)" [disabled]="page === totalPages">
           <svg lucideChevronRight [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+          Próxima
         </button>
-      </div>
+      </nav>
     }
     @if (filteredTurmas.length === 0) {
       <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
@@ -110,13 +118,13 @@
       <div class="modal-body">
         <div class="form-group">
           <label class="form-label" for="turma-nome">Nome</label>
-          <input id="turma-nome" class="form-input" type="text" placeholder="Ex.: 2º Ano A" [(ngModel)]="turmaForm.nome" />
+          <input id="turma-nome" class="form-input" type="text" placeholder="Ex: A" [(ngModel)]="turmaForm.nome" />
         </div>
 
         <div class="form-row">
           <div class="form-group form-group-half">
             <label class="form-label" for="turma-serie">Série</label>
-            <input id="turma-serie" class="form-input" type="text" placeholder="Ex.: Ensino Médio" [(ngModel)]="turmaForm.serie" />
+            <input id="turma-serie" class="form-input" type="text" placeholder="Ex.: 6° série" [(ngModel)]="turmaForm.serie" />
           </div>
           <div class="form-group form-group-half">
             <label class="form-label" for="turma-ano">Ano</label>
@@ -150,6 +158,10 @@
   <app-modal-excluir-turma
     [isOpen]="isDeleteModalOpen"
     [turma]="turmaToDelete"
+    [dependencias]="turmaDependencies"
+    [isChecking]="isCheckingDependencies"
+    [isDeleting]="isDeletingTurma"
+    [errorMessage]="deleteErrorMessage"
     (closed)="closeDeleteModal()"
     (confirmed)="confirmDelete()">
   </app-modal-excluir-turma>

@@ -40,16 +40,16 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nome</th>
+          <th>Área de conhecimento</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         @for (materia of paginatedMaterias; track materia.id_materia) {
           <tr>
-            <td>{{ materia.id_materia }}</td>
             <td>{{ materia.nome }}</td>
+            <td>{{ materia.area_conhecimento }}</td>
             <td>
               <button class="btn btn-sm btn-outline-primary me-2" type="button" aria-label="Editar matéria" title="Editar" (click)="editarMateria(materia)">
                 <svg lucideEdit [size]="16" [strokeWidth]="2"></svg>

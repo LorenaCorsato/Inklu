@@ -13,9 +13,9 @@ interface TurmaPayload {
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const possui = (objeto: object, campo: string) => Object.prototype.hasOwnProperty.call(objeto, campo);
 // Os registros anteriores ao CRUD não possuem status preenchido.
-const normalizarStatus = <T extends { status?: number | null }>(turma: T) => ({
+const normalizarStatus = <T extends { status?: number | string | null }>(turma: T) => ({
   ...turma,
-  status: turma.status ?? 1,
+  status: Number(turma.status ?? 1),
 });
 
 function validarPayload(body: unknown, parcial: boolean) {
@@ -164,7 +164,7 @@ export class TurmaController {
       if (erroBusca) return res.status(400).json({ erro: erroBusca.message });
       if (!turma) return res.status(404).json({ erro: 'Turma não encontrada' });
       if (dados.status !== undefined) {
-        const statusAtual = turma.status ?? 1;
+        const statusAtual = normalizarStatus(turma).status;
         if (dados.status !== statusAtual && statusAtual !== 2) {
           return res.status(400).json({
             erro: 'O status só pode ser editado quando a turma está inativa. Para inativar, use DELETE.',
@@ -221,8 +221,8 @@ export class TurmaController {
       const { data: turma, error: erroBusca } = await this.obterTurma(id);
       if (erroBusca) return res.status(400).json({ erro: erroBusca.message });
       if (!turma) return res.status(404).json({ erro: 'Turma não encontrada' });
-      if (turma.status === 2) {
-        return res.status(200).json({ mensagem: 'Turma já está inativa', data: [turma] });
+      if (normalizarStatus(turma).status === 2) {
+        return res.status(200).json({ mensagem: 'Turma já está inativa', data: [normalizarStatus(turma)] });
       }
       const { data: alunos, count, error: erroAlunos } = await this.obterAlunos(id);
       if (erroAlunos) return res.status(400).json({ erro: erroAlunos.message });
@@ -238,7 +238,7 @@ export class TurmaController {
         .update({ status: 2 }).eq('id_turma', id).select();
       if (error) return res.status(400).json({ erro: error.message });
       if (!data?.length) return res.status(404).json({ erro: 'Turma não encontrada' });
-      return res.status(200).json({ mensagem: 'Turma inativada com sucesso', data });
+      return res.status(200).json({ mensagem: 'Turma inativada com sucesso', data: data.map(normalizarStatus) });
     } catch (err) {
       console.error('Erro ao inativar turma:', err);
       return res.status(500).json({ erro: 'Erro interno ao inativar turma' });
