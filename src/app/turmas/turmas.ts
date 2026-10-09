@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideSearch, LucidePlus, LucideEdit, LucideTrash2, LucideLoader2, LucideChevronLeft, LucideChevronRight, LucideRotateCcw, LucideX } from '@lucide/angular';
-import { TurmaService, Turma } from './turma.service';
+import { TurmaService, Turma, TurmaDependencias } from './turma.service';
 import { ModalExcluirTurma } from './modal-excluir-turma/modal-excluir-turma';
 import { ModalEditarTurma, TurmaEditPayload } from './modal-editar-turma/modal-editar-turma';
 import { Toast } from '../shared/toast/toast';
@@ -15,6 +15,8 @@ interface TurmaForm {
   qtd_alunos: number;
 }
 
+type CampoFiltroTurma = 'nome' | 'serie' | 'ano' | 'periodo';
+
 @Component({
   selector: 'app-turmas',
   standalone: true,
@@ -24,16 +26,27 @@ interface TurmaForm {
 })
 export class Turmas implements OnInit {
   searchTerm = '';
+  filtros: Record<CampoFiltroTurma, string> = { nome: '', serie: '', ano: '', periodo: '' };
+  readonly camposFiltro: { campo: CampoFiltroTurma; label: string }[] = [
+    { campo: 'nome', label: 'Nome' },
+    { campo: 'serie', label: 'Série' },
+    { campo: 'ano', label: 'Ano' },
+    { campo: 'periodo', label: 'Período' },
+  ];
   activeTab: 'ativas' | 'inativas' = 'ativas';
   turmas: Turma[] = [];
   isLoading = true;
   page = 1;
-  pageSize = 10;
-  totalPages = 1;
+  readonly pageSize = 10;
   isTurmaModalOpen = false;
   isSavingTurma = false;
   isDeleteModalOpen = false;
   turmaToDelete: Turma | null = null;
+  turmaDependencies: TurmaDependencias | null = null;
+  isCheckingDependencies = false;
+  isDeletingTurma = false;
+  deleteErrorMessage = '';
+  private deleteModalRequestId = 0;
   isEditModalOpen = false;
   turmaToEdit: Turma | null = null;
   isSavingEdit = false;
@@ -43,31 +56,80 @@ export class Turmas implements OnInit {
   toastType: 'error' | 'success' | 'info' = 'success';
 
   openDeleteModal(turma: Turma) {
+    if (this.isDeletingTurma) return;
+    this.deleteModalRequestId++;
     this.turmaToDelete = turma;
+    this.turmaDependencies = null;
+    this.deleteErrorMessage = '';
     this.isDeleteModalOpen = true;
+    this.verificarDependenciasTurma();
   }
 
   closeDeleteModal() {
+    if (this.isDeletingTurma) return;
+    this.deleteModalRequestId++;
     this.isDeleteModalOpen = false;
     this.turmaToDelete = null;
+    this.turmaDependencies = null;
+    this.isCheckingDependencies = false;
+    this.deleteErrorMessage = '';
+  }
+
+  private verificarDependenciasTurma(): void {
+    if (!this.turmaToDelete?.id_turma) return;
+    const requestId = this.deleteModalRequestId;
+    this.isCheckingDependencies = true;
+    this.deleteErrorMessage = '';
+    this.turmaService.verificarDependencias(this.turmaToDelete.id_turma).subscribe({
+      next: (dependencias) => {
+        if (requestId !== this.deleteModalRequestId) return;
+        this.turmaDependencies = dependencias;
+        this.isCheckingDependencies = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        if (requestId !== this.deleteModalRequestId) return;
+        console.error('Erro ao verificar alunos da turma', err);
+        this.isCheckingDependencies = false;
+        this.deleteErrorMessage = 'Não foi possível verificar os alunos vinculados. Tente novamente.';
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   confirmDelete() {
+    if (this.isCheckingDependencies || this.isDeletingTurma) return;
     if (!this.turmaToDelete?.id_turma) {
       this.closeDeleteModal();
       return;
     }
 
-    this.turmaService.excluirTurma(this.turmaToDelete.id_turma).subscribe({
+    if (!this.turmaDependencies) {
+      this.verificarDependenciasTurma();
+      return;
+    }
+
+    this.isDeletingTurma = true;
+    this.deleteErrorMessage = '';
+    this.turmaService.excluirTurma(this.turmaToDelete.id_turma, this.turmaDependencies.temDependencias).subscribe({
       next: () => {
+        this.isDeletingTurma = false;
         this.closeDeleteModal();
         this.carregarTurmas();
-        this.showToast('Turma excluída com sucesso!', 'success');
+        this.showToast('Turma inativada com sucesso!', 'success');
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Erro ao excluir turma', err);
-        this.closeDeleteModal();
-        alert('Não foi possível excluir a turma.');
+        this.isDeletingTurma = false;
+        if (err.status === 409 && err.error?.requerConfirmacao) {
+          // Um aluno pode ter sido vinculado depois da consulta inicial.
+          this.turmaDependencies = null;
+          this.verificarDependenciasTurma();
+        } else {
+          console.error('Erro ao inativar turma', err);
+          this.deleteErrorMessage = 'Não foi possível inativar a turma. Tente novamente.';
+        }
+        this.cdr.detectChanges();
       },
     });
   }
@@ -81,11 +143,11 @@ export class Turmas implements OnInit {
   };
 
   updatePagination() {
-    const filteredCount = this.filteredTurmas.length;
-    this.totalPages = Math.max(1, Math.ceil(filteredCount / this.pageSize));
-    if (this.page > this.totalPages) {
-      this.page = this.totalPages;
-    }
+    this.page = Math.max(1, Math.min(this.page, this.totalPages));
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredTurmas.length / this.pageSize));
   }
 
   goToPage(page: number) {
@@ -95,9 +157,10 @@ export class Turmas implements OnInit {
   }
 
   get paginatedTurmas(): Turma[] {
+    const filtered = this.filteredTurmas;
     const start = (this.page - 1) * this.pageSize;
     const end = start + this.pageSize;
-    return this.filteredTurmas.slice(start, end);
+    return filtered.slice(start, end);
   }
 
   constructor(
@@ -110,21 +173,50 @@ export class Turmas implements OnInit {
   }
 
   get filteredTurmas(): Turma[] {
-    const statusFilter = this.activeTab === 'ativas' ? 1 : 2;
-    let filtered = this.turmas.filter((t) => Number((t as Turma).status ?? 1) === statusFilter);
+    let filtered = this.turmas.filter((turma) => this.correspondeAba(turma));
+    filtered = filtered.filter((turma) =>
+      this.camposFiltro.every(({ campo }) =>
+        !this.filtros[campo] || this.valorFiltro(turma, campo) === this.filtros[campo]
+      )
+    );
     if (this.searchTerm.trim()) {
-      const term = this.searchTerm.toLowerCase();
+      const term = this.searchTerm.trim().toLowerCase();
       filtered = filtered.filter(
         (t) =>
           t.nome?.toLowerCase().includes(term) ||
           (t.ano?.toString() ?? '').includes(term) ||
-          (t.turno?.toLowerCase() ?? '').includes(term) ||
+          ((t.periodo || t.turno)?.toLowerCase() ?? '').includes(term) ||
           (t.serie?.toLowerCase() ?? '').includes(term)
       );
     }
-    this.totalPages = Math.max(1, Math.ceil(filtered.length / this.pageSize));
-    if (this.page > this.totalPages) this.page = this.totalPages;
     return filtered;
+  }
+
+  statusTurma(turma: Turma): number {
+    return Number(turma.status ?? 1);
+  }
+
+  private correspondeAba(turma: Turma): boolean {
+    return this.statusTurma(turma) === (this.activeTab === 'ativas' ? 1 : 2);
+  }
+
+  private valorFiltro(turma: Turma, campo: CampoFiltroTurma): string {
+    const valor = campo === 'periodo' ? turma.periodo || turma.turno : turma[campo];
+    return String(valor ?? '').trim();
+  }
+
+  opcoesFiltro(campo: CampoFiltroTurma): string[] {
+    const valores = this.turmas
+      .filter((turma) => this.correspondeAba(turma))
+      .map((turma) => this.valorFiltro(turma, campo))
+      .filter(Boolean);
+    return [...new Set(valores)].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+  }
+
+  limparFiltros(): void {
+    this.filtros = { nome: '', serie: '', ano: '', periodo: '' };
+    this.searchTerm = '';
+    this.page = 1;
   }
 
   carregarTurmas(): void {
@@ -132,12 +224,14 @@ export class Turmas implements OnInit {
     this.turmaService.listarTurmas().subscribe({
       next: (data) => {
         this.turmas = data;
+        this.updatePagination();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao carregar turmas', err);
         this.turmas = [];
+        this.updatePagination();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -273,12 +367,13 @@ export class Turmas implements OnInit {
         this.reactivatingId = null;
         this.carregarTurmas();
         this.showToast('Turma reativada com sucesso!', 'success');
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao reativar turma', err);
         this.reactivatingId = null;
+        this.showToast('Não foi possível reativar a turma.', 'error');
         this.cdr.detectChanges();
-        alert('Não foi possível reativar a turma.');
       },
     });
   }

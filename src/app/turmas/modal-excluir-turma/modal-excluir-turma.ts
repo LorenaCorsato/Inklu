@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAlertTriangle, LucideX } from '@lucide/angular';
-import { Turma } from '../turma.service';
+import { Turma, TurmaDependencias } from '../turma.service';
 
 @Component({
   selector: 'app-modal-excluir-turma',
@@ -18,22 +18,40 @@ import { Turma } from '../turma.service';
             <span class="modal-icon" aria-hidden="true">
               <svg lucideAlertTriangle [size]="24" [strokeWidth]="2"></svg>
             </span>
-            <button class="btn-close" type="button" aria-label="Fechar" (click)="close()">
+            <button class="btn-close" type="button" aria-label="Fechar" [disabled]="isDeleting" (click)="close()">
               <svg lucideX [size]="20" [strokeWidth]="2"></svg>
             </button>
           </div>
 
           <div class="modal-body">
-            <h2 class="modal-title" id="excluir-turma-title">Deseja realmente excluir?</h2>
+            <h2 class="modal-title" id="excluir-turma-title">Deseja inativar esta turma?</h2>
             @if (turma?.nome) {
               <p class="modal-target">{{ turma!.nome }}</p>
             }
-            <p class="modal-message">Esta ação irá inativar a turma e não poderá ser desfeita facilmente.</p>
+            @if (isChecking) {
+              <p class="modal-message" role="status">Verificando alunos vinculados...</p>
+            } @else if (dependencias) {
+              @if (dependencias.temDependencias) {
+                <p class="modal-message">Esta turma possui {{ dependencias.quantidadeAlunos }} aluno(s) vinculado(s). Deseja confirmar a inativação?</p>
+                <ul class="dependency-list" aria-label="Alunos vinculados">
+                  @for (aluno of dependencias.alunos; track aluno.id) {
+                    <li>{{ aluno.nome_completo || 'Aluno sem nome' }}</li>
+                  }
+                </ul>
+                <p class="modal-message">Os alunos e seus vínculos serão preservados.</p>
+              }
+              <p class="modal-message">A turma ficará inativa e poderá ser reativada na aba Inativas.</p>
+            }
+            @if (errorMessage) {
+              <p class="modal-error" role="alert">{{ errorMessage }}</p>
+            }
           </div>
 
           <div class="modal-footer">
-            <button class="btn btn-cancel" type="button" (click)="close()">Cancelar</button>
-            <button class="btn btn-delete" type="button" (click)="confirm()">Sim, excluir</button>
+            <button class="btn btn-cancel" type="button" [disabled]="isDeleting" (click)="close()">Cancelar</button>
+            <button class="btn btn-delete" type="button" [disabled]="isChecking || isDeleting" (click)="confirm()">
+              {{ isDeleting ? 'Inativando...' : isChecking ? 'Verificando...' : !dependencias ? 'Tentar novamente' : 'Sim, inativar' }}
+            </button>
           </div>
         </div>
       </div>
@@ -90,7 +108,9 @@ import { Turma } from '../turma.service';
       cursor: pointer;
     }
     .btn-close:hover { background: var(--ds-neutral-100, #f0f0f0); color: var(--ds-body, #111); }
-    .modal-body { padding: 1rem; }
+    .modal-body { padding: 1rem; overflow-y: auto; }
+    .dependency-list { margin: 0.75rem 0; padding-left: 1.25rem; overflow-wrap: anywhere; }
+    .modal-error { margin: 0.75rem 0 0; color: var(--ds-danger, #c0392b); }
     .modal-title { margin: 0; font-size: 1.125rem; font-weight: 700; }
     .modal-target { margin: 0.75rem 0 0; font-weight: 600; overflow-wrap: anywhere; }
     .modal-message { margin: 0.5rem 0 0; color: var(--ds-muted, #666); line-height: 1.5; }
@@ -117,11 +137,16 @@ import { Turma } from '../turma.service';
     .btn-cancel:hover { background: var(--ds-neutral-100, #f0f0f0); }
     .btn-delete { border-color: var(--ds-danger, #c0392b); background: var(--ds-danger, #c0392b); color: #fff; }
     .btn-delete:hover { filter: brightness(0.94); }
+    button:disabled { opacity: 0.65; cursor: not-allowed; }
   `]
 })
 export class ModalExcluirTurma {
   @Input() isOpen = false;
   @Input() turma: Turma | null = null;
+  @Input() dependencias: TurmaDependencias | null = null;
+  @Input() isChecking = false;
+  @Input() isDeleting = false;
+  @Input() errorMessage = '';
   @Output() confirmed = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
 
@@ -138,10 +163,12 @@ export class ModalExcluirTurma {
   }
 
   close(): void {
+    if (this.isDeleting) return;
     this.closed.emit();
   }
 
   confirm(): void {
+    if (this.isChecking || this.isDeleting) return;
     this.confirmed.emit();
   }
 }

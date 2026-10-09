@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { Materia, MateriaService } from '../../../materias/materia.service';
 import {
   LucideX,
   LucideUploadCloud,
@@ -29,11 +31,11 @@ const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.docx'];
 
 @Component({
   selector: 'app-modal-documento',
-  imports: [CommonModule, LucideX, LucideUploadCloud, LucideTrash2, LucideXCircle, LucideAlertTriangle],
+  imports: [CommonModule, FormsModule, LucideX, LucideUploadCloud, LucideTrash2, LucideXCircle, LucideAlertTriangle],
   templateUrl: './modal-documento.html',
   styleUrl: './modal-documento.scss',
 })
-export class ModalDocumento {
+export class ModalDocumento implements OnChanges {
   @Input() isOpen = false;
   @Input() alunoId: number | string | null | undefined;
   /** Quando true, apenas devolve os arquivos selecionados, sem enviar para a API. */
@@ -48,7 +50,44 @@ export class ModalDocumento {
   errorMessage: string | null = null;
   isSaving = false;
 
-  constructor(private http: HttpClient) {}
+  materias: Materia[] = [];
+  selectedMateriaId: string | null = null;
+  isLoadingMaterias = false;
+  materiasError: string | null = null;
+
+  constructor(
+    private http: HttpClient,
+    private materiaService: MateriaService,
+    private cdr: ChangeDetectorRef,
+  ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isOpen']?.currentValue && !this.localOnly) {
+      this.carregarMaterias();
+    }
+  }
+
+  carregarMaterias() {
+    this.isLoadingMaterias = true;
+    this.materiasError = null;
+    this.materias = [];
+    this.selectedMateriaId = null;
+    this.materiaService.listarMaterias().subscribe({
+      next: (materias) => {
+        this.materias = [...materias].sort((first, second) =>
+          first.nome.localeCompare(second.nome, 'pt-BR'),
+        );
+        this.isLoadingMaterias = false;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Erro ao carregar matérias:', error);
+        this.materiasError = 'Não foi possível carregar as matérias.';
+        this.isLoadingMaterias = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   onBackdropClick(event: MouseEvent) {
     if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
@@ -59,6 +98,8 @@ export class ModalDocumento {
   close() {
     if (this.isSaving) return;
     this.files = [];
+    this.selectedMateriaId = null;
+    this.errorMessage = null;
     this.closed.emit();
   }
 
@@ -169,6 +210,11 @@ export class ModalDocumento {
       return;
     }
 
+    if (this.isLoadingMaterias || !this.materias.some(materia => materia.id_materia === this.selectedMateriaId)) {
+      this.errorMessage = 'Selecione uma matéria antes de salvar os arquivos.';
+      return;
+    }
+
     const filesToSave = this.files.filter(file => file.status === 'done' && file.data);
     if (filesToSave.length === 0) {
       this.errorMessage = 'Aguarde o carregamento dos arquivos.';
@@ -182,6 +228,7 @@ export class ModalDocumento {
         nomeArquivo: file.name,
         tipoArquivo: file.type || 'application/octet-stream',
         arquivo: file.data,
+        idMateria: this.selectedMateriaId,
       }).subscribe({
         next: () => {
           savedCount++;
