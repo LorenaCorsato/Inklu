@@ -76,6 +76,14 @@
   <!-- Toolbar: só busca agora -->
   <div class="plans-toolbar">
     <label class="sr-only" for="plans-search">Pesquisar plano</label>
+    <input
+      id="plans-search"
+      class="form-input"
+      type="search"
+      placeholder="Pesquisar plano"
+      [ngModel]="searchFilter()"
+      (ngModelChange)="searchFilter.set($event)"
+    />
   </div>
 
   <!-- 3. Conteúdo -->
