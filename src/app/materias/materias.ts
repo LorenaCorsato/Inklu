@@ -41,8 +41,7 @@ export class Materias implements OnInit {
   toastType: 'error' | 'success' | 'info' = 'success';
 
   page = 1;
-  pageSize = 10;
-  totalPages = 1;
+  readonly pageSize = 10;
 
   materiaForm: MateriaForm = {
     nome: '',
@@ -65,15 +64,22 @@ export class Materias implements OnInit {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter((materia) => materia.nome.toLowerCase().includes(term));
     }
-    this.totalPages = Math.max(1, Math.ceil(filtered.length / this.pageSize));
-    if (this.page > this.totalPages) this.page = this.totalPages;
     return filtered;
   }
 
+  updatePagination(): void {
+    this.page = Math.max(1, Math.min(this.page, this.totalPages));
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredMaterias.length / this.pageSize));
+  }
+
   get paginatedMaterias(): Materia[] {
+    const filtered = this.filteredMaterias;
     const start = (this.page - 1) * this.pageSize;
     const end = start + this.pageSize;
-    return this.filteredMaterias.slice(start, end);
+    return filtered.slice(start, end);
   }
 
   get materiaFormIsValid(): boolean {
@@ -89,12 +95,14 @@ export class Materias implements OnInit {
     this.materiaService.listarMaterias().subscribe({
       next: (data) => {
         this.materias = data;
+        this.updatePagination();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao carregar matérias', err);
         this.materias = [];
+        this.updatePagination();
         this.isLoading = false;
         this.cdr.detectChanges();
       },

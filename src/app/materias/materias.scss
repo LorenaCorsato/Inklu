@@ -1,5 +1,33 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.alunos-breadcrumb {
+  flex-shrink: 0;
+}
+
 .materias-page {
-  /* Add custom styles if needed */
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.materias-page > .materias-content {
+  min-height: 0;
+  overflow: auto;
+}
+
+.materias-pagination {
+  flex-shrink: 0;
+  padding: 0.75rem 0;
+  background-color: var(--ds-surface);
+  border-top: 1px solid var(--ds-border);
 }
 
 .materias-title {
@@ -248,10 +276,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   min-width: 32px;
   min-height: 32px;
   padding: 4px 8px;
   line-height: 1;
+
+  &:disabled {
+    color: var(--ds-muted);
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-border);
+    opacity: 1;
+    box-shadow: none;
+  }
 
   svg {
     display: block;

@@ -67,6 +67,10 @@
   flex: 1;
 }
 
+.materia-field {
+  margin-bottom: var(--ds-spacing-4);
+}
+
 // ─── Error Alert ────────────────────────────────────────────────────────────
 .error-alert {
   display: flex;
