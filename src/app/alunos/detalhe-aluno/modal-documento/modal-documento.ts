@@ -74,9 +74,12 @@ export class ModalDocumento implements OnChanges {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['isOpen']?.currentValue && !this.localOnly) {
-      this.carregarMaterias();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isOpen']?.currentValue) {
+      this.selectedFolderId = this.defaultFolderId;
+      if (!this.localOnly) {
+        this.carregarMaterias();
+      }
     }
   }
 
@@ -100,17 +103,6 @@ export class ModalDocumento implements OnChanges {
         this.cdr.markForCheck();
       },
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isOpen'] && this.isOpen) {
-      this.selectedFolderId = this.defaultFolderId;
-    }
-  }
-
-  onFolderChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.selectedFolderId = value === '' ? null : value;
   }
 
   onBackdropClick(event: MouseEvent) {

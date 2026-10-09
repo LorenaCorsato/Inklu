@@ -200,16 +200,16 @@ describe('Planos educacionais', () => {
     fixture.componentRef.setInput('alunoId', 'aluno-a');
     fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
     expect(fixture.componentInstance.visiblePlans().map(plan => plan.id)).toEqual(['atual']);
-    expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Versão 2');
+    expect(fixture.nativeElement.querySelector('.plan-name__version').textContent).toBe('v2');
     fixture.componentInstance.showHistory.set(true);
     fixture.detectChanges();
     const rows = Array.from(fixture.nativeElement.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
-    expect(rows.map(row => row.textContent)).toEqual([
-      expect.stringContaining('Versão 1'), expect.stringContaining('Versão 2'),
+    expect(rows.map(row => row.querySelector('.plan-name__version')?.textContent)).toEqual([
+      'v1', 'v2',
     ]);
     fixture.componentInstance.bimestreFilter.set('1');
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Versão 2');
+    expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('v2');
   });
 
   it('combina filtros de tipo, bimestre e ano e permite limpar a busca', async () => {
@@ -243,11 +243,11 @@ describe('Planos educacionais', () => {
     await filter(2, '2026');
     expect(ids()).toEqual([]);
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Nenhum plano encontrado com os filtros selecionados.');
-    (fixture.nativeElement.querySelector('.clear-filters') as HTMLButtonElement).click();
+    (fixture.nativeElement.querySelector('.plan-filters__clear') as HTMLButtonElement).click();
     fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
     expect(ids()).toEqual(['pei-atual', 'paee-atual', 'paee-anterior']);
     expect(filters.map(select => select.value)).toEqual(['', '', '']);
-    expect(fixture.nativeElement.querySelector('.clear-filters')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.plan-filters__clear')).toBeNull();
 
     const search = fixture.nativeElement.querySelector('#plans-search') as HTMLInputElement;
     search.value = 'anterior';
