@@ -1,12 +1,109 @@
-.plans-panel { border: 1px solid var(--ds-border); border-radius: var(--ds-radius-sm); background: var(--ds-surface); padding: 1rem; margin-bottom: 1rem; }
-.plans-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
-h2 { font-size: 1.25rem; margin: 0 0 .3rem; } p { color: var(--ds-muted); }
-.plans-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
-.plan-filters { display: flex; align-items: flex-end; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
-.plan-filters label { display: flex; flex-direction: column; gap: .3rem; flex: 1 1 10rem; font-size: .875rem; }
-.plan-filters select { width: 100%; }
-.history-toggle { display: flex; align-items: center; gap: .5rem; margin: 1rem 0; }
-.plans-table-wrapper { overflow: auto; } small { display: block; color: var(--ds-muted); }
-.plans-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; font-size: .875rem; }
-.plans-pagination-summary { color: var(--ds-muted); }
-.plans-pagination-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+
+.plans-panel {
+    padding: 1rem;
+    border: 1px solid var(--ds-border);
+    border-radius: 1rem;
+}
+
+.plans-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.plans-header__text p { margin: .25rem 0 0; color: var(--text-muted); }
+
+/* Ações: Filtros + Criar PEI + Criar PAEE na mesma linha */
+.plans-header__actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* Toolbar: só a busca, ocupa a largura toda */
+.plans-toolbar {
+  display: flex;
+  gap: .75rem;
+}
+.plans-toolbar .form-input { width: 100%; }
+
+.row-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
+/* ----- Dropdown de filtros ----- */
+.plan-filter-menu {
+  position: relative;
+  z-index: 10;
+}
+.plan-filter-menu[open] { z-index: 50; }
+.plan-filter-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.plan-filter-menu > summary::-webkit-details-marker { display: none; }
+
+.plan-filters {
+  position: absolute;
+  top: calc(100% + .5rem);
+  right: 0;                       /* alinha à direita do botão Filtros */
+  z-index: 50;
+
+  display: grid;
+  gap: .75rem;
+  min-width: 280px;
+  padding: 1rem;
+
+  /* 👇 background sólido: resolve a transparência */
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: .5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+  opacity: 1;
+}
+
+.plan-filters__field {
+  display: grid;
+  gap: .25rem;
+  font-size: .8125rem;
+  font-weight: 500;
+}
+
+.plan-filters__divider {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: .25rem 0;
+}
+
+.history-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .875rem;
+  color: #374151;
+}
+
+.plan-filters__clear {
+  justify-self: start;
+  font-size: .8125rem;
+}
+
+/* Responsivo */
+@media (max-width: 640px) {
+  .plans-header { align-items: flex-start; }
+  .plans-header__actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .plan-filter-menu { flex: 0 0 auto; }
+  .plans-header__actions .btn { flex: 1; }
+  .plan-filters {
+    right: auto;
+    left: 0;
+    min-width: min(280px, calc(100vw - 2rem));
+  }
+}

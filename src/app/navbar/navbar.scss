@@ -14,6 +14,12 @@ nav {
   overflow-x: hidden;
 }
 
+// O modal é position: fixed, então o host não pode virar item do layout flex
+// da navbar (senão os botões sobem com o justify-content: space-between).
+.modal-documento-host {
+  display: contents;
+}
+
 a {
   text-decoration: none;
   color: var(--ds-muted);

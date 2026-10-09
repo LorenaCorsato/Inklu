@@ -142,6 +142,33 @@
   --bs-btn-active-border-color: #0566cd;
 }
 
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+    border-color: var(--ds-neutral-500);
+  }
+
+  &--active {
+    border-color: var(--ds-primary);
+    background-color: var(--ds-primary-soft);
+    color: var(--ds-primary);
+  }
+}
+
 .btn-icon {
   --ds-btn-icon-size: 1.25rem;
 

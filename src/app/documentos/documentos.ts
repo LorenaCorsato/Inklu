@@ -23,6 +23,11 @@ import {
   DocumentoFile,
   ModalDocumento,
 } from '../alunos/detalhe-aluno/modal-documento/modal-documento';
+import {
+  DocumentoArquivo,
+  DocumentoFolder,
+  DocumentosService,
+} from '../services/documentos.service';
 import { ModalExclusao } from './modal-exclusao/modal-exclusao';
 import {
   ItemDialogDestination,
@@ -35,142 +40,10 @@ import {
 export type FileCategory = 'document' | 'image' | 'spreadsheet' | 'other';
 export type SortOrder = 'recent' | 'name' | 'type' | 'modified';
 
-export interface DocumentoFolder {
-  id: string;
-  name: string;
-  color: string;
-  parentId: string | null;
-  createdAt: string;
-  modifiedAt: string;
-}
-
-export interface DocumentoArquivo {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  folderId: string | null;
-  modifiedAt: string;
-  description?: string;
-}
-
 interface ItemRef {
   kind: ItemDialogKind;
   id: string;
 }
-
-const daysAgo = (days: number): string => new Date(Date.now() - days * 86_400_000).toISOString();
-
-const INITIAL_FOLDERS: DocumentoFolder[] = [
-  {
-    id: 'f-planejamento',
-    name: 'Planejamento',
-    color: '#3B82F6',
-    parentId: null,
-    createdAt: daysAgo(40),
-    modifiedAt: daysAgo(3),
-  },
-  {
-    id: 'f-planejamento-mensal',
-    name: 'Mensal',
-    color: '#3B82F6',
-    parentId: 'f-planejamento',
-    createdAt: daysAgo(34),
-    modifiedAt: daysAgo(3),
-  },
-  {
-    id: 'f-planejamento-semanal',
-    name: 'Semanal',
-    color: '#22A06B',
-    parentId: 'f-planejamento',
-    createdAt: daysAgo(30),
-    modifiedAt: daysAgo(10),
-  },
-  {
-    id: 'f-materiais',
-    name: 'Materiais de apoio',
-    color: '#E8B931',
-    parentId: null,
-    createdAt: daysAgo(25),
-    modifiedAt: daysAgo(6),
-  },
-  {
-    id: 'f-adaptadas',
-    name: 'Atividades adaptadas',
-    color: '#E87932',
-    parentId: 'f-materiais',
-    createdAt: daysAgo(20),
-    modifiedAt: daysAgo(1),
-  },
-  {
-    id: 'f-avaliacoes',
-    name: 'Avaliações',
-    color: '#D94F5C',
-    parentId: null,
-    createdAt: daysAgo(12),
-    modifiedAt: daysAgo(0),
-  },
-];
-
-const INITIAL_FILES: DocumentoArquivo[] = [
-  {
-    id: 'a-plano-anual',
-    name: 'Plano anual 2026.pdf',
-    size: 512_000,
-    type: 'application/pdf',
-    folderId: 'f-planejamento',
-    modifiedAt: daysAgo(3),
-    description: 'Documento base do ano letivo.',
-  },
-  {
-    id: 'a-planejamento-marco',
-    name: 'Planejamento março.docx',
-    size: 88_000,
-    type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    folderId: 'f-planejamento-mensal',
-    modifiedAt: daysAgo(3),
-  },
-  {
-    id: 'a-rotina-semanal',
-    name: 'Rotina semanal.png',
-    size: 240_000,
-    type: 'image/png',
-    folderId: 'f-planejamento-semanal',
-    modifiedAt: daysAgo(10),
-  },
-  {
-    id: 'a-cartoes',
-    name: 'Cartões de apoio.pdf',
-    size: 1_200_000,
-    type: 'application/pdf',
-    folderId: 'f-adaptadas',
-    modifiedAt: daysAgo(1),
-  },
-  {
-    id: 'a-prova-adaptada',
-    name: 'Prova adaptada.docx',
-    size: 64_000,
-    type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    folderId: 'f-avaliacoes',
-    modifiedAt: daysAgo(0),
-  },
-  {
-    id: 'a-notas-turma',
-    name: 'Notas da turma.xlsx',
-    size: 32_000,
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    folderId: 'f-avaliacoes',
-    modifiedAt: daysAgo(0),
-  },
-  {
-    id: 'a-orientacoes',
-    name: 'Orientações gerais.pdf',
-    size: 420_000,
-    type: 'application/pdf',
-    folderId: null,
-    modifiedAt: daysAgo(8),
-  },
-];
 
 @Component({
   selector: 'app-documentos',
@@ -205,6 +78,7 @@ const INITIAL_FILES: DocumentoArquivo[] = [
 })
 export class Documentos {
   private readonly router = inject(Router);
+  private readonly store = inject(DocumentosService);
 
   readonly folderColors = [
     { name: 'Azul', value: '#3B82F6' },
@@ -228,8 +102,8 @@ export class Documentos {
   readonly modifiedPeriod = signal<'any' | 'today' | 'week' | 'month'>('any');
   readonly currentFolderId = signal<string | null>(null);
 
-  readonly folders = signal<DocumentoFolder[]>(INITIAL_FOLDERS);
-  readonly files = signal<DocumentoArquivo[]>(INITIAL_FILES);
+  readonly folders = this.store.folders;
+  readonly files = this.store.files;
 
   readonly isDocumentoModalOpen = signal(false);
   private readonly uploadTargetFolderId = signal<string | null>(null);
@@ -449,7 +323,7 @@ export class Documentos {
     this.folders.update((folders) => [
       ...folders,
       {
-        id: this.createId(),
+        id: this.store.createId(),
         name,
         color: this.selectedFolderColor(),
         parentId: this.currentFolderId(),
@@ -582,20 +456,10 @@ export class Documentos {
   }
 
   onFilesAdded(selected: DocumentoFile[]): void {
-    const folderId = this.uploadTargetFolderId();
-    const now = new Date().toISOString();
-
-    this.files.update((files) => [
-      ...files,
-      ...selected.map((file) => ({
-        id: this.createId(),
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        folderId,
-        modifiedAt: now,
-      })),
-    ]);
+    // Se o modal exibiu o seletor de pasta, vale a escolha do usuário; senão,
+    // vale a pasta de onde o upload foi disparado.
+    const folderId = selected[0]?.folderId ?? this.uploadTargetFolderId();
+    this.store.addFiles(selected, folderId);
     this.isDocumentoModalOpen.set(false);
   }
 
@@ -689,9 +553,5 @@ export class Documentos {
   private collectFolderIds(folderId: string): string[] {
     const children = this.folders().filter((folder) => folder.parentId === folderId);
     return [folderId, ...children.flatMap((folder) => this.collectFolderIds(folder.id))];
-  }
-
-  private createId(): string {
-    return Math.random().toString(36).slice(2, 10);
   }
 }

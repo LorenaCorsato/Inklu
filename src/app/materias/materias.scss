@@ -36,6 +36,19 @@
   font-family: var(--ds-font-family-base);
 }
 
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .search-input {
   width: 100%;
   padding: var(--ds-spacing-2) var(--ds-spacing-3) var(--ds-spacing-2) 40px;
