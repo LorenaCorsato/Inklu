@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -16,6 +16,14 @@ export interface DocumentoFile {
   data: string;
   progress: number;
   status: 'uploading' | 'done' | 'error';
+  /** Pasta escolhida no modal, quando o seletor de destino está visível. */
+  folderId?: string | null;
+}
+
+/** Opção do seletor de pasta de destino (`id` null representa a raiz). */
+export interface DocumentoFolderOption {
+  id: string | null;
+  label: string;
 }
 
 const ALLOWED_MIME_TYPES = [
@@ -29,15 +37,20 @@ const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.docx'];
 
 @Component({
   selector: 'app-modal-documento',
+  standalone: true,
   imports: [CommonModule, LucideX, LucideUploadCloud, LucideTrash2, LucideXCircle, LucideAlertTriangle],
   templateUrl: './modal-documento.html',
   styleUrl: './modal-documento.scss',
 })
-export class ModalDocumento {
+export class ModalDocumento implements OnChanges {
   @Input() isOpen = false;
   @Input() alunoId: number | string | null | undefined;
   /** Quando true, apenas devolve os arquivos selecionados, sem enviar para a API. */
   @Input() localOnly = false;
+  /** Lista de pastas; quando preenchida, exibe o seletor de pasta de destino. */
+  @Input() folders: DocumentoFolderOption[] = [];
+  /** Pasta pré-selecionada toda vez que o modal é aberto. */
+  @Input() defaultFolderId: string | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
   @Output() filesAdded = new EventEmitter<DocumentoFile[]>();
@@ -47,8 +60,20 @@ export class ModalDocumento {
   maxFileSize = 1024 * 1024 * 1024; // 1 GB
   errorMessage: string | null = null;
   isSaving = false;
+  selectedFolderId: string | null = null;
 
   constructor(private http: HttpClient) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isOpen'] && this.isOpen) {
+      this.selectedFolderId = this.defaultFolderId;
+    }
+  }
+
+  onFolderChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectedFolderId = value === '' ? null : value;
+  }
 
   onBackdropClick(event: MouseEvent) {
     if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
@@ -153,7 +178,9 @@ export class ModalDocumento {
     if (this.isSaving) return;
 
     if (this.localOnly) {
-      const localFiles = this.files.filter(file => file.status === 'done' && file.data);
+      const localFiles = this.files
+        .filter(file => file.status === 'done' && file.data)
+        .map(file => ({ ...file, folderId: this.selectedFolderId }));
       if (localFiles.length === 0) {
         this.errorMessage = 'Aguarde o carregamento dos arquivos.';
         return;

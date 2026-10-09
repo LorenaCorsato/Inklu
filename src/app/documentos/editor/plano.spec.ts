@@ -243,11 +243,18 @@ describe('Planos educacionais', () => {
     await filter(2, '2026');
     expect(ids()).toEqual([]);
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Nenhum plano encontrado com os filtros selecionados.');
-    (fixture.nativeElement.querySelector('.plan-filters button') as HTMLButtonElement).click();
+    (fixture.nativeElement.querySelector('.clear-filters') as HTMLButtonElement).click();
     fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
     expect(ids()).toEqual(['pei-atual', 'paee-atual', 'paee-anterior']);
     expect(filters.map(select => select.value)).toEqual(['', '', '']);
-    expect(fixture.nativeElement.querySelector('.plan-filters button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.clear-filters')).toBeNull();
+
+    const search = fixture.nativeElement.querySelector('#plans-search') as HTMLInputElement;
+    search.value = 'anterior';
+    search.dispatchEvent(new Event('input'));
+    fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
+    expect(ids()).toEqual(['paee-anterior']);
+    expect(fixture.componentInstance.hasFilters()).toBe(true);
   });
 
   it('filtra versões antigas somente com histórico ativo e reinicia filtros ao trocar de aluno', async () => {

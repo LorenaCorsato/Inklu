@@ -56,7 +56,7 @@
     </div>
 
     <div class="buttonContainer d-flex flex-column gap-2">
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" type="button" (click)="openDocumentoModal()">
             <svg lucidePlus [size]="24" [strokeWidth]="2"></svg>
             <span [class.hidden]="isCollapsed">Adicionar Documento</span>
         </button>
@@ -67,4 +67,13 @@
         </button>
         </a>
     </div>
+
+        <app-modal-documento
+            class="modal-documento-host"
+            [isOpen]="isDocumentoModalOpen"
+            [localOnly]="true"
+            [folders]="folderOptions()"
+            (closed)="closeDocumentoModal()"
+            (filesAdded)="onDocumentoFilesAdded($event)"
+        ></app-modal-documento>
 </nav>

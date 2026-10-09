@@ -75,8 +75,8 @@
         <button class="btn-save" type="button" [disabled]="!canSave()" (click)="save('finalizado')">Finalizar plano</button>
       }
       <div class="plan-export-actions" role="group" aria-label="Exportar documento">
-        <button class="btn btn-primary-outline" type="button" [disabled]="!canExport()" (click)="exportPlano('pdf')">Exportar PDF</button>
-        <button class="btn btn-primary-outline" type="button" [disabled]="!canExport()" (click)="exportPlano('docx')">Exportar Word (DOCX)</button>
+        <button class="btn btn-primary" type="button" [disabled]="!canExport()" (click)="exportPlano('pdf')">Exportar PDF</button>
+        <button class="btn btn-primary" type="button" [disabled]="!canExport()" (click)="exportPlano('docx')">Exportar Word (DOCX)</button>
       </div>
       @if (!baseVersionId() || hasUnsavedChanges()) { <span>Salve o documento para exportar.</span> }
     </div>

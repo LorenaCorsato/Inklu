@@ -106,6 +106,35 @@
   }
 }
 
+// ─── Pasta de destino ────────────────────────────────────────────────────────
+.folder-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+  margin-bottom: var(--ds-spacing-4);
+
+  select {
+    width: 100%;
+    padding: var(--ds-spacing-2) var(--ds-spacing-3);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--ds-radius-sm);
+    background-color: var(--ds-surface);
+    color: var(--ds-body);
+    font-size: var(--ds-font-size-sm);
+
+    &:focus {
+      outline: 2px solid var(--ds-primary);
+      outline-offset: 1px;
+    }
+  }
+}
+
+.folder-field-label {
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  color: var(--ds-body);
+}
+
 // ─── Drop Zone ──────────────────────────────────────────────────────────────
 .drop-zone {
   border: 2px dashed var(--ds-border);

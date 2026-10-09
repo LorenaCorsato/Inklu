@@ -22,6 +22,18 @@
           </div>
         }
 
+        <!-- Pasta de destino -->
+        @if (folders.length > 0) {
+          <label class="folder-field">
+            <span class="folder-field-label">Pasta de destino</span>
+            <select [value]="selectedFolderId ?? ''" (change)="onFolderChange($event)">
+              @for (folder of folders; track folder.id) {
+                <option [value]="folder.id ?? ''">{{ folder.label }}</option>
+              }
+            </select>
+          </label>
+        }
+
         <!-- Drop Zone -->
         <div
           class="drop-zone"
