@@ -1,0 +1,156 @@
+<div class="alunos-breadcrumb mb-2 p-2 border-bottom d-flex align-items-center gap-2">
+  <p class="mb-0 text-muted ">Matérias</p>
+</div>
+
+<div class="materias-page p-2">
+  <div class="materias-header d-flex align-items-center justify-content-between mb-3">
+    <h1 class="materias-title fw-bold mb-0">Matérias</h1>
+    <button class="btn-add-materia btn btn-primary d-flex align-items-center gap-2" type="button" (click)="irParaAdicionarMateria()">
+      <svg lucidePlus [size]="18" [strokeWidth]="2"></svg>
+      Adicionar Matéria
+    </button>
+  </div>
+
+  <div class="mb-2">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'ativas'" href="#" (click)="activeTab = 'ativas'; page = 1; $event.preventDefault()">Ativas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'inativas'" href="#" (click)="activeTab = 'inativas'; page = 1; $event.preventDefault()">Inativas</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="search-toolbar mb-3 d-flex align-items-center gap-2">
+    <div class="search-wrapper flex-grow-1">
+      <div class="search-input-wrapper">
+        <svg lucideSearch [size]="18" class="search-icon" [strokeWidth]="2"></svg>
+        <input type="text" class="search-input" placeholder="Buscar Matéria" [(ngModel)]="searchTerm" (ngModelChange)="page = 1" />
+      </div>
+    </div>
+  </div>
+
+  <div class="materias-content">
+    @if (isLoading) {
+      <div class="loading-state d-flex flex-column align-items-center justify-content-center py-5">
+        <svg lucideLoader2 [size]="48" color="#8d8d8d" [strokeWidth]="1.5" class="spin-animation"></svg>
+        <p class="text-muted mt-3 mb-0">Carregando matérias...</p>
+      </div>
+    } @else {
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Área de conhecimento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (materia of paginatedMaterias; track materia.id_materia) {
+            <tr>
+              <td>{{ materia.nome }}</td>
+              <td>{{ materia.area_conhecimento }}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-2" type="button" aria-label="Editar matéria" title="Editar" (click)="editarMateria(materia)">
+                  <svg lucideEdit [size]="16" [strokeWidth]="2"></svg>
+                </button>
+                @if (activeTab === 'inativas') {
+                  <button class="btn btn-sm btn-outline-success" type="button" aria-label="Reativar matéria" title="Reativar" (click)="reativarMateria(materia)" [disabled]="reactivatingId === materia.id_materia">
+                    <svg lucideRotateCcw [size]="16" [strokeWidth]="2"></svg>
+                    {{ reactivatingId === materia.id_materia ? 'Reativando...' : 'Reativar' }}
+                  </button>
+                } @else {
+                  <button class="btn btn-sm btn-outline-danger" type="button" aria-label="Excluir matéria" title="Excluir" (click)="excluirMateria(materia)">
+                    <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (filteredMaterias.length === 0) {
+        <div class="empty-state d-flex flex-column align-items-center justify-content-center py-5">
+          <svg lucideSearch [size]="48" color="#8d8d8d" [strokeWidth]="1.5"></svg>
+          <p class="text-muted mt-3 mb-0">Nenhuma matéria encontrada</p>
+        </div>
+      }
+    }
+  </div>
+  @if (!isLoading && filteredMaterias.length > 0) {
+    <nav class="materias-pagination d-flex flex-wrap justify-content-center align-items-center gap-2" aria-label="Paginação de matérias">
+      <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Página anterior" title="Página anterior" (click)="goToPage(page - 1)" [disabled]="page === 1">
+        <svg lucideChevronLeft [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        Anterior
+      </button>
+      <span>Página {{ page }} de {{ totalPages }}</span>
+      <button class="btn btn-outline-primary btn-sm pagination-btn" type="button" aria-label="Próxima página" title="Próxima página" (click)="goToPage(page + 1)" [disabled]="page === totalPages">
+        <svg lucideChevronRight [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        Próxima
+      </button>
+    </nav>
+  }
+</div>
+
+@if (isMateriaModalOpen) {
+  <div class="modal-overlay" (click)="onMateriaBackdropClick($event)">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-materia">
+      <div class="modal-header">
+        <h2 id="titulo-modal-materia" class="modal-title">Adicionar Matéria</h2>
+        <button class="btn-close" type="button" aria-label="Fechar modal" (click)="fecharAdicionarMateria()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="materia-nome">Nome</label>
+          <input id="materia-nome" class="form-input" type="text" placeholder="Ex.: Matemática" [(ngModel)]="materiaForm.nome" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="materia-area">Área de conhecimento</label>
+          <input id="materia-area" class="form-input" type="text" placeholder="Ex.: Ciências Exatas" [(ngModel)]="materiaForm.area_conhecimento" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-cancelar" type="button" (click)="fecharAdicionarMateria()">Cancelar</button>
+        <button class="btn btn-salvar" type="button" [disabled]="!materiaFormIsValid" (click)="salvarMateria()">
+          Salvar matéria
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (isDeleteModalOpen && materiaToDelete) {
+  <app-modal-excluir-materia
+    [isOpen]="isDeleteModalOpen"
+    [materia]="materiaToDelete"
+    [dependencias]="materiaDependencies"
+    [isVerifying]="isCheckingDependencies"
+    [isDeleting]="isDeletingMateria"
+    [errorMessage]="deleteErrorMessage"
+    (closed)="closeDeleteModal()"
+    (confirmed)="confirmDelete()">
+  </app-modal-excluir-materia>
+}
+
+@if (isEditModalOpen && materiaToEdit) {
+  <app-modal-editar-materia
+    [isOpen]="isEditModalOpen"
+    [materia]="materiaToEdit"
+    [isSaving]="isSavingEdit"
+    (closed)="closeEditModal()"
+    (saved)="saveEdit($event)">
+  </app-modal-editar-materia>
+}
+
+<app-toast
+  [isOpen]="toastOpen"
+  [message]="toastMessage"
+  [type]="toastType"
+  (closed)="closeToast()">
+</app-toast>

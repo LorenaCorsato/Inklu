@@ -1,0 +1,139 @@
+.modal-overlay {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-4);
+  background: rgb(16 24 32 / 48%);
+}
+
+.modal-container {
+  display: flex;
+  width: min(100%, 420px);
+  max-height: 90vh;
+  flex-direction: column;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-surface);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-4) var(--ds-spacing-4) 0;
+}
+
+.modal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-danger-soft);
+  color: var(--ds-danger);
+}
+
+.btn-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ds-radius-sm);
+  background: transparent;
+  color: var(--ds-muted);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-primary);
+  }
+}
+
+.modal-body {
+  padding: var(--ds-spacing-4);
+}
+
+.modal-title {
+  margin: 0;
+  color: var(--ds-body);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.modal-target {
+  margin: var(--ds-spacing-3) 0 0;
+  overflow-wrap: anywhere;
+  color: var(--ds-body);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+}
+
+.modal-message {
+  margin: var(--ds-spacing-2) 0 0;
+  color: var(--ds-muted);
+  font-size: var(--ds-font-size-base);
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-4);
+  border-top: 1px solid var(--ds-border);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 var(--ds-spacing-4);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-surface);
+  color: var(--ds-body);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid var(--ds-primary-soft);
+  }
+}
+
+.btn-cancel:hover {
+  background: var(--ds-neutral-100);
+}
+
+.btn-delete {
+  border-color: var(--ds-danger);
+  background: var(--ds-danger);
+  color: #fff;
+
+  &:hover {
+    filter: brightness(0.94);
+  }
+}
+
+@media (max-width: 520px) {
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

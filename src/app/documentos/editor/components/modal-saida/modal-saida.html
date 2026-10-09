@@ -1,0 +1,29 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-container" role="dialog" aria-modal="true" [attr.aria-labelledby]="dialogId">
+      <div class="modal-header">
+        <span class="modal-icon" aria-hidden="true">
+          <svg lucideAlertTriangle [size]="24" [strokeWidth]="2"></svg>
+        </span>
+        <button class="btn-close" type="button" aria-label="Fechar" [disabled]="saving" (click)="closed.emit()">
+          <svg lucideX [size]="20" [strokeWidth]="2"></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <h2 class="modal-title" [id]="dialogId">{{ title }}</h2>
+        <p class="modal-message">{{ message }}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-cancel" type="button" [disabled]="saving" (click)="closed.emit()">Cancelar</button>
+        <button class="btn btn-discard" type="button" [disabled]="saving" (click)="discard.emit()">
+          {{ discardLabel }}
+        </button>
+        <button class="btn btn-save" type="button" [disabled]="saving" (click)="save.emit()">
+          {{ saving ? 'Salvando...' : saveLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

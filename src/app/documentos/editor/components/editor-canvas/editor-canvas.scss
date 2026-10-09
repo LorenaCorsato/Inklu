@@ -1,0 +1,161 @@
+// ─── Canvas (folha A4) ──────────────────────────────────────────────────────
+:host {
+  display: block;
+}
+
+.canvas-zoom-container {
+  transform-origin: top center;
+  transition: transform 150ms ease-out;
+}
+
+.sheet-stack {
+  position: relative;
+}
+
+// Guias de quebra de página (overlay)
+.page-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.page-guide {
+  position: absolute;
+  right: 0;
+  left: 0;
+  padding: 2px 6px;
+  border-top: 1px dashed #d1d5db;
+  color: #9ca3af;
+  font-family: var(--ds-font-family-ui);
+  font-size: 10px;
+  text-align: right;
+}
+
+.a4-sheet {
+  box-sizing: border-box;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+  transition: width 0.2s ease, min-height 0.2s ease, padding 0.2s ease;
+}
+
+// Orientações
+.a4-sheet.orientation-landscape {
+  /* Landscape usa largura/altura trocadas via estilos inline */
+}
+
+.a4-sheet.orientation-portrait {
+  /* Portrait usa dimensões padrão via estilos inline */
+}
+
+// O ProseMirror é injetado em runtime dentro da folha; por isso `::ng-deep`
+// para que os estilos não sejam isolados pelo encapsulamento do componente.
+:host ::ng-deep .ProseMirror {
+  min-height: 100%;
+  outline: none;
+  color: #1a1a1a;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.6;
+
+  > * + * {
+    margin-top: 0.75em;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  [data-plan-field] { margin: 1.25em 0; }
+  [data-plan-field] > h3 { font-size: 11pt; margin-bottom: .5em; }
+  [data-plan-content] { min-height: 3em; padding: .5em; border: 1px solid #d1d5db; border-radius: 4px; }
+  .plan-support-option { display: flex; align-items: flex-start; gap: .5em; cursor: pointer; }
+  .plan-support-option input { flex-shrink: 0; width: 1em; height: 1em; margin-top: .25em; accent-color: var(--ds-primary); }
+  .plan-support-option:has(input:disabled) { cursor: default; }
+  [data-plan-fixed] { color: #454545; }
+  [data-plan-letterhead] {
+    margin-bottom: 1.5em;
+    table { margin: 0; table-layout: auto; }
+    td { border: 0; padding: 0; vertical-align: middle; }
+    td:first-child { width: 85px; padding-right: 12px; }
+    p { text-align: center; line-height: 1.25; }
+    img { width: 85px; height: 81px; margin: 0; }
+  }
+  [data-plan-title] {
+    margin-bottom: 1.5em;
+    h1, p { margin: 0; text-align: center; font-size: 14pt; font-weight: bold; line-height: 1.5; }
+  }
+  [data-plan-fixed="footer"] {
+    margin-top: 0;
+    text-align: center;
+    break-before: page;
+    break-inside: avoid;
+    h2 { margin: 0 0 1em; font-size: 11pt; }
+    p { text-align: center; line-height: 1.25; }
+    [data-plan-signature] { display: flow-root; break-inside: avoid; }
+    [data-plan-signature] p:first-child { margin-top: 40pt; }
+  }
+
+  h1 {
+    font-size: 22pt;
+  }
+
+  h2 {
+    font-size: 16pt;
+  }
+
+  h3 {
+    font-size: 13pt;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1em auto;
+  }
+
+  table {
+    width: 100%;
+    margin: 1.5em 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    td,
+    th {
+      min-width: 40px;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f9fafb;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .selectedCell {
+      background: #eff6ff;
+    }
+
+    .column-resize-handle {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      bottom: 0;
+      width: 4px;
+      background: var(--ds-primary);
+      pointer-events: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas-zoom-container {
+    transition: none;
+  }
+
+  .a4-sheet {
+    transition: none;
+  }
+}

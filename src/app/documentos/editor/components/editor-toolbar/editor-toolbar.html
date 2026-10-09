@@ -1,0 +1,162 @@
+<div class="editor-toolbar" role="toolbar" aria-label="Barra de ferramentas de formatação">
+  <!-- Tamanho da fonte -->
+  <div class="toolbar-group">
+    <select
+      class="select-font-size"
+      [value]="fontSize"
+      [disabled]="disabled"
+      aria-label="Tamanho da fonte"
+      (change)="onFontSizeChange($event)"
+    >
+      @for (size of fontSizes; track size) {
+        <option [value]="size">{{ size }} pt</option>
+      }
+    </select>
+  </div>
+
+  <span class="toolbar-divider" aria-hidden="true"></span>
+
+  <!-- Ênfases -->
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.isBold"
+      [disabled]="disabled"
+      title="Negrito (Ctrl+B)"
+      aria-label="Negrito"
+      (click)="command.emit('bold')"
+    >
+      <svg lucideBold [size]="16" aria-hidden="true"></svg>
+    </button>
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.isItalic"
+      [disabled]="disabled"
+      title="Itálico (Ctrl+I)"
+      aria-label="Itálico"
+      (click)="command.emit('italic')"
+    >
+      <svg lucideItalic [size]="16" aria-hidden="true"></svg>
+    </button>
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.isUnderline"
+      [disabled]="disabled"
+      title="Sublinhado (Ctrl+U)"
+      aria-label="Sublinhado"
+      (click)="command.emit('underline')"
+    >
+      <svg lucideUnderline [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
+
+  <span class="toolbar-divider" aria-hidden="true"></span>
+
+  <!-- Títulos -->
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.currentHeading === 1"
+      [disabled]="disabled"
+      title="Título 1"
+      aria-label="Título 1"
+      (click)="command.emit('heading1')"
+    >
+      <svg lucideHeading1 [size]="16" aria-hidden="true"></svg>
+    </button>
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.currentHeading === 2"
+      [disabled]="disabled"
+      title="Título 2"
+      aria-label="Título 2"
+      (click)="command.emit('heading2')"
+    >
+      <svg lucideHeading2 [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
+
+  <span class="toolbar-divider" aria-hidden="true"></span>
+
+  <!-- Alinhamento -->
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.alignment === 'left'"
+      [disabled]="disabled"
+      title="Alinhar à esquerda"
+      aria-label="Alinhar à esquerda"
+      (click)="command.emit('align-left')"
+    >
+      <svg lucideAlignLeft [size]="16" aria-hidden="true"></svg>
+    </button>
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.alignment === 'center'"
+      [disabled]="disabled"
+      title="Centralizar"
+      aria-label="Centralizar"
+      (click)="command.emit('align-center')"
+    >
+      <svg lucideAlignCenter [size]="16" aria-hidden="true"></svg>
+    </button>
+    <button
+      type="button"
+      class="btn-tool"
+      [class.is-active]="state.alignment === 'right'"
+      [disabled]="disabled"
+      title="Alinhar à direita"
+      aria-label="Alinhar à direita"
+      (click)="command.emit('align-right')"
+    >
+      <svg lucideAlignRight [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
+
+  <span class="toolbar-divider" aria-hidden="true"></span>
+
+  <!-- Inserções -->
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="btn-tool"
+      [disabled]="disabled"
+      title="Inserir imagem"
+      aria-label="Inserir imagem"
+      (click)="command.emit('image')"
+    >
+      <svg lucideImage [size]="16" aria-hidden="true"></svg>
+    </button>
+    <button
+      type="button"
+      class="btn-tool"
+      [disabled]="disabled"
+      title="Inserir tabela 3x3"
+      aria-label="Inserir tabela"
+      (click)="command.emit('table')"
+    >
+      <svg lucideTable [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
+
+  <span class="toolbar-divider" aria-hidden="true"></span>
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="btn-tool"
+      [disabled]="disabled"
+      title="Editar página"
+      aria-label="Editar página"
+      (click)="onEditPage()"
+    >
+      <svg lucideFilePen [size]="16" aria-hidden="true"></svg>
+    </button>
+  </div>
+</div>

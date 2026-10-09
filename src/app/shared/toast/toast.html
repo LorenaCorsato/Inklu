@@ -1,0 +1,19 @@
+@if (isOpen) {
+  <div class="toast-wrapper" [class]="'toast--' + type">
+    <div class="toast-icon">
+      @if (type === 'error') {
+        <svg lucideAlertCircle [size]="20" [strokeWidth]="2"></svg>
+      }
+      @if (type === 'success') {
+        <svg lucideCheckCircle [size]="20" [strokeWidth]="2"></svg>
+      }
+      @if (type === 'info') {
+        <svg lucideInfo [size]="20" [strokeWidth]="2"></svg>
+      }
+    </div>
+    <span class="toast-message">{{ message }}</span>
+    <button class="toast-close" type="button" (click)="close()">
+      <svg lucideX [size]="16" [strokeWidth]="2"></svg>
+    </button>
+  </div>
+}

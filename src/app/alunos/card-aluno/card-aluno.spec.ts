@@ -60,6 +60,8 @@ describe('CardAluno', () => {
   });
 
   it('should show image when fotoUrl provided', () => {
+    fixture.componentRef.setInput('aluno', { ...mockAluno, fotoUrl: 'https://example.com/alex.jpg' });
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.aluno-imagem')).toBeTruthy();
     expect(compiled.querySelector('.aluno-placeholder')).toBeFalsy();

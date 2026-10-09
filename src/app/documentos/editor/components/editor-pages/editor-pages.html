@@ -1,0 +1,24 @@
+<aside class="pages-island" aria-label="Páginas do documento">
+  <header class="pages-header">
+    <svg lucideFiles [size]="16" aria-hidden="true"></svg>
+    <span class="pages-title">Páginas</span>
+  </header>
+
+  <ol class="pages-list">
+    @for (page of pages(); track page) {
+      <li>
+        <button
+          type="button"
+          class="page-item"
+          [class.is-active]="page === currentPage"
+          [attr.aria-current]="page === currentPage ? 'page' : null"
+          [attr.aria-label]="'Ir para a página ' + page"
+          (click)="pageSelect.emit(page)"
+        >
+          <span class="page-number" aria-hidden="true">{{ page }}</span>
+          <span class="page-label">Página {{ page }}</span>
+        </button>
+      </li>
+    }
+  </ol>
+</aside>

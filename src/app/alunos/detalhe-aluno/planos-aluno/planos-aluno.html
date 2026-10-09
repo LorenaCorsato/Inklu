@@ -1,0 +1,172 @@
+<section class="plans-panel" aria-labelledby="plans-title">
+  <!-- Header: título + ações + filtros, tudo alinhado -->
+  <header class="plans-header">
+    <div class="plans-header__text">
+      <h2 id="plans-title">Planos educacionais</h2>
+      <p>PEI e PAEE deste aluno, organizados por bimestre e versão.</p>
+    </div>
+
+    <div class="plans-header__actions">
+      <!-- Filtros: alinhado aos botões Criar -->
+      <details class="plan-filter-menu">
+        <summary class="btn btn-outline"><svg lucideFunnel [size]="14" [strokeWidth]="2" aria-hidden="true"></svg> Filtros</summary>
+
+        <div class="plan-filters" role="group" aria-label="Filtrar planos educacionais">
+          <label class="plan-filters__field">
+            Tipo de documento
+            <select class="form-select" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
+              <option value="">Todos os tipos</option>
+              <option value="pei">PEI</option>
+              <option value="paee">PAEE</option>
+            </select>
+          </label>
+
+          <label class="plan-filters__field">
+            Bimestre
+            <select class="form-select" [ngModel]="bimestreFilter()" (ngModelChange)="bimestreFilter.set($event)">
+              <option value="">Todos os bimestres</option>
+              <option value="1">1º bimestre</option>
+              <option value="2">2º bimestre</option>
+              <option value="3">3º bimestre</option>
+              <option value="4">4º bimestre</option>
+            </select>
+          </label>
+
+          <label class="plan-filters__field">
+            Ano letivo
+            <select class="form-select" [ngModel]="yearFilter()" (ngModelChange)="yearFilter.set($event)">
+              <option value="">Todos os anos</option>
+              @for (year of years(); track year) {
+                <option [value]="year">{{ year }}</option>
+              }
+            </select>
+          </label>
+
+          <hr class="plan-filters__divider" />
+
+          <label class="history-toggle">
+            <input type="checkbox"
+                   [checked]="showHistory()"
+                   (change)="showHistory.set(!showHistory())" />
+            Mostrar versões anteriores
+          </label>
+
+          @if (hasFilters()) {
+            <button class="btn btn-ghost plan-filters__clear" type="button" (click)="clearFilters()">
+              <svg lucideX [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+              Limpar filtros
+            </button>
+          }
+        </div>
+      </details>
+
+      <a class="btn btn-primary"
+         [routerLink]="['/alunos', alunoId, 'planos', 'pei', 'novo']">
+        <svg lucidePlus [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+        Criar PEI
+      </a>
+      <a class="btn btn-success"
+         [routerLink]="['/alunos', alunoId, 'planos', 'paee', 'novo']">
+        <svg lucidePlus [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+        Criar PAEE
+      </a>
+    </div>
+  </header>
+
+  <!-- 3. Conteúdo -->
+  @if (loading()) {
+    <p class="plans-feedback" role="status">Carregando planos…</p>
+  } @else if (error()) {
+    <p class="plans-feedback plans-feedback--error" role="alert">
+      {{ error() }}
+      <button class="btn btn-primary-outline" type="button" (click)="load()">
+        <svg lucideRotateCcw [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        Tentar novamente
+      </button>
+    </p>
+  } @else {
+    <div class="plans-table-wrapper">
+      <table class="table plans-table">
+        <thead>
+          <tr>
+            <th scope="col">Plano</th>
+            <th scope="col">Período</th>
+            <th scope="col">Status</th>
+            <th scope="col">Atualizado em</th>
+            <th scope="col" class="col-actions"><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (plan of paginatedPlans(); track plan.id) {
+            <tr>
+              <td>
+                <div class="plan-name">
+                  <span class="plan-name__title">{{ plan.name }}</span>
+                  <span class="plan-name__meta">
+                    <span class="badge badge--type">{{ plan.type === 'pei' ? 'PEI' : 'PAEE' }}</span>
+                    <span class="plan-name__version">v{{ plan.versionNumber ?? 1 }}</span>
+                  </span>
+                </div>
+              </td>
+              <td>{{ plan.bimestre }}º bim. · {{ plan.anoLetivo }}</td>
+              <td>
+                <span class="badge"
+                      [class.badge--draft]="plan.status === 'rascunho'"
+                      [class.badge--done]="plan.status !== 'rascunho'">
+                  {{ plan.status === 'rascunho' ? 'Rascunho' : 'Finalizado' }}
+                </span>
+              </td>
+              <td class="text-muted">{{ (plan.modifiedAt || plan.createdAt) | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="col-actions">
+                <div class="row-actions">
+                  <a class="btn btn-outline-primary btn-sm"
+                     [routerLink]="['/alunos', alunoId, 'planos', plan.type, plan.id]">
+                    <svg lucideEdit [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                    Editar
+                  </a>
+                  <a class="btn btn-outline-success btn-sm"
+                     [routerLink]="['/alunos', alunoId, 'planos', plan.type, plan.id]"
+                     [queryParams]="{leitura: '1'}">
+                    <svg lucideEye [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                    Visualizar
+                  </a>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="plans-empty">
+                {{ hasFilters()
+                    ? 'Nenhum plano encontrado com os filtros selecionados.'
+                    : 'Nenhum PEI ou PAEE registrado para este aluno.' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (visiblePlans().length > 10) {
+      <nav class="plans-pagination" aria-label="Paginação dos planos educacionais">
+        <span class="plans-pagination__summary" role="status">
+          Mostrando {{ pageStart() + 1 }}–{{ pageEnd() }} de {{ visiblePlans().length }} documentos
+        </span>
+        <div class="plans-pagination__controls">
+          <button class="btn btn-outline" type="button"
+                  (click)="changePage(currentPage() - 1)"
+                  [disabled]="currentPage() === 1">
+            <svg lucideChevronLeft [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            Anterior
+          </button>
+          <span class="plans-pagination__page">Página {{ currentPage() }} de {{ pageCount() }}</span>
+          <button class="btn btn-outline" type="button"
+                  (click)="changePage(currentPage() + 1)"
+                  [disabled]="currentPage() === pageCount()">
+            Próxima
+            <svg lucideChevronRight [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+          </button>
+        </div>
+      </nav>
+    }
+  }
+</section>

@@ -22,6 +22,45 @@
           </div>
         }
 
+        <!-- Pasta de destino -->
+        @if (folders.length > 0) {
+          <label class="folder-field">
+            <span class="folder-field-label">Pasta de destino</span>
+            <select [ngModel]="selectedFolderId ?? ''" (ngModelChange)="selectedFolderId = $event === '' ? null : $event">
+              @for (folder of folders; track folder.id) {
+                <option [value]="folder.id ?? ''">{{ folder.label }}</option>
+              }
+            </select>
+          </label>
+        }
+        @if (!localOnly) {
+          <div class="materia-field">
+            <label class="form-label" for="doc-materia-select">Matéria</label>
+            <select
+              id="doc-materia-select"
+              class="form-select"
+              [(ngModel)]="selectedMateriaId"
+              [disabled]="isSaving || isLoadingMaterias || materias.length === 0"
+              required
+            >
+              <option [ngValue]="null" disabled>
+                {{ isLoadingMaterias ? 'Carregando matérias...' : 'Selecione uma matéria' }}
+              </option>
+              @for (materia of materias; track materia.id_materia) {
+                <option [ngValue]="materia.id_materia">{{ materia.nome }}</option>
+              }
+            </select>
+            @if (materiasError) {
+              <p class="text-danger mt-2 mb-0" role="alert">{{ materiasError }}</p>
+              <button class="btn btn-link p-0" type="button" (click)="carregarMaterias()">
+                Tentar novamente
+              </button>
+            } @else if (!isLoadingMaterias && materias.length === 0) {
+              <p class="text-muted mt-2 mb-0">Nenhuma matéria cadastrada. Cadastre uma matéria para adicionar arquivos.</p>
+            }
+          </div>
+        }
+
         <!-- Drop Zone -->
         <div
           class="drop-zone"
@@ -81,7 +120,7 @@
 
             <div class="d-flex justify-content-end gap-2">
               <button class="btn btn-outline-danger cancel-button" type="button" [disabled]="isSaving" (click)="$event.stopPropagation(); close()">Cancelar</button>
-              <button class="btn btn-success" type="button" [disabled]="isSaving" (click)="$event.stopPropagation(); save()">
+              <button class="btn btn-success" type="button" [disabled]="isSaving || (!localOnly && (isLoadingMaterias || selectedMateriaId === null))" (click)="$event.stopPropagation(); save()">
                 {{ isSaving ? 'Salvando...' : 'Salvar' }}
               </button>
             </div>

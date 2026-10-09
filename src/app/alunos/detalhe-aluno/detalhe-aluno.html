@@ -36,10 +36,7 @@
           <svg lucidePen [size]="16" [strokeWidth]="2"></svg>
           Inserir Dados Adicionais
         </button>
-        <button class="btn btn-success p-x-2 d-flex align-items-center gap-2" type="button" (click)="openDocumentoModal()">
-            <svg lucideFilePlus [size]="16" [strokeWidth]="2"></svg>
-          Adicionar Documento
-        </button>
+
         <button class="btn btn-primary p-x-2 d-flex align-items-center gap-2" type="button">
           <svg lucideDownload [size]="16" [strokeWidth]="2"></svg>
           Exportar
@@ -201,13 +198,21 @@
       </div>
 
     </div>
+    <app-planos-aluno [alunoId]="aluno.id"></app-planos-aluno>
 
     <!-- Arquivos Section -->
     <div class="detalhe-arquivos-section">
+      <div class="d-flex justify-content-end mb-2">
+
+      </div>
       <div class="d-flex justify-content-between align-items-center">
+        
         <h2 class="detalhe-arquivos-title fw-bold">Arquivos</h2>
         <div class="arquivos-toolbar d-flex align-items-center gap-2">
-
+        <button class="btn btn-success p-x-2 d-flex align-items-center gap-2" type="button" (click)="openDocumentoModal()">
+          <svg lucideFilePlus [size]="16" [strokeWidth]="2"></svg>
+          Adicionar Arquivo
+        </button>
           <!-- Search -->
           <div class="searchbar d-flex align-items-center">
             <input type="text" class="form-control" placeholder="Pesquisar..." [(ngModel)]="searchQuery" />
@@ -296,16 +301,26 @@
             </tr>
           </thead>
           <tbody>
-            @for (arquivo of filteredArquivos; track arquivo.nome) {
+            @for (arquivo of filteredArquivos; track arquivo.id) {
               <tr>
                 <td>{{ formatDate(arquivo.data) }}</td>
                 <td>{{ arquivo.nome }}</td>
                 <td>{{ arquivo.alteracao }}</td>
                 <td>{{ arquivo.materia }}</td>
                 <td>
-                  <button class="btn btn-ghost-icon px-3" type="button">
+                  <div class="arquivo-acoes">
+                  <button class="btn btn-ghost-icon px-3" type="button" (click)="toggleArquivoMenu($event, arquivo)" [attr.aria-expanded]="arquivoMenuAberto === arquivo.id" aria-haspopup="true">
                     <svg lucideMoreVertical [size]="16" [strokeWidth]="2"></svg>
                   </button>
+                  @if (arquivoMenuAberto === arquivo.id) {
+                    <div class="arquivo-menu">
+                      <button class="arquivo-menu-item arquivo-menu-item--danger" type="button" (click)="excluirArquivo(arquivo); $event.stopPropagation()">
+                        <svg lucideTrash2 [size]="16" [strokeWidth]="2"></svg>
+                        Excluir
+                      </button>
+                    </div>
+                  }
+                  </div>
                 </td>
               </tr>
             } @empty {

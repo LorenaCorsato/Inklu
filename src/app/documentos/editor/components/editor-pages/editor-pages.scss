@@ -1,0 +1,118 @@
+// ─── Ilha de páginas ────────────────────────────────────────────────────────
+:host {
+  display: block;
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
+.pages-island {
+  display: flex;
+  width: 172px;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+}
+
+.pages-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex: 0 0 auto;
+  padding: var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border);
+  color: var(--ds-body);
+}
+
+.pages-title {
+  flex: 1;
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+}
+
+.pages-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-primary-soft);
+  color: var(--ds-primary-hover);
+  font-size: var(--ds-font-size-xs);
+  font-weight: 700;
+}
+
+.pages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: var(--ds-spacing-2);
+  overflow-y: auto;
+  list-style: none;
+}
+
+.page-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  width: 100%;
+  min-height: 38px;
+  padding: 0 var(--ds-spacing-2);
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-sm);
+  background: transparent;
+  color: var(--ds-muted);
+  font: inherit;
+  font-size: var(--ds-font-size-sm);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  &.is-active {
+    border-color: var(--ds-primary);
+    background: var(--ds-primary-soft);
+    color: var(--ds-primary-hover);
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-primary);
+    outline-offset: 1px;
+  }
+}
+
+.page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-surface);
+  color: inherit;
+  font-size: var(--ds-font-size-xs);
+  font-weight: 700;
+}
+
+.page-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Sem espaço para a ilha em telas estreitas — o editor continua utilizável.
+@media (max-width: 900px) {
+  :host {
+    display: none;
+  }
+}

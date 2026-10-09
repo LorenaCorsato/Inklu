@@ -1,6 +1,17 @@
 <div class="app-shell d-flex flex-row w-100">
-  <app-navbar></app-navbar>
-  <div class="app-content w-100 overflow-hidden ds-surface m-2 rounded ds-border border">
+  <!-- A navbar é ocultada na rota do editor (tela cheia) -->
+  @if (!isEditorRoute()) {
+    <app-navbar></app-navbar>
+  }
+
+  <div
+    class="app-content w-100 overflow-hidden"
+    [class.ds-surface]="!isEditorRoute()"
+    [class.m-2]="!isEditorRoute()"
+    [class.rounded]="!isEditorRoute()"
+    [class.ds-border]="!isEditorRoute()"
+    [class.border]="!isEditorRoute()"
+  >
     <router-outlet></router-outlet>
   </div>
 </div>

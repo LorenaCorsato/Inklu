@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.coming-soon-page {
+  background-color: var(--ds-background);
+  padding: var(--ds-spacing-6);
+}
+
+.coming-soon-card {
+  max-width: 400px;
+}
+
+.coming-soon-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: var(--ds-radius-lg);
+  background-color: var(--ds-primary-soft);
+  color: var(--ds-primary);
+}
+
+.coming-soon-title {
+  font-size: 1.5rem;
+  color: var(--ds-body);
+}
+
+.coming-soon-text {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-muted);
+  line-height: 1.6;
+}

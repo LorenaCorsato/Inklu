@@ -7,6 +7,7 @@ interface ArquivoPayload {
 	arquivo?: string;
 	tipoMaterial?: string;
 	idUsuario?: number | string | null;
+	idMateria?: number | string | null;
 }
 
 export class ArquivoController {
@@ -19,6 +20,7 @@ export class ArquivoController {
 				arquivo,
 				tipoMaterial = 'original',
 				idUsuario = null,
+				idMateria = null,
 			} = req.body as ArquivoPayload;
 
 			if (!alunoId || !nomeArquivo || !arquivo) {
@@ -39,6 +41,30 @@ export class ArquivoController {
 
 			if (!aluno) {
 				return res.status(404).json({ erro: 'Aluno não encontrado.' });
+			}
+
+			if (idMateria !== null) {
+				if (
+					(typeof idMateria !== 'string' && typeof idMateria !== 'number') ||
+					(typeof idMateria === 'string' && !idMateria.trim()) ||
+					(typeof idMateria === 'number' && !Number.isFinite(idMateria))
+				) {
+					return res.status(400).json({ erro: 'idMateria inválido.' });
+				}
+
+				const { data: materia, error: materiaError } = await supabase
+					.from('materia')
+					.select('id_materia')
+					.eq('id_materia', idMateria)
+					.maybeSingle();
+
+				if (materiaError) {
+					return res.status(400).json({ erro: materiaError.message });
+				}
+
+				if (!materia) {
+					return res.status(404).json({ erro: 'Matéria não encontrada.' });
+				}
 			}
 
 			const base64Data = arquivo.replace(/^data:[^;]+;base64,/, '');
@@ -66,7 +92,7 @@ export class ArquivoController {
 				.from('material')
 				.insert({
 					id_aluno: alunoId,
-					id_materia: null,
+					id_materia: idMateria,
 					id_usuario: null,
 					nome_do_arquivo: nomeArquivo,
 					tipo_do_arquivo: tipoArquivo || 'application/octet-stream',
@@ -95,7 +121,7 @@ export class ArquivoController {
 			const { alunoId } = req.params;
 			const { data, error } = await supabase
 				.from('material')
-				.select('*')
+				.select('*, materia(*)')
 				.eq('id_aluno', alunoId);
 
 			if (error) {
@@ -109,9 +135,60 @@ export class ArquivoController {
 		}
 	}
 
+	async listarMaterias(req: Request, res: Response): Promise<Response> {
+		try {
+			const { data, error } = await supabase
+				.from('materia')
+				.select('id_materia, nome')
+				.order('nome', { ascending: true });
+
+			if (error) {
+				return res.status(400).json({ erro: error.message });
+			}
+
+			return res.status(200).json(data);
+		} catch (error) {
+			console.error('Erro ao listar matérias:', error);
+			return res.status(500).json({ erro: 'Erro interno ao listar matérias.' });
+		}
+	}
+
 	async excluir(req: Request, res: Response): Promise<Response> {
 		try {
 			const { id } = req.params;
+			const { data: material, error: materialError } = await supabase
+				.from('material')
+				.select('url_do_arquivo')
+				.eq('id_material', id)
+				.maybeSingle();
+
+			if (materialError) {
+				return res.status(400).json({ erro: materialError.message });
+			}
+
+			if (!material) {
+				return res.status(404).json({ erro: 'Arquivo não encontrado.' });
+			}
+
+			const url = new URL(material.url_do_arquivo);
+			const marcadorCaminho = '/storage/v1/object/public/material-alunos/';
+			const indiceCaminho = url.pathname.indexOf(marcadorCaminho);
+
+			if (indiceCaminho === -1) {
+				return res.status(400).json({ erro: 'Caminho do arquivo inválido.' });
+			}
+
+			const caminhoArquivo = decodeURIComponent(
+				url.pathname.slice(indiceCaminho + marcadorCaminho.length)
+			);
+			const { error: storageError } = await supabase.storage
+				.from('material-alunos')
+				.remove([caminhoArquivo]);
+
+			if (storageError) {
+				return res.status(400).json({ erro: storageError.message });
+			}
+
 			const { error } = await supabase.from('material').delete().eq('id_material', id);
 
 			if (error) {

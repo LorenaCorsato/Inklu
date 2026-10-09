@@ -1,0 +1,495 @@
+<nav
+  class="documentos-breadcrumb p-2 border-bottom d-flex align-items-center gap-2"
+  aria-label="Caminho da pasta"
+>
+  @if (currentFolder()) {
+    <button
+      type="button"
+      class="btn btn-ghost-icon p-0 px-2 breadcrumb-back"
+      aria-label="Voltar para a pasta anterior"
+      (click)="goToParent()"
+    >
+      <svg lucideArrowLeft [size]="20" [strokeWidth]="2" aria-hidden="true"></svg>
+    </button>
+  }
+
+  <button
+    type="button"
+    class="breadcrumb-link"
+    [class.breadcrumb-link--current]="!currentFolder()"
+    [attr.aria-current]="!currentFolder() ? 'page' : null"
+    (click)="goToFolder(null)"
+  >
+    Documentos
+  </button>
+
+  @for (folder of breadcrumb(); track folder.id) {
+    <svg
+      lucideChevronRight
+      [size]="16"
+      [strokeWidth]="2"
+      class="breadcrumb-separator"
+      aria-hidden="true"
+    ></svg>
+    <button
+      type="button"
+      class="breadcrumb-link"
+      [class.breadcrumb-link--current]="$last"
+      [attr.aria-current]="$last ? 'page' : null"
+      (click)="goToFolder(folder.id)"
+    >
+      {{ folder.name }}
+    </button>
+  }
+</nav>
+
+<div class="MainContent">
+  <div class="Header">
+    <div class="headerRow page-heading d-flex flex-row justify-content-between">
+      <h2>Documentos</h2>
+      <div class="ButtonsContainer">
+        <button class="btn btn-primary" type="button" (click)="openFileDialog()">
+          <svg lucidePlus [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          Adicionar documento
+        </button>
+      </div>
+    </div>
+    <div class="headerRow documents-toolbar">
+      <label class="search-field">
+        <svg lucideSearch [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+        <input
+          type="search"
+          aria-label="Pesquisar arquivos e pastas"
+          placeholder="Pesquisar arquivos e pastas"
+          [value]="searchTerm()"
+          (input)="updateSearch($event)"
+        />
+      </label>
+
+      <div class="toolbar-actions">
+        <label class="sort-control">
+          <span>Ordenar por</span>
+          <select
+            [value]="sortOrder()"
+            (change)="updateSort($event)"
+            aria-label="Ordenar documentos"
+          >
+            <option value="recent">Mais recente</option>
+            <option value="type">Tipo de arquivo</option>
+            <option value="name">Nome</option>
+            <option value="modified">Última modificação</option>
+          </select>
+        </label>
+
+        <div class="view-toggle" role="group" aria-label="Tipo de visualização">
+          <button
+            type="button"
+            class="icon-button"
+            [class.active]="viewMode() === 'grid'"
+            aria-label="Visualização em grade"
+            [attr.aria-pressed]="viewMode() === 'grid'"
+            (click)="viewMode.set('grid')"
+          >
+            <svg lucideLayoutGrid [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          </button>
+          <button
+            type="button"
+            class="icon-button"
+            [class.active]="viewMode() === 'list'"
+            aria-label="Visualização em lista"
+            [attr.aria-pressed]="viewMode() === 'list'"
+            (click)="viewMode.set('list')"
+          >
+            <svg lucideList [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          </button>
+        </div>
+
+        <button type="button" class="toolbar-button create-folder" (click)="openFolderDialog()">
+          <svg lucideFolderPlus [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          <span>Adicionar pasta</span>
+        </button>
+
+        <button
+          type="button"
+          class="toolbar-button filter-button"
+          [class.filter-button--active]="hasActiveFilters()"
+          (click)="filterOpen.set(true)"
+        >
+          <svg lucideSlidersHorizontal [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          <span>Filtrar</span>
+          @if (filterCount() > 0) {
+            <span class="filter-count" aria-hidden="true">{{ filterCount() }}</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="documents-body">
+  @if (visibleFolders().length > 0) {
+    <section class="documents-section">
+      <h3 class="section-title">
+        Pastas
+        <span class="section-count">{{ visibleFolders().length }}</span>
+      </h3>
+
+      <div
+        class="folder-list"
+        [class.folder-list-grid]="viewMode() === 'grid'"
+        [class.folder-list-list]="viewMode() === 'list'"
+      >
+        @for (folder of visibleFolders(); track folder.id) {
+          <article
+            class="folder-card"
+            role="button"
+            tabindex="0"
+            [attr.aria-label]="'Abrir pasta ' + folder.name"
+            (click)="goToFolder(folder.id)"
+            (keydown.enter)="goToFolder(folder.id)"
+            (keydown.space)="goToFolder(folder.id); $event.preventDefault()"
+          >
+            <div class="folder-art" aria-hidden="true">
+              <span class="folder-shape" [style.backgroundColor]="folder.color"></span>
+            </div>
+            <div class="folder-details">
+              <div class="folder-copy">
+                <h3>{{ folder.name }}</h3>
+                <p>{{ folderSummary(folder.id) }}</p>
+              </div>
+              <div class="item-options" (click)="$event.stopPropagation()">
+                <button
+                  type="button"
+                  class="item-menu-button"
+                  [attr.aria-label]="'Mais opções para ' + folder.name"
+                  [attr.aria-expanded]="openItemMenu() === folder.id"
+                  [attr.aria-controls]="'item-menu-' + folder.id"
+                  aria-haspopup="menu"
+                  (click)="toggleItemMenu(folder.id, $event)"
+                >
+                  <svg lucideEllipsis [size]="20" [strokeWidth]="2.5" aria-hidden="true"></svg>
+                </button>
+                @if (openItemMenu() === folder.id) {
+                  <div class="item-dropdown-menu" role="menu" [id]="'item-menu-' + folder.id">
+                    <button
+                      type="button"
+                      class="item-dropdown-item"
+                      role="menuitem"
+                      (click)="openFileDialog(folder.id)"
+                    >
+                      <svg lucideFilePlus [size]="16" aria-hidden="true"></svg>
+                      Adicionar arquivo
+                    </button>
+                    <button
+                      type="button"
+                      class="item-dropdown-item"
+                      role="menuitem"
+                      (click)="openRenameDialog('folder', folder.id)"
+                    >
+                      <svg lucidePencilLine [size]="16" aria-hidden="true"></svg>
+                      Renomear
+                    </button>
+                    <button
+                      type="button"
+                      class="item-dropdown-item"
+                      role="menuitem"
+                      (click)="openMoveDialog('folder', folder.id)"
+                    >
+                      <svg lucideFolderInput [size]="16" aria-hidden="true"></svg>
+                      Mover
+                    </button>
+                    <button
+                      type="button"
+                      class="item-dropdown-item item-dropdown-item--danger"
+                      role="menuitem"
+                      (click)="askDelete('folder', folder.id)"
+                    >
+                      <svg lucideTrash2 [size]="16" aria-hidden="true"></svg>
+                      Excluir
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (visibleFiles().length > 0) {
+    <section class="documents-section">
+      <h3 class="section-title">
+        Arquivos
+        <span class="section-count">{{ visibleFiles().length }}</span>
+      </h3>
+
+      <div
+        class="file-list"
+        [class.file-list-grid]="viewMode() === 'grid'"
+        [class.file-list-list]="viewMode() === 'list'"
+      >
+        @for (file of visibleFiles(); track file.id) {
+          <article
+            class="file-card"
+            [attr.role]="isEditable(file) ? 'button' : null"
+            [attr.tabindex]="isEditable(file) ? 0 : null"
+            [attr.aria-label]="isEditable(file) ? 'Abrir ' + file.name + ' no editor' : null"
+            [title]="isEditable(file) ? 'Abrir no editor' : file.name"
+            (click)="openEditor(file.id)"
+            (keydown.enter)="openEditor(file.id)"
+            (keydown.space)="openEditor(file.id); $event.preventDefault()"
+          >
+            <span class="file-badge" [attr.data-category]="categoryOf(file)">{{
+              fileBadge(file)
+            }}</span>
+            <div class="file-details">
+              <h4 [title]="file.name">{{ file.name }}</h4>
+              <p>{{ formatSize(file.size) }} • {{ formatDate(file.modifiedAt) }}</p>
+              @if (file.description) {
+                <p class="file-note">{{ file.description }}</p>
+              }
+            </div>
+
+            <div class="item-options" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="item-menu-button"
+                [attr.aria-label]="'Mais opções para ' + file.name"
+                [attr.aria-expanded]="openItemMenu() === file.id"
+                [attr.aria-controls]="'item-menu-' + file.id"
+                aria-haspopup="menu"
+                (click)="toggleItemMenu(file.id, $event)"
+              >
+                <svg lucideEllipsis [size]="20" [strokeWidth]="2.5" aria-hidden="true"></svg>
+              </button>
+              @if (openItemMenu() === file.id) {
+                <div class="item-dropdown-menu" role="menu" [id]="'item-menu-' + file.id">
+                  <button
+                    type="button"
+                    class="item-dropdown-item"
+                    role="menuitem"
+                    (click)="openRenameDialog('file', file.id)"
+                  >
+                    <svg lucidePencilLine [size]="16" aria-hidden="true"></svg>
+                    Renomear
+                  </button>
+                  <button
+                    type="button"
+                    class="item-dropdown-item"
+                    role="menuitem"
+                    (click)="openEditDialog(file)"
+                  >
+                    <svg lucideSquarePen [size]="16" aria-hidden="true"></svg>
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    class="item-dropdown-item"
+                    role="menuitem"
+                    (click)="openMoveDialog('file', file.id)"
+                  >
+                    <svg lucideFolderInput [size]="16" aria-hidden="true"></svg>
+                    Mover
+                  </button>
+                  <button
+                    type="button"
+                    class="item-dropdown-item item-dropdown-item--danger"
+                    role="menuitem"
+                    (click)="askDelete('file', file.id)"
+                  >
+                    <svg lucideTrash2 [size]="16" aria-hidden="true"></svg>
+                    Remover
+                  </button>
+                </div>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (isEmpty()) {
+    <div class="documents-empty">
+      <svg lucideFolderOpen [size]="48" [strokeWidth]="1.5" aria-hidden="true"></svg>
+      @if (searchTerm() || hasActiveFilters()) {
+        <p class="documents-empty-title">Nenhum item encontrado</p>
+        <p class="documents-empty-text">
+          Nenhum resultado para a busca ou filtros aplicados nesta pasta.
+        </p>
+        <button type="button" class="toolbar-button" (click)="clearAllFilters()">
+          <svg lucideRotateCcw [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+          Limpar busca e filtros
+        </button>
+      } @else {
+        <p class="documents-empty-title">Esta pasta está vazia</p>
+        <p class="documents-empty-text">
+          Adicione um documento ou crie uma pasta para organizar os arquivos.
+        </p>
+      }
+    </div>
+  }
+</div>
+
+@if (filterOpen()) {
+  <div
+    class="filter-overlay"
+    (click)="filterOpen.set(false)"
+    (keydown.escape)="filterOpen.set(false)"
+  >
+    <section
+      class="filter-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="filter-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="filter-header">
+        <h2 id="filter-title">Filtrar documentos</h2>
+        <button
+          type="button"
+          class="icon-button close-button"
+          aria-label="Fechar filtros"
+          (click)="filterOpen.set(false)"
+        >
+          <svg lucideX [size]="20" [strokeWidth]="2" aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <div class="filter-fields">
+        <label>
+          <span>Tipo de arquivo</span>
+          <select [value]="fileType()" (change)="updateFileType($event)">
+            <option value="all">Todos os tipos</option>
+            <option value="document">Documentos</option>
+            <option value="image">Imagens</option>
+            <option value="spreadsheet">Planilhas</option>
+            <option value="other">Outros</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Última modificação</span>
+          <select [value]="modifiedPeriod()" (change)="updateModifiedPeriod($event)">
+            <option value="any">Qualquer período</option>
+            <option value="today">Hoje</option>
+            <option value="week">Últimos 7 dias</option>
+            <option value="month">Últimos 30 dias</option>
+          </select>
+        </label>
+      </div>
+
+      <footer class="filter-footer">
+        <button type="button" class="toolbar-button" (click)="resetFilters()">
+          Limpar filtros
+        </button>
+        <button type="button" class="apply-button" (click)="filterOpen.set(false)">
+          Aplicar filtros
+        </button>
+      </footer>
+    </section>
+  </div>
+}
+
+@if (folderDialogOpen()) {
+  <div
+    class="filter-overlay"
+    (click)="folderDialogOpen.set(false)"
+    (keydown.escape)="folderDialogOpen.set(false)"
+  >
+    <section
+      class="filter-dialog folder-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="folder-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="filter-header">
+        <h2 id="folder-title">Adicionar pasta</h2>
+        <button
+          type="button"
+          class="icon-button close-button"
+          aria-label="Fechar"
+          (click)="folderDialogOpen.set(false)"
+        >
+          <svg lucideX [size]="20" [strokeWidth]="2" aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <form (submit)="addFolder($event)">
+        <div class="folder-fields">
+          <label class="folder-name-field" for="folder-name">Nome da pasta</label>
+          <input
+            id="folder-name"
+            type="text"
+            maxlength="80"
+            required
+            autofocus
+            placeholder="Ex.: Planejamento"
+            [value]="folderName()"
+            (input)="updateFolderName($event)"
+          />
+          <p class="folder-location">Será criada em: {{ folderSuggestionLabel() }}</p>
+
+          <fieldset class="folder-color-field">
+            <legend>Cor da pasta</legend>
+            <div class="folder-color-options" role="radiogroup" aria-label="Cor da pasta">
+              @for (color of folderColors; track color.value) {
+                <label class="folder-color-option" [attr.title]="color.name">
+                  <input
+                    type="radio"
+                    name="folder-color"
+                    [value]="color.value"
+                    [checked]="selectedFolderColor() === color.value"
+                    [attr.aria-label]="color.name"
+                    (change)="selectedFolderColor.set(color.value)"
+                  />
+                  <span class="folder-color-swatch" [style.backgroundColor]="color.value"></span>
+                </label>
+              }
+            </div>
+          </fieldset>
+        </div>
+
+        <footer class="filter-footer">
+          <button type="button" class="toolbar-button" (click)="folderDialogOpen.set(false)">
+            Cancelar
+          </button>
+          <button type="submit" class="apply-button">Adicionar</button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}
+
+<app-modal-documento
+  [isOpen]="isDocumentoModalOpen()"
+  [localOnly]="true"
+  (closed)="closeDocumentoModal()"
+  (filesAdded)="onFilesAdded($event)"
+>
+</app-modal-documento>
+
+<app-modal-item
+  [isOpen]="itemDialogOpen()"
+  [mode]="itemDialogMode()"
+  [itemKind]="itemDialogKind()"
+  [itemName]="itemDialogName()"
+  [itemDescription]="itemDialogDescription()"
+  [destinations]="itemDialogDestinations()"
+  [destinationId]="itemDialogParentIdValue()"
+  [locationLabel]="itemDialogLocation()"
+  (closed)="closeItemDialog()"
+  (saved)="saveItemDialog($event)"
+>
+</app-modal-item>
+
+<app-modal-exclusao
+  [isOpen]="deleteDialogOpen()"
+  [itemName]="deleteDialogName()"
+  [message]="deleteDialogMessage()"
+  (closed)="closeDeleteDialog()"
+  (confirmed)="confirmDelete()"
+>
+</app-modal-exclusao>

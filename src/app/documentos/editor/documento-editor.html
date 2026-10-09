@@ -1,0 +1,173 @@
+<div class="editor-shell">
+  <!-- Cabeçalho: voltar, nome do documento e ações -->
+  <header class="editor-header">
+    <div class="header-left">
+      <button
+        type="button"
+        class="btn-back"
+        [title]="alunoId() ? 'Voltar para o aluno' : 'Voltar para Documentos'"
+        [attr.aria-label]="alunoId() ? 'Voltar para o aluno' : 'Voltar para Documentos'"
+        [disabled]="isSaving() || saveDialogOpen()"
+        (click)="goBack()"
+      >
+        <svg lucideArrowLeft [size]="20" aria-hidden="true"></svg>
+      </button>
+
+      <div class="title-container">
+        <input
+          type="text"
+          class="input-title"
+          placeholder="Nome do documento"
+          aria-label="Nome do documento"
+          [ngModel]="documentName()"
+          (ngModelChange)="onNameChange($event)"
+          [disabled]="readOnly() || isSaving()"
+        />
+        <span class="badge-format">{{ planoType() ? (planoType()! | uppercase) : (originalFormat() | uppercase) }}</span>
+        @if (planoType()) { <span class="badge-format">Versão {{ versionNumber() }}</span> }
+      </div>
+    </div>
+
+    <div class="header-right">
+      <span class="stat-words">{{ wordCount() }} palavras</span>
+
+      <div class="zoom-widget" role="group" aria-label="Controle de zoom">
+        <button
+          type="button"
+          [disabled]="zoomLevel() <= 50"
+          aria-label="Diminuir zoom"
+          (click)="onZoomOut()"
+        >
+          <svg lucideZoomOut [size]="16" aria-hidden="true"></svg>
+        </button>
+        <span class="zoom-value">{{ zoomLevel() }}%</span>
+        <button
+          type="button"
+          [disabled]="zoomLevel() >= 200"
+          aria-label="Aumentar zoom"
+          (click)="onZoomIn()"
+        >
+          <svg lucideZoomIn [size]="16" aria-hidden="true"></svg>
+        </button>
+      </div>
+
+      @if (!readOnly()) {
+        <button type="button" class="btn-save" [disabled]="!canSave()" (click)="save()">
+          <svg lucideSave [size]="16" aria-hidden="true"></svg>
+          {{ isSaving() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (planoType()) {
+    <div class="plan-controls">
+      <label>Bimestre
+        <select [ngModel]="bimestre()" (ngModelChange)="bimestre.set($event); onPeriodChange()" [disabled]="readOnly() || isSaving() || isLoading() || saveDialogOpen()">
+          <option value="1">1º bimestre</option><option value="2">2º bimestre</option><option value="3">3º bimestre</option><option value="4">4º bimestre</option>
+        </select>
+      </label>
+      <label>Ano letivo
+        <input type="number" min="2000" max="2100" [ngModel]="anoLetivo()" (ngModelChange)="anoLetivo.set($event); onPeriodChange()" [disabled]="readOnly() || isSaving() || isLoading() || saveDialogOpen()">
+      </label>
+      <span>{{ readOnly() ? 'Modo leitura' : planoStatus() === 'finalizado' ? 'Finalizado' : 'Rascunho · preencha no seu ritmo' }}</span>
+      @if (!readOnly()) {
+        <button class="btn-save" type="button" [disabled]="!canSave()" (click)="save('finalizado')">Finalizar plano</button>
+      }
+      <div class="plan-export-actions" role="group" aria-label="Exportar documento">
+        <button class="btn btn-primary" type="button" [disabled]="!canExport()" (click)="exportPlano('pdf')">Exportar PDF</button>
+        <button class="btn btn-primary" type="button" [disabled]="!canExport()" (click)="exportPlano('docx')">Exportar Word (DOCX)</button>
+      </div>
+      @if (!baseVersionId() || hasUnsavedChanges()) { <span>Salve o documento para exportar.</span> }
+    </div>
+    @if (!readOnly()) {
+      <p class="plan-hint">Os dados do aluno já estão preenchidos. Responda às perguntas no documento; campos com * são obrigatórios para finalizar. O rascunho pode ficar incompleto.</p>
+      @if (planoType() === 'paee') {
+        <p class="plan-hint">Em Apoios, Recursos e Serviços, marque as opções necessárias e use o campo abaixo para observações. Informe o nível de apoio, quando aplicável.</p>
+      }
+    }
+  }
+
+  <!-- Barra de formatação -->
+  <app-editor-toolbar
+    [state]="toolbarState()"
+    [fontSize]="fontSize()"
+    [disabled]="isLoading() || !editorReady() || readOnly() || isSaving()"
+    (command)="runCommand($event)"
+    (fontSizeChange)="setFontSize($event)"
+    (editPage)="onEditPage()"
+  ></app-editor-toolbar>
+
+  @if (errorMessage()) {
+    <p class="editor-error" role="alert">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) { <p class="plan-success" role="status">{{ successMessage() }}</p> }
+  @for (warning of warnings(); track $index) { <p class="plan-hint" role="status">{{ warning }}</p> }
+
+  <!-- Corpo: ilha de páginas (esquerda) + área de rolagem com a folha A4 -->
+  <div class="editor-body">
+    <app-editor-pages
+      [pageCount]="pageCount()"
+      [currentPage]="currentPage()"
+      (pageSelect)="goToPage($event)"
+    ></app-editor-pages>
+
+    <main class="editor-viewport" #viewport (scroll)="onViewportScroll()">
+      <app-editor-canvas
+        [zoom]="zoomLevel()"
+        [isLoading]="isLoading()"
+        [pageCount]="pageCount()"
+        [pageSettings]="pageSettings()"
+      ></app-editor-canvas>
+    </main>
+  </div>
+
+  <!-- Rodapé de status -->
+  <footer class="editor-statusbar">
+    @if (hasUnsavedChanges()) {
+      <span class="status-indicator dirty">Alterações não salvas</span>
+    } @else if (planoType() && !baseVersionId()) {
+      <span>Plano novo · ainda não salvo</span>
+    } @else if (!editorReady()) {
+      <span>Documento indisponível</span>
+    } @else {
+      <span class="status-indicator saved">Todas as alterações salvas</span>
+    }
+  </footer>
+
+  <!-- Overlay de carregamento (conversão do documento) -->
+  @if (isLoading()) {
+    <div class="loading-backdrop" role="status" aria-live="polite">
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <p>Convertendo e preparando documento...</p>
+    </div>
+  }
+
+  <!-- Confirmação de saída com alterações pendentes -->
+  <app-modal-saida
+    [isOpen]="exitDialogOpen()"
+    [saving]="isSaving()"
+    (closed)="onExitCancel()"
+    (discard)="onExitDiscard()"
+    (save)="onExitSave()"
+  ></app-modal-saida>
+  <app-modal-saida
+    [isOpen]="saveDialogOpen()"
+    dialogId="salvar-plano-title"
+    title="Como deseja salvar as alterações?"
+    message="Sobrescrever atualiza o documento atual. Criar uma nova versão mantém o documento anterior no histórico."
+    discardLabel="Sobrescrever documento atual"
+    saveLabel="Criar nova versão"
+    (closed)="onSaveModeChoice(null)"
+    (discard)="onSaveModeChoice('overwrite')"
+    (save)="onSaveModeChoice('version')"
+  ></app-modal-saida>
+
+  <!-- Configurações da página -->
+  <app-modal-pagina
+    [isOpen]="pageDialogOpen()"
+    [settings]="pageSettings()"
+    (closed)="onPageCancel()"
+    (saved)="onPageSave($event)"
+  ></app-modal-pagina>
+</div>

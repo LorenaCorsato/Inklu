@@ -21,14 +21,17 @@ import {
   LucideCheck,
   LucidePen,
   LucideUserCheck,
+  LucideTrash2,
 } from '@lucide/angular';
 import { Aluno } from '../card-aluno/card-aluno';
 import { ModalDocumento } from './modal-documento/modal-documento';
 import { ModalDadosAdicionais, DadosAdicionais } from './modal-dados-adicionais/modal-dados-adicionais';
 import { ModalConfirmarExclusao } from '../modal-confirmar-exclusao/modal-confirmar-exclusao';
 import { AlunoService } from '../aluno.service';
+import { PlanosAluno } from './planos-aluno/planos-aluno';
 
 export interface Arquivo {
+  id: string | number;
   data: string;
   nome: string;
   alteracao: string;
@@ -48,7 +51,6 @@ export interface Arquivo {
     LucideAccessibility,
     LucideCalendar,
     LucideLoader2,
-    LucideTrendingUp,
     LucidePencil,
     LucideUserRoundX,
     LucideShare2,
@@ -58,9 +60,11 @@ export interface Arquivo {
     LucideX,
     LucideCheck,
     LucideUserCheck,
+    LucideTrash2,
     ModalDocumento,
     ModalDadosAdicionais,
     ModalConfirmarExclusao,
+    PlanosAluno,
   ],
   templateUrl: './detalhe-aluno.html',
   styleUrl: './detalhe-aluno.scss',
@@ -80,9 +84,10 @@ export class DetalheAluno {
   dateFrom = '';
   dateTo = '';
 
-  materias = ['Matemática', 'Artes', 'Português', 'Ciências'];
+  materias: string[] = [];
 
   arquivos: Arquivo[] = [];
+  arquivoMenuAberto: string | number | null = null;
 
   get filteredArquivos(): Arquivo[] {
     return this.arquivos.filter(arquivo => {
@@ -102,11 +107,11 @@ export class DetalheAluno {
       if (this.dateFrom || this.dateTo) {
         const arquivoDate = new Date(arquivo.data);
         if (this.dateFrom) {
-          const from = new Date(this.dateFrom);
+          const from = new Date(`${this.dateFrom}T00:00:00`);
           if (arquivoDate < from) return false;
         }
         if (this.dateTo) {
-          const to = new Date(this.dateTo);
+          const to = new Date(`${this.dateTo}T23:59:59.999`);
           if (arquivoDate > to) return false;
         }
       }
@@ -145,6 +150,7 @@ export class DetalheAluno {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
+        this.carregarMaterias();
         this.carregarAluno(id);
       }
     });
@@ -168,8 +174,8 @@ export class DetalheAluno {
 
         try {
           this.interessesList = alunoDb.interesses ? JSON.parse(alunoDb.interesses) : [];
-        } catch(e) { 
-          this.interessesList = []; 
+        } catch(e) {
+          this.interessesList = [];
         }
 
         if (alunoDb.preferencias) {
@@ -214,10 +220,11 @@ export class DetalheAluno {
       next: (materiais) => {
         this.arquivos = materiais
           .map(material => ({
+            id: material.id_material ?? material.id,
             data: material.data_de_upload ?? material.data_upload,
             nome: material.nome_do_arquivo ?? material.nome_arquivo,
             alteracao: material.tipo_de_material ?? material.tipo_material ?? 'Original',
-            materia: material.nome_materia ?? 'Sem matéria',
+            materia: (material.nome_materia ?? material.materia?.nome_materia ?? material.materia?.nome ?? 'Sem matéria').trim(),
           }))
           .sort((first, second) => new Date(second.data).getTime() - new Date(first.data).getTime());
         this.cdr.detectChanges();
@@ -225,7 +232,26 @@ export class DetalheAluno {
       error: (error) => {
         console.error('Erro ao carregar arquivos:', error);
         this.arquivos = [];
+        this.materias = [];
+        this.selectedMaterias.clear();
         this.cdr.detectChanges();
+      },
+    });
+  }
+
+  carregarMaterias() {
+    this.alunoService.listarMaterias().subscribe({
+      next: (materias) => {
+        this.materias = [...new Set(
+          materias
+            .map(materia => (materia.nome_materia ?? materia.nome)?.trim())
+            .filter((materia): materia is string => !!materia)
+        )].sort((first, second) => first.localeCompare(second, 'pt-BR'));
+      },
+      error: (error) => {
+        console.error('Erro ao carregar matérias:', error);
+        this.materias = [];
+        this.selectedMaterias.clear();
       },
     });
   }
@@ -315,7 +341,7 @@ export class DetalheAluno {
   private executarInativacao() {
     if (!this.aluno?.id) return;
     this.isLoading = true;
-    
+
     this.alunoService.excluirAluno(this.aluno.id).subscribe({
       next: () => {
         alert('Aluno inativado com sucesso!');
@@ -333,6 +359,29 @@ export class DetalheAluno {
   toggleFilter(event: Event) {
     event.stopPropagation();
     this.isFilterOpen = !this.isFilterOpen;
+  }
+
+  toggleArquivoMenu(event: Event, arquivo: Arquivo) {
+    event.stopPropagation();
+    this.arquivoMenuAberto = this.arquivoMenuAberto === arquivo.id ? null : arquivo.id;
+  }
+
+  excluirArquivo(arquivo: Arquivo) {
+    this.arquivoMenuAberto = null;
+
+    if (!window.confirm(`Excluir o arquivo "${arquivo.nome}"?`)) return;
+
+    this.alunoService.excluirArquivo(arquivo.id).subscribe({
+      next: () => {
+        if (this.aluno?.id) {
+          this.carregarArquivos(this.aluno.id);
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao excluir arquivo:', error);
+        alert('Não foi possível excluir o arquivo.');
+      },
+    });
   }
 
   toggleMateria(materia: string) {
@@ -405,13 +454,13 @@ export class DetalheAluno {
 
   onDadosAdicionaisSaved(dados: DadosAdicionais) {
     this.dadosAdicionais = dados;
-    
+
     if (this.aluno && this.aluno.id) {
       const payload = {
         interesses: JSON.stringify(dados.interesses),
         preferencias: dados.preferencias
       };
-      
+
       this.alunoService.atualizarAluno(this.aluno.id, payload).subscribe({
         next: () => {
           this.carregarAluno(this.aluno!.id);

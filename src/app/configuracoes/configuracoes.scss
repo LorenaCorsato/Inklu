@@ -1,0 +1,226 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+// ─── Layout ──────────────────────────────────────────────────────────────────
+
+.config-page {
+  flex: 1;
+  min-height: 0;
+  background-color: var(--ds-background);
+}
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+
+.config-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: var(--ds-spacing-2) 0;
+  background-color: var(--ds-surface);
+  border-right-color: var(--ds-border) !important;
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  color: var(--ds-muted);
+  font-size: var(--ds-font-size-base);
+  border-radius: 0;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  svg {
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+
+  .chevron {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &:hover {
+    background-color: var(--ds-neutral-100);
+    color: var(--ds-body);
+
+    .chevron {
+      opacity: 0.4;
+    }
+  }
+
+  &.active {
+    background-color: var(--ds-primary-soft);
+    color: var(--ds-primary);
+    font-weight: 600;
+
+    svg {
+      color: var(--ds-primary);
+    }
+
+    .chevron {
+      opacity: 1;
+      color: var(--ds-primary);
+    }
+  }
+}
+
+.sidebar-label {
+  white-space: nowrap;
+}
+
+// ─── Content ─────────────────────────────────────────────────────────────────
+
+.config-content {
+  padding: var(--ds-spacing-6);
+  overflow-y: auto;
+}
+
+.config-section {
+  max-width: 600px;
+  width: 100%;
+}
+
+.section-title {
+  font-size: var(--ds-font-size-lg);
+  color: var(--ds-body);
+  font-family: var(--ds-font-family-base);
+}
+
+.section-subtitle {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-muted);
+}
+
+// ─── Setting Cards ───────────────────────────────────────────────────────────
+
+.setting-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-4);
+  padding: var(--ds-spacing-4) var(--ds-spacing-5);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  margin-top: -1px;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &:first-child {
+    border-radius: var(--ds-radius-md) var(--ds-radius-md) 0 0;
+    margin-top: 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 var(--ds-radius-md) var(--ds-radius-md);
+  }
+
+  &:first-child:last-child {
+    border-radius: var(--ds-radius-md);
+    margin-top: 0;
+  }
+}
+
+.setting-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.setting-label {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-body);
+}
+
+.setting-description {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-muted);
+  line-height: 1.4;
+}
+
+.setting-control {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+// ─── Toggle Switch ───────────────────────────────────────────────────────────
+
+.theme-toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border: none;
+  border-radius: var(--ds-radius-pill);
+  background-color: var(--ds-border);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 0;
+
+  &.dark {
+    background-color: var(--ds-primary);
+  }
+}
+
+.theme-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--ds-surface);
+  box-shadow: var(--ds-shadow-sm);
+  transition: transform 0.2s ease;
+
+  .dark & {
+    transform: translateX(20px);
+  }
+}
+
+// ─── Theme Select ────────────────────────────────────────────────────────────
+
+.theme-select {
+  min-width: 140px;
+}
+
+// ─── Language Select ─────────────────────────────────────────────────────────
+
+.language-select,
+.theme-select {
+  min-width: 160px;
+  border-color: var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-body);
+  background-color: var(--ds-surface);
+
+  &:focus {
+    border-color: var(--ds-primary);
+    box-shadow: 0 0 0 2px var(--ds-primary-soft);
+  }
+}
+
+// ─── Action Button ───────────────────────────────────────────────────────────
+
+.btn-action {
+  padding: var(--ds-spacing-1) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  color: var(--ds-primary);
+  background-color: var(--ds-primary-soft);
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ds-primary);
+    color: var(--ds-surface);
+  }
+}

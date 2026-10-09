@@ -1,0 +1,27 @@
+<!-- Folha A4 com zoom aplicado via transform (não afeta o layout de rolagem) -->
+<div class="canvas-zoom-container" [style.transform]="'scale(' + zoom / 100 + ')'">
+  <div class="sheet-stack">
+    <div
+      #sheet
+      class="a4-sheet"
+      [class.is-loading]="isLoading"
+      [class.orientation-landscape]="pageSettings.orientation === 'landscape'"
+      [class.orientation-portrait]="pageSettings.orientation === 'portrait'"
+      [style.width.cm]="paperDimensions().width"
+      [style.min-height.cm]="paperDimensions().height"
+      [style.padding-top.cm]="margins().top"
+      [style.padding-right.cm]="margins().right"
+      [style.padding-bottom.cm]="margins().bottom"
+      [style.padding-left.cm]="margins().left"
+    ></div>
+
+    <!-- Guias de quebra de página (overlay, fora da árvore do ProseMirror) -->
+    @if (pageCount > 1) {
+      <div class="page-guides" aria-hidden="true">
+        @for (guide of guides(); track guide.page) {
+          <span class="page-guide" [style.top]="guide.top">Página {{ guide.page }}</span>
+        }
+      </div>
+    }
+  </div>
+</div>
