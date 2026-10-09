@@ -12,7 +12,7 @@
   gap: 1rem;
   flex-wrap: wrap;
 }
-.plans-header__text p { margin: .25rem 0 0; color: var(--text-muted); }
+.plans-header__text p { margin: .25rem 0 0; color: var(--ds-muted); }
 
 /* Ações: Filtros + Criar PEI + Criar PAEE na mesma linha */
 .plans-header__actions {
@@ -58,11 +58,11 @@
   padding: 1rem;
 
   /* 👇 background sólido: resolve a transparência */
-  background: #ffffff;
-  color: #111827;
-  border: 1px solid #e5e7eb;
+  background: var(--ds-background);
+  color: var(--ds-neutral-900);
+  border: 1px solid var(--ds-border);
   border-radius: .5rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+  box-shadow: var(--ds-shadow-md);
   opacity: 1;
 }
 
@@ -75,7 +75,7 @@
 
 .plan-filters__divider {
   border: 0;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--ds-border);
   margin: .25rem 0;
 }
 
@@ -84,7 +84,7 @@
   align-items: center;
   gap: .5rem;
   font-size: .875rem;
-  color: #374151;
+  color: var(--ds-neutral-700);
 }
 
 .plan-filters__clear {
