@@ -1,0 +1,49 @@
+<main class="auth-page">
+  <div class="auth-shell auth-shell--wide">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Painel</h1>
+
+      @if (aviso()) {
+        <div class="alert alert-info auth-alert" role="status">{{ aviso() }}</div>
+      }
+
+      @if (usuario()) {
+        <p class="auth-subtitle">
+          Olá, <strong>{{ usuario()!.nome }}</strong>. Você está em
+          <strong>{{ contexto()?.escolaNome || 'Conta individual' }}</strong> como
+          <strong>{{ funcaoRotulo() }}</strong>.
+        </p>
+      }
+
+      <div class="auth-secao">
+        <h2 class="auth-secao__titulo">Próximos passos</h2>
+        <p class="text-muted">
+          Este é o destino após o login. As telas de trabalho do Inklu continuam
+          disponíveis no menu.
+        </p>
+
+        <div class="auth-acoes">
+          @if (ehCoordenacao()) {
+            <a routerLink="/escola/convites" class="btn btn-primary">Convidar professores</a>
+          }
+          @if (vinculos().length > 1) {
+            <a routerLink="/contexto" class="btn btn-outline">Trocar de contexto</a>
+          }
+          <button
+            type="button"
+            class="btn btn-outline"
+            [disabled]="saindo()"
+            [attr.aria-busy]="saindo()"
+            (click)="sair()"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>

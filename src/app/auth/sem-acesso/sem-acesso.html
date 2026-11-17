@@ -1,0 +1,38 @@
+<main class="auth-page">
+  <div class="auth-shell">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Sua conta ainda não tem acesso</h1>
+      <p class="auth-subtitle">
+        Sua conta ainda não tem acesso a uma escola ou conta individual.
+      </p>
+
+      @if (podeEscolherFuncao()) {
+        <p>Falta escolher sua função para começar a usar o Inklu.</p>
+        <button type="button" class="btn btn-primary w-100" (click)="escolherFuncao()">
+          Escolher função
+        </button>
+      } @else {
+        <p>
+          O acesso a uma escola entra apenas por convite. Fale com a coordenação da sua
+          escola para receber um convite.
+        </p>
+      }
+
+      <div class="auth-acoes">
+        <button
+          type="button"
+          class="btn btn-outline"
+          [disabled]="saindo()"
+          [attr.aria-busy]="saindo()"
+          (click)="sair()"
+        >
+          Sair
+        </button>
+      </div>
+    </section>
+  </div>
+</main>

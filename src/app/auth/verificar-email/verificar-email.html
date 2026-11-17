@@ -1,0 +1,84 @@
+<main class="auth-page">
+  <div class="auth-shell">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      @if (modo() === 'confirmando') {
+        <div class="auth-estado" aria-busy="true">
+          <div class="auth-spinner" aria-hidden="true"></div>
+          <h1 class="auth-title" tabindex="-1">Confirmando seu e-mail…</h1>
+          <p class="auth-subtitle">Isso leva só um instante.</p>
+        </div>
+      } @else if (modo() === 'expirado') {
+        <h1 class="auth-title" tabindex="-1">Este link expirou.</h1>
+        <p class="auth-subtitle">
+          Pedimos um link novo para o seu e-mail. Confira também a pasta de spam.
+        </p>
+
+        @if (erroRede()) {
+          <div class="alert alert-danger auth-alert" role="alert">{{ erroRede() }}</div>
+        }
+
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          [disabled]="cooldown() > 0 || enviandoReenvio()"
+          [attr.aria-busy]="enviandoReenvio()"
+          (click)="reenviar()"
+        >
+          @if (cooldown() > 0) {
+            Reenviar e-mail em {{ cooldown() }}s
+          } @else {
+            Reenviar e-mail
+          }
+        </button>
+
+        <div class="auth-links">
+          <a routerLink="/entrar">Ir para o login</a>
+        </div>
+      } @else if (modo() === 'invalido') {
+        <h1 class="auth-title" tabindex="-1">Este link não é válido.</h1>
+        <p class="auth-subtitle">Ele pode já ter sido usado. Entre na sua conta para continuar.</p>
+
+        <a routerLink="/entrar" class="btn btn-primary w-100">Ir para o login</a>
+      } @else {
+        <h1 class="auth-title" tabindex="-1">Verifique seu e-mail</h1>
+        <p class="auth-subtitle">
+          Enviamos um link para <strong>{{ email() }}</strong>. Abra o e-mail e clique no
+          link para continuar.
+        </p>
+
+        @if (erroRede()) {
+          <div class="alert alert-danger auth-alert" role="alert">{{ erroRede() }}</div>
+        }
+
+        <p class="visually-hidden" aria-live="polite">{{ mensagemReenvio() }}</p>
+        @if (mensagemReenvio()) {
+          <div class="alert alert-success auth-alert" role="status">{{ mensagemReenvio() }}</div>
+        }
+
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          [disabled]="cooldown() > 0 || enviandoReenvio()"
+          [attr.aria-busy]="enviandoReenvio()"
+          (click)="reenviar()"
+        >
+          @if (cooldown() > 0) {
+            Reenviar e-mail em {{ cooldown() }}s
+          } @else {
+            Reenviar e-mail
+          }
+        </button>
+
+        <div class="auth-links">
+          <button type="button" class="btn btn-link p-0" (click)="usarOutroEmail()">
+            Usar outro e-mail
+          </button>
+        </div>
+      }
+    </section>
+  </div>
+</main>

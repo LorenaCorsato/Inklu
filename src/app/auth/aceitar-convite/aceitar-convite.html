@@ -1,0 +1,198 @@
+<main class="auth-page">
+  <div class="auth-shell">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      @if (carregando()) {
+        <div class="auth-estado" aria-busy="true">
+          <div class="auth-spinner" aria-hidden="true"></div>
+          <h1 class="auth-title" tabindex="-1">Carregando convite…</h1>
+        </div>
+      } @else if (erroCarga()) {
+        <h1 class="auth-title" tabindex="-1">Não foi possível abrir o convite</h1>
+        <div id="convite-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erroCarga() }}
+        </div>
+      } @else if (convite()) {
+        <h1 class="auth-title" tabindex="-1">Convite para participar de uma escola</h1>
+
+        <p class="auth-subtitle">
+          Você foi convidado para <strong>{{ convite()!.escolaNome }}</strong> como
+          <strong>{{ rotulo() }}</strong>.
+        </p>
+
+        @if (convite()!.turmas?.length) {
+          <p class="auth-subtitle">
+            Turmas: <strong>{{ convite()!.turmas!.join(', ') }}</strong>
+          </p>
+        }
+        @if (convite()!.materias?.length) {
+          <p class="auth-subtitle">
+            Matérias: <strong>{{ convite()!.materias!.join(', ') }}</strong>
+          </p>
+        }
+
+        @if (erroRede()) {
+          <div id="convite-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+            {{ erroRede() }}
+          </div>
+        }
+
+        <form class="auth-form" novalidate [attr.aria-busy]="enviando()" (ngSubmit)="aceitar()">
+          <div class="campo">
+            <label class="form-label" for="convite-email">E-mail do convite</label>
+            <input
+              id="convite-email"
+              name="email"
+              type="email"
+              class="form-control"
+              [value]="convite()!.email"
+              readonly
+              aria-readonly="true"
+            />
+            <p class="campo__dica">
+              O convite vale para este e-mail. A função vem definida pela coordenação e não
+              pode ser alterada.
+            </p>
+          </div>
+
+          @if (convite()!.contaExistente) {
+            <p>
+              Entre com sua conta para aceitar o convite. Sua senha não será pedida de novo
+              se você já estiver conectado.
+            </p>
+
+            @if (autenticado()) {
+              <button
+                type="submit"
+                class="btn btn-primary w-100"
+                [disabled]="enviando()"
+                [attr.aria-busy]="enviando()"
+              >
+                {{ enviando() ? 'Aceitando…' : 'Aceitar convite' }}
+              </button>
+            } @else {
+              <button type="button" class="btn btn-primary w-100" (click)="entrarEAceitar()">
+                Entrar e aceitar
+              </button>
+            }
+          } @else {
+            <div class="campo">
+              <label class="form-label" for="convite-nome">Nome completo</label>
+              <input
+                id="convite-nome"
+                name="nome"
+                type="text"
+                class="form-control"
+                autocomplete="name"
+                [ngModel]="nome()"
+                (ngModelChange)="nome.set($event)"
+                (blur)="nomeTocado.set(true)"
+                [readOnly]="enviando()"
+                [attr.aria-invalid]="erroNome() ? 'true' : null"
+                [attr.aria-describedby]="erroNome() ? 'convite-nome-erro' : null"
+              />
+              @if (erroNome()) {
+                <p class="campo__erro" id="convite-nome-erro">{{ erroNome() }}</p>
+              }
+            </div>
+
+            <div class="campo">
+              <label class="form-label" for="convite-senha">Crie sua senha</label>
+              <div class="campo-senha">
+                <input
+                  id="convite-senha"
+                  name="senha"
+                  [type]="senhaVisivel() ? 'text' : 'password'"
+                  class="form-control"
+                  autocomplete="new-password"
+                  [ngModel]="senha()"
+                  (ngModelChange)="senha.set($event)"
+                  (blur)="senhaTocado.set(true)"
+                  [readOnly]="enviando()"
+                  [attr.aria-invalid]="erroSenha() ? 'true' : null"
+                  [attr.aria-describedby]="erroSenha() ? 'convite-senha-erro' : null"
+                />
+                <button
+                  type="button"
+                  class="campo-senha__toggle"
+                  [attr.aria-pressed]="senhaVisivel()"
+                  [disabled]="enviando()"
+                  (click)="senhaVisivel.set(!senhaVisivel())"
+                >
+                  {{ senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha' }}
+                </button>
+              </div>
+              <p class="campo__dica">
+                Mínimo de 8 caracteres, com pelo menos uma letra e um número. Ex.: Senha1234
+              </p>
+              @if (senha()) {
+                <p
+                  class="forca-senha"
+                  [class.forca-senha--fraca]="forca().nivel === 'fraca'"
+                  [class.forca-senha--razoavel]="forca().nivel === 'razoavel'"
+                  [class.forca-senha--forte]="forca().nivel === 'forte'"
+                  aria-live="polite"
+                >
+                  <span aria-hidden="true" class="forca-senha__barra">
+                    <span class="forca-senha__preenchimento"></span>
+                  </span>
+                  {{ forca().rotulo }}
+                </p>
+              }
+              @if (erroSenha()) {
+                <p class="campo__erro" id="convite-senha-erro">{{ erroSenha() }}</p>
+              }
+            </div>
+
+            <div class="campo">
+              <label class="form-label" for="convite-confirmacao">Confirmar senha</label>
+              <div class="campo-senha">
+                <input
+                  id="convite-confirmacao"
+                  name="confirmacao"
+                  [type]="confirmacaoVisivel() ? 'text' : 'password'"
+                  class="form-control"
+                  autocomplete="new-password"
+                  [ngModel]="confirmacao()"
+                  (ngModelChange)="confirmacao.set($event)"
+                  (blur)="confirmacaoTocado.set(true)"
+                  [readOnly]="enviando()"
+                  [attr.aria-invalid]="erroConfirmacao() ? 'true' : null"
+                  [attr.aria-describedby]="
+                    erroConfirmacao() ? 'convite-confirmacao-erro' : null
+                  "
+                />
+                <button
+                  type="button"
+                  class="campo-senha__toggle"
+                  [attr.aria-pressed]="confirmacaoVisivel()"
+                  [disabled]="enviando()"
+                  (click)="confirmacaoVisivel.set(!confirmacaoVisivel())"
+                >
+                  {{ confirmacaoVisivel() ? 'Ocultar senha' : 'Mostrar senha' }}
+                </button>
+              </div>
+              @if (erroConfirmacao()) {
+                <p class="campo__erro" id="convite-confirmacao-erro">
+                  {{ erroConfirmacao() }}
+                </p>
+              }
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary w-100"
+              [disabled]="enviando()"
+              [attr.aria-busy]="enviando()"
+            >
+              {{ enviando() ? 'Aceitando…' : 'Aceitar convite e criar conta' }}
+            </button>
+          }
+        </form>
+      }
+    </section>
+  </div>
+</main>
