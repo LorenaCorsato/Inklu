@@ -28,6 +28,7 @@ export const MENSAGENS = {
     'Este convite expirou. Peça à coordenação da escola para enviar um novo',
   'api.convite_usado': 'Este convite já foi usado. Se você já aceitou, entre na sua conta',
   'api.convite_invalido': 'Este link não é válido. Confira se copiou o endereço completo',
+  'api.google_popup_bloqueado': 'O navegador bloqueou a janela do Google. Permita pop-ups e tente de novo',
   'api.ja_vinculado': 'Este professor já faz parte da escola',
   'api.funcao_ja_definida': 'Sua função já está definida',
   'sistema.rede': 'Não foi possível conectar. Verifique sua internet e tente de novo',

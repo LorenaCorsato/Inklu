@@ -86,10 +86,19 @@
             <svg lucidePlus [size]="15" [strokeWidth]="2"></svg>
             Adicionar nova conta
           </a>
-          <a class="conta-menu__btn conta-menu__btn--upgrade" routerLink="/escola/cadastro" (click)="fecharConta()">
+          <button class="conta-menu__btn conta-menu__btn--upgrade" type="button" role="menuitem" (click)="abrirUpgrade()">
             <svg lucideGraduationCap [size]="15" [strokeWidth]="1.8"></svg>
             Fazer upgrade para escola
-          </a>
+          </button>
+          <button
+            class="conta-menu__btn conta-menu__btn--sair"
+            type="button"
+            role="menuitem"
+            (click)="sair()"
+          >
+            <svg lucideLogOut [size]="15" [strokeWidth]="2"></svg>
+            Sair da conta
+          </button>
         </div>
       </div>
     }
@@ -202,6 +211,11 @@
     </div>
   </div>
 </nav>
+
+<app-modal-upgrade-escola
+  [isOpen]="isUpgradeModalOpen"
+  (closed)="closeUpgradeModal()"
+></app-modal-upgrade-escola>
 
 <app-modal-documento
   class="modal-documento-host"

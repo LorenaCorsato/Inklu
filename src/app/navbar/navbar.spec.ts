@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { vi } from 'vitest';
 
 import { Navbar } from './navbar';
+import { ToastService } from '../shared/toast/toast.service';
 import {
   DocumentoFile,
   ModalDocumento,
@@ -72,6 +74,28 @@ describe('Navbar', () => {
     expect(elemento().querySelector('.conta__nome')?.textContent?.trim()).toBe('Sara Wood');
     expect(elemento().querySelector('.conta__funcao')?.textContent?.trim()).toBe('Professor');
     expect(elemento().querySelector('.conta__avatar')?.textContent?.trim()).toBe('SW');
+  });
+
+  it('sair da conta volta ao login com toast de confirmação', async () => {
+    const toast = TestBed.inject(ToastService);
+    const sucesso = vi.spyOn(toast, 'sucesso');
+    const navegar = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockResolvedValue(true);
+
+    component.alternarConta();
+    fixture.detectChanges();
+
+    const sair = [...elemento().querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Sair da conta'),
+    );
+    expect(sair).toBeTruthy();
+
+    sair!.click();
+    await fixture.whenStable();
+
+    expect(sucesso).toHaveBeenCalledWith('Você saiu da conta.');
+    expect(navegar).toHaveBeenCalledWith(['/entrar']);
   });
 
   it('filtra os itens do menu pela busca, ignorando acentos', () => {

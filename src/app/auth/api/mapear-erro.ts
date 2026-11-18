@@ -139,6 +139,9 @@ export function mapearErro(
           contexto === 'convite' ? m('api.convite_invalido') : m('api.token_invalido'),
       };
 
+    case 'google_popup_bloqueado':
+      return { tipo: 'mensagem', codigo: codigoFinal, mensagem: m('api.google_popup_bloqueado') };
+
     case 'ja_vinculado':
       return { tipo: 'mensagem', codigo: codigoFinal, mensagem: m('api.ja_vinculado') };
 

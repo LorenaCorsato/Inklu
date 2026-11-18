@@ -38,7 +38,10 @@ export class RedefinirSenha implements OnInit {
   readonly forca = computed(() => forcaSenha(this.senha()));
 
   ngOnInit(): void {
-    const token = new URLSearchParams(window.location.search).get('token') ?? '';
+    // Links do Firebase chegam como `?mode=resetPassword&oobCode=…`; o formato
+    // legado `?token=…` continua aceito.
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('oobCode') ?? params.get('token') ?? '';
     this.token.set(token);
     if (!token) this.modo.set('invalido');
   }

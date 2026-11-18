@@ -5,6 +5,8 @@ import { of, Subject, throwError } from 'rxjs';
 
 import { Cadastro } from './cadastro';
 import { AuthService } from '../services/auth.service';
+import { FirebaseAuthService } from '../../services/firebase-auth.service';
+import { VerificacaoEmailModalService } from '../verificacao-email-modal/verificacao-email-modal.service';
 import { ApiError } from '../api/api-error';
 import {
   criarAuthFake,
@@ -19,13 +21,23 @@ describe('Cadastro individual (S02)', () => {
   let auth: AuthFake;
   let router: Router;
   let fixture: ComponentFixture<Cadastro>;
+  let precisaVerificar: ReturnType<typeof vi.fn>;
+  let modalAbrir: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     auth = criarAuthFake();
+    // Conta recém-criada: e-mail ainda não verificado.
+    precisaVerificar = vi.fn(() => true);
+    modalAbrir = vi.fn();
 
     await TestBed.configureTestingModule({
       imports: [Cadastro],
-      providers: [provideRouter([]), { provide: AuthService, useValue: auth }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: auth },
+        { provide: FirebaseAuthService, useValue: { precisaVerificarEmail: precisaVerificar } },
+        { provide: VerificacaoEmailModalService, useValue: { abrir: modalAbrir } },
+      ],
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -70,20 +82,40 @@ describe('Cadastro individual (S02)', () => {
     });
   });
 
-  it('[TDD-041] [BDD-001] após 202 navega para /verificar-email sem e-mail na URL', () => {
+  it('[TDD-041] [BDD-001] após o cadastro vai para a tela inicial já logado e abre o modal', () => {
     const navegar = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     criar();
     preencherTudo();
     submeter(formulario());
     fixture.detectChanges();
 
-    expect(navegar).toHaveBeenCalledWith(
-      ['/verificar-email'],
-      expect.objectContaining({
-        state: expect.objectContaining({ email: 'ana@exemplo.com' }),
-      }),
-    );
-    expect(navegar.mock.calls[0][0]).not.toContain('ana@exemplo.com');
+    expect(navegar).toHaveBeenCalledWith(['/']);
+    expect(modalAbrir).toHaveBeenCalledTimes(1);
+  });
+
+  it('cadastrar com Google vai para a tela inicial sem abrir o modal', () => {
+    const navegar = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    // Conta Google já nasce verificada: o modal não abre.
+    precisaVerificar.mockReturnValue(false);
+    const el = criar();
+    (el.querySelector('#cadastro-google') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(auth.loginComGoogle).toHaveBeenCalled();
+    expect(auth.registrar).not.toHaveBeenCalled();
+    expect(navegar).toHaveBeenCalledWith(['/']);
+    expect(modalAbrir).not.toHaveBeenCalled();
+  });
+
+  it('pop-up do Google fechado no cadastro volta ao repouso sem navegar', () => {
+    auth.loginComGoogle.mockReturnValue(of(null) as never);
+    const navegar = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const el = criar();
+    (el.querySelector('#cadastro-google') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(navegar).not.toHaveBeenCalled();
+    expect(auth.registrar).not.toHaveBeenCalled();
   });
 
   it('[TDD-042] [BDD-002] não chama a API e foca o primeiro campo inválido', () => {

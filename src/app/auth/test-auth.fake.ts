@@ -16,6 +16,7 @@ export function criarAuthFake() {
     reenviarVerificacao: vi.fn(() => of(undefined)),
     definirFuncao: vi.fn(() => of({ proximo: 'painel' })),
     login: vi.fn(() => of({ status: 'ok' as StatusLogin })),
+    loginComGoogle: vi.fn(() => of({ status: 'ok' as StatusLogin })),
     verificarMfa: vi.fn(() => of({})),
     escolherContexto: vi.fn(() => of({ proximo: 'painel' })),
     logout: vi.fn(() => of(undefined)),

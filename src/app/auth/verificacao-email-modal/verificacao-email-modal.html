@@ -1,0 +1,67 @@
+@if (modal.aberto()) {
+  <div class="modal-overlay verif-modal__overlay" (click)="fecharAoClicarFora($event)">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="verif-email-modal-titulo">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-header-icon" aria-hidden="true">✉️</div>
+        <button class="btn-close" type="button" (click)="fechar()" aria-label="Fechar aviso">
+          ✕
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <h2 class="modal-title" id="verif-email-modal-titulo" tabindex="-1">
+          Verifique seu e-mail
+        </h2>
+        <p class="modal-subtitle">
+          Enviamos um link de confirmação para
+          <strong>{{ email() }}</strong
+          >. Abra o e-mail e clique no link para liberar todos os recursos.
+        </p>
+
+        @if (mensagem()) {
+          <p class="alerta alerta--ok" role="status">{{ mensagem() }}</p>
+        }
+        @if (erro()) {
+          <p class="alerta alerta--erro" role="alert">{{ erro() }}</p>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <div class="modal-actions">
+          <button
+            class="btn btn-manter"
+            type="button"
+            (click)="reenviar()"
+            [disabled]="reenviando() || cooldown() > 0"
+          >
+            @if (reenviando()) {
+              Reenviando…
+            } @else if (cooldown() > 0) {
+              Reenviar em {{ cooldown() }}s
+            } @else {
+              Reenviar e-mail
+            }
+          </button>
+          <button
+            class="btn btn-primario"
+            type="button"
+            (click)="jaVerifiquei()"
+            [disabled]="verificando()"
+          >
+            @if (verificando()) {
+              Verificando…
+            } @else {
+              Já verifiquei
+            }
+          </button>
+        </div>
+        <button class="link-depois" type="button" (click)="fechar()">
+          Continuar agora e verificar depois
+        </button>
+      </div>
+    </div>
+  </div>
+}

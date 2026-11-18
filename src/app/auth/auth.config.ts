@@ -9,6 +9,8 @@ export const SEGUNDOS_BLOQUEIO_PADRAO = 60;
 export const CACHE_SESSAO_MS = 30_000;
 
 export const ROTAS = {
+  /** Tela inicial (home): destino pós-login/cadastro no fluxo Firebase. */
+  inicio: '/',
   login: '/entrar',
   mfa: '/entrar/mfa',
   cadastro: '/cadastro',
