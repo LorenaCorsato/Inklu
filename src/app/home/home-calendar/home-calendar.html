@@ -1,0 +1,43 @@
+<div class="calendar-head">
+  <button class="btn-ghost-icon" type="button" (click)="prevMonth()" aria-label="Mês anterior">
+    <svg lucideChevronLeft [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+  </button>
+  <h2 class="calendar-month mb-0">{{ monthLabel() }}</h2>
+  <button class="btn-ghost-icon" type="button" (click)="nextMonth()" aria-label="Próximo mês">
+    <svg lucideChevronRight [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+  </button>
+</div>
+<div class="calendar-grid" role="grid" aria-label="Dias do mês">
+  @for (w of ['D','S','T','Q','Q','S','S']; track $index) {
+    <span class="cal-dow">{{ w }}</span>
+  }
+  @for (cell of cells(); track dayKey(cell.date)) {
+    <div class="cal-day-wrap">
+      <button
+        type="button"
+        class="cal-day"
+        [class.outside]="!cell.inMonth"
+        [class.today]="cell.isToday"
+        [class.has-tasks]="tasksOf(cell.date).length > 0"
+        (mouseenter)="hoverDay.set(dayKey(cell.date))"
+        (mouseleave)="hoverDay.set(null)"
+        (focus)="hoverDay.set(dayKey(cell.date))"
+        (blur)="hoverDay.set(null)"
+        (click)="toggleTouch(cell)"
+        [attr.aria-label]="cell.date.getDate() + (tasksOf(cell.date).length ? ', ' + tasksOf(cell.date).length + ' tarefa(s)' : '')"
+      >
+        <span class="cal-num">{{ cell.date.getDate() }}</span>
+        @if (tasksOf(cell.date).length > 0) {
+          <span class="cal-dot" aria-hidden="true"></span>
+        }
+      </button>
+      @if (showPill(cell)) {
+        <div class="cal-pill" role="tooltip">
+          @for (t of tasksOf(cell.date); track t.id) {
+            <span class="cal-pill-item">{{ t.title }} · {{ taskTime(t) }}</span>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

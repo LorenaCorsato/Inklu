@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
     "build": "ng build",
+    "start:backend": "npm run dev --prefix backend",
+    "start:frontend": "ng s -o",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:planos": "ng test --watch=false --ts-config=tsconfig.planos.spec.json --include=src/app/documentos/editor/plano.spec.ts"
@@ -43,6 +45,7 @@
     "@angular/build": "^21.2.10",
     "@angular/cli": "^21.2.10",
     "@angular/compiler-cli": "^21.2.0",
+    "concurrently": "^10.0.7",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",

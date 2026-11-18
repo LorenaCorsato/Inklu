@@ -1,5 +1,6 @@
 // Design System Tokens extraidos do arquivo Pencil da INKLU.
 :root {
+  --ds-brand: #1653ff;
   --ds-primary: #6692fd;
   --ds-primary-hover: #185fa5;
   --ds-primary-soft: #0085ff1a;
@@ -23,8 +24,8 @@
   --ds-neutral-500: #64748b;
   --ds-neutral-100: #f8fafc;
   --ds-neutral-50: #fbfbfb;
-  --ds-font-family-base: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --ds-font-family-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ds-font-family-base: "Rethink Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ds-font-family-ui: "Rethink Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --ds-font-size-xs: 0.625rem;
   --ds-font-size-sm: 0.75rem;
   --ds-font-size-base: 0.875rem;

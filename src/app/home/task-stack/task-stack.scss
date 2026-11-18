@@ -1,0 +1,271 @@
+.section-title {
+  font-size: var(--ds-font-size-md);
+  font-weight: 600;
+  color: var(--ds-body);
+}
+
+.task-counter {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ds-muted);
+  background: var(--ds-border-subtle);
+  border-radius: var(--ds-radius-pill);
+  padding: 2px 8px;
+}
+
+.task-stack {
+  position: relative;
+  height: 256px;
+  outline: none;
+
+  &:focus-visible {
+    border-radius: var(--ds-radius-md);
+    outline: 2px solid var(--ds-primary);
+    outline-offset: 4px;
+  }
+}
+
+.task-card {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 218px;
+  display: flex;
+  flex-direction: column;
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: 16px;
+  transform-origin: bottom center;
+  transform: translateY(calc(var(--pos, 0) * 13px)) scale(calc(1 - var(--pos, 0) * 0.045));
+  z-index: calc(10 - var(--pos, 0));
+  box-shadow:
+    0 2px 6px rgba(15, 23, 42, 0.05),
+    0 10px 22px -8px rgba(15, 23, 42, 0.1);
+  transition:
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  user-select: none;
+
+  > * {
+    transition: opacity 0.25s ease;
+  }
+}
+
+/* Cards de trás: borda inferior visível e clicável, sem vazar transparência */
+.task-card:not(.task-front):not(.task-exiting) {
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  animation: taskEnterBack 0.28s ease both;
+
+  > * {
+    opacity: 0.28;
+  }
+
+  &:hover {
+    transform: translateY(calc(var(--pos) * 13px + 3px)) scale(calc(1 - var(--pos) * 0.045));
+    border-color: var(--ds-primary);
+  }
+}
+
+/* Card do topo: suporte a drag/swipe e destaque no hover */
+.task-card.task-front {
+  pointer-events: auto;
+  touch-action: pan-y;
+  cursor: grab;
+  transform: translateX(calc(var(--drag-x, 0) * 1px)) rotate(calc(var(--drag-x, 0) * 0.03deg));
+
+  &:hover:not(.is-dragging) {
+    box-shadow:
+      0 4px 10px rgba(15, 23, 42, 0.07),
+      0 14px 28px -8px rgba(15, 23, 42, 0.14);
+  }
+
+  &.is-dragging {
+    cursor: grabbing;
+    transition: none;
+    animation: none;
+  }
+
+  &.is-entering.dir-next {
+    animation: taskEnterNext 0.32s cubic-bezier(0.22, 1, 0.36, 1) 40ms both;
+  }
+
+  &.is-entering.dir-prev {
+    animation: taskEnterPrev 0.32s cubic-bezier(0.22, 1, 0.36, 1) 40ms both;
+  }
+}
+
+/* Card saindo em fade */
+.task-card.task-exiting {
+  z-index: 20;
+  pointer-events: none;
+
+  &.dir-next {
+    animation: taskFadeOutNext 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  &.dir-prev {
+    animation: taskFadeOutPrev 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
+
+@keyframes taskFadeOutNext {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.96);
+  }
+}
+
+@keyframes taskFadeOutPrev {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(22px) scale(0.97);
+  }
+}
+
+@keyframes taskEnterNext {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.955);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes taskEnterPrev {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes taskEnterBack {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.task-kind {
+  align-self: flex-start;
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: var(--ds-danger-soft);
+  color: var(--ds-danger);
+  border-radius: var(--ds-radius-pill);
+  padding: 2px 10px;
+  margin-bottom: 8px;
+}
+
+.task-title {
+  font-size: var(--ds-font-size-md);
+  font-weight: 700;
+  color: var(--ds-body);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-desc {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-muted);
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-footer {
+  margin-top: auto;
+}
+
+.task-meta {
+  display: flex;
+  gap: 14px;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-body);
+  margin-bottom: 12px;
+}
+
+.btn-do {
+  background: #1f5fd6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    background: #1a52b8;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.btn-ghost-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  background: var(--ds-surface);
+  border-radius: 8px;
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--ds-border-subtle);
+    color: var(--ds-body);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.92);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-primary);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card,
+  .task-card > *,
+  .btn-do,
+  .btn-ghost-icon {
+    animation: none !important;
+    transition: none !important;
+  }
+}

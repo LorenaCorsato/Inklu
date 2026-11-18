@@ -1,12 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Navbar } from './navbar/navbar';
 import { ThemeService } from './services/theme.service';
+import { Toast } from './shared/toast/toast';
+import { ToastService } from './shared/toast/toast.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar],
+  imports: [RouterOutlet, Navbar, Toast],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -19,9 +21,29 @@ export class App {
    */
   protected readonly isEditorRoute = signal(false);
 
+  /**
+   * Telas de autenticação ocupam a janela inteira, sem navbar.
+   * O painel continua dentro da shell porque é o destino do app logado.
+   */
+  protected readonly isAuthRoute = signal(false);
+
+  /** Notificações globais de erro/sucesso, no rodapé centralizado. */
+  readonly toast = inject(ToastService);
+
   constructor(_theme: ThemeService, router: Router) {
     router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      this.isEditorRoute.set(router.url.startsWith('/documentos/editor') || /^\/alunos\/[^/]+\/planos\//.test(router.url));
+      const url = router.url.split('?')[0];
+      this.isEditorRoute.set(url.startsWith('/documentos/editor') || /^\/alunos\/[^/]+\/planos\//.test(url));
+      this.isAuthRoute.set(
+        /^\/(entrar|cadastro|verificar-email|recuperar-senha|redefinir-senha|contexto|sem-acesso|convite|escola\/cadastro)(\/|$)/.test(
+          url,
+        ),
+      );
+
+      // Após navegação, o foco vai para o título da nova tela (WCAG 2.4.3).
+      setTimeout(() => {
+        document.querySelector<HTMLElement>('h1[tabindex="-1"]')?.focus();
+      }, 0);
     });
   }
 }
