@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inklu — Menos burocracia, mais tempo para cada estudante</title>
+<meta name="description" content="O Inklu é uma plataforma web para professores de apoio na educação inclusiva. Reúne alunos, planos PEI e PAEE e documentos em um só lugar.">
+<meta name="theme-color" content="#FBFBFB">
+<meta property="og:title" content="Inklu — Menos burocracia, mais tempo para cada estudante">
+<meta property="og:description" content="Plataforma web para professores de apoio na educação inclusiva. Alunos, PEI, PAEE e documentos em um só lugar.">
+<meta property="og:type" content="website">
+
+<!-- Define o tema antes da pintura para evitar flash de cor. -->
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('inklu-theme');
+      var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.documentElement.classList.add('js');
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', dark ? '#121218' : '#FBFBFB');
+    } catch (e) { /* modo claro como padrão */ }
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<noscript>
+  <style>
+    .js .reveal { opacity: 1 !important; transform: none !important; }
+    .nav-links { display: flex !important; }
+    .menu-toggle { display: none !important; }
+  </style>
+</noscript>
+
+<style>
+/* ============================================================
+   1. Tokens do projeto e reset
+   Cores-base vindas de src/styles/abstract/tokens.scss e do
+   logotipo oficial (#1653FF). Tipografia: Open Sans + Inter.
+   ============================================================ */
+:root {
+  --font-display: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --bg: #fbfbfb;
+  --surface: #ffffff;
+  --surface-2: #f3f4f8;
+  --ink: #14112a;
+  --ink-soft: #3d3952;
+  --muted: #5e5a72;
+  --line: #e3e1ec;
+  --line-strong: #cfccdb;
+  --dot: #c9c5d9;
+
+  --brand: #1653ff;
+  --brand-solid: #1653ff;
+  --brand-strong: #0e3ed1;
+  --brand-soft: #e8eeff;
+  --brand-softer: #f3f6ff;
+  --on-brand: #ffffff;
+  --logo: #1653ff;
+
+  --accent: #ff7119;
+  --accent-ink: #a84a00;
+  --accent-soft: #fff1e7;
+
+  --green: #0b6e3e;
+  --green-bright: #24b467;
+  --green-soft: #e7f8ef;
+
+  --coral: #b8351f;
+  --coral-bright: #e65038;
+  --coral-soft: #fcedea;
+
+  --ink-panel: #14112a;
+  --on-panel: #f8f8fc;
+  --on-panel-muted: #b9b7c9;
+  --panel-line: rgba(255, 255, 255, 0.16);
+  --panel-blue: #a9c2ff;
+
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --focus: #1653ff;
+  --shadow-sm: 0 1px 2px rgba(20, 17, 42, 0.05), 0 10px 24px -18px rgba(20, 17, 42, 0.35);
+  --shadow-md: 0 2px 4px rgba(20, 17, 42, 0.04), 0 24px 54px -30px rgba(20, 17, 42, 0.4);
+  --shadow-nav: 0 1px 1px rgba(20, 17, 42, 0.04), 0 18px 40px -24px rgba(20, 17, 42, 0.35);
+
+  --gutter: 20px;
+  --section-y: clamp(64px, 9vw, 112px);
+  --radius: 18px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121218;
+  --surface: #1b1a22;
+  --surface-2: #24222e;
+  --ink: #f1f5f9;
+  --ink-soft: #d3d5e0;
+  --muted: #a7a9ba;
+  --line: #2c2a36;
+  --line-strong: #3d3a4a;
+  --dot: #34313f;
+
+  --brand: #8fb0ff;
+  --brand-solid: #8fb0ff;
+  --brand-strong: #b9cdff;
+  --brand-soft: #20305c;
+  --brand-softer: #182136;
+  --on-brand: #101426;
+  --logo: #8fb0ff;
+
+  --accent: #ff9a5a;
+  --accent-ink: #ffc09a;
+  --accent-soft: #332317;
+
+  --green: #a7f3c9;
+  --green-bright: #5edd9b;
+  --green-soft: #143024;
+
+  --coral: #ffc2b8;
+  --coral-bright: #ff8f7a;
+  --coral-soft: #321b17;
+
+  --ink-panel: #1c1b24;
+  --on-panel: #f4f5fa;
+  --on-panel-muted: #b9b7c9;
+  --panel-line: rgba(255, 255, 255, 0.12);
+  --panel-blue: #a9c2ff;
+
+  --nav-bg: rgba(23, 22, 30, 0.82);
+  --focus: #b9cdff;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 28px -20px rgba(0, 0, 0, 0.8);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 26px 60px -32px rgba(0, 0, 0, 0.9);
+  --shadow-nav: 0 1px 1px rgba(0, 0, 0, 0.3), 0 20px 44px -26px rgba(0, 0, 0, 0.85);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img, svg { display: block; }
+img { max-width: 100%; height: auto; }
+[hidden] { display: none !important; }
+button, input { font: inherit; }
+a { color: var(--brand); text-underline-offset: 3px; }
+p { margin: 0 0 1em; }
+p:last-child { margin-bottom: 0; }
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+::selection { background: var(--brand); color: var(--on-brand); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   2. Utilitários e estrutura
+   ============================================================ */
+.wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 1000;
+  transform: translateY(-150%);
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.skip-link:focus { transform: translateY(0); }
+
+.section { padding-block: var(--section-y); }
+.section--tight { padding-block: clamp(48px, 7vw, 84px); }
+section[id] { scroll-margin-top: 112px; }
+
+.section-head { max-width: 760px; margin-bottom: clamp(32px, 5vw, 52px); }
+.section-head--center { margin-inline: auto; text-align: center; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+h2 {
+  font-size: clamp(1.85rem, 4.4vw, 3.15rem);
+  max-width: 18ch;
+}
+.section-head--center h2 { margin-inline: auto; max-width: 22ch; }
+
+.lead {
+  max-width: 62ch;
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.08rem);
+}
+
+/* Botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn svg { width: 18px; height: 18px; }
+.btn:hover { transform: translateY(-2px); }
+.btn--primary {
+  background: var(--brand-solid);
+  color: var(--on-brand);
+  box-shadow: 0 12px 26px -14px rgba(22, 83, 255, 0.85);
+}
+.btn--primary:hover { background: var(--brand-strong); }
+.btn--ghost {
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+}
+.btn--ghost:hover { border-color: var(--ink); background: var(--surface); }
+
+/* ============================================================
+   3. Navbar ilha
+   ============================================================ */
+.site-header {
+  position: fixed;
+  top: 16px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  padding-inline: 16px;
+  pointer-events: none;
+}
+
+.site-nav {
+  pointer-events: auto;
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: #141414;
+  color: #f8f8fc;
+  box-shadow: var(--shadow-nav);
+  transition: transform 0.42s cubic-bezier(0.22, 0.75, 0.24, 1), opacity 0.28s ease, visibility 0s linear 0s;
+}
+.site-nav.is-hidden {
+  transform: translateY(calc(-100% - 24px));
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.42s cubic-bezier(0.22, 0.75, 0.24, 1), opacity 0.28s ease, visibility 0s linear 0.42s;
+}
+.site-nav.menu-open { border-radius: 20px; }
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 3px 5px;
+  border-radius: 10px;
+  color: #ffffff;
+  text-decoration: none;
+}
+.brand-svg { height: 23px; width: auto; aspect-ratio: 3486 / 842; }
+@media (hover: hover) {
+  .brand:hover { opacity: 0.82; }
+}
+
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 0;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.nav-links a {
+  display: inline-flex;
+  padding: 8px 8px;
+  border-radius: 999px;
+  color: rgba(248, 248, 252, 0.72);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.nav-links a:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+
+.nav-actions { display: flex; align-items: center; gap: 5px; margin-left: auto; }
+@media (min-width: 960px) { .nav-actions { margin-left: 0; } }
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(248, 248, 252, 0.82);
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+}
+.icon-btn svg { width: 17px; height: 17px; }
+@media (hover: hover) {
+  .icon-btn:hover { background: rgba(255, 255, 255, 0.12); color: #ffffff; border-color: rgba(255, 255, 255, 0.14); }
+}
+
+.nav-cta {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding-inline: 13px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #141414;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .nav-cta:hover { background: #e9e9e9; }
+}
+
+.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+.menu-panel {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 4px 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.menu-panel[data-open="true"] {
+  display: block;
+  animation: menu-in 0.22s ease both;
+}
+.menu-panel ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.menu-panel a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #f8f8fc;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.menu-panel a:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+.menu-panel a svg { width: 16px; height: 16px; color: rgba(248, 248, 252, 0.64); }
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 960px) {
+  .site-header { top: 16px; padding-inline: 24px; }
+  .site-nav { padding: 5px 9px; }
+  .nav-links { display: flex; }
+  .menu-toggle { display: none; }
+  .menu-panel { display: none !important; }
+  .nav-cta { display: inline-flex; }
+  .brand-svg { height: 23px; }
+}
+
+/* ============================================================
+   4. Hero
+   ============================================================ */
+.hero {
+  position: relative;
+  padding-top: clamp(132px, 15vw, 172px);
+  padding-bottom: 0;
+  overflow: clip;
+}
+.hero-grid { display: grid; gap: 28px; }
+.hero-copy { max-width: 100%; }
+
+.hero h1 {
+  max-width: 1100px;
+  margin: 0 0 18px;
+  color: var(--ink);
+  font-size: clamp(2.5rem, 7vw, 4.35rem);
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+}
+.hero h1 .hl { color: inherit; white-space: normal; }
+.hero-line { display: block; }
+
+.hero-sub {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.hero-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-actions .btn { min-height: 44px; gap: 7px; padding-inline: 16px; border-radius: 999px; font-size: 0.82rem; }
+.hero-actions .btn--primary { background: var(--ink); color: var(--bg); }
+.hero-actions .btn--primary:hover { background: var(--ink-soft); }
+.hero-actions .btn--ghost { border-color: var(--line); background: var(--surface); }
+
+.hero-product-nav {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(14px, 4vw, 46px);
+  margin: 12px 0 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.hero-product-nav::-webkit-scrollbar {
+  display: none;
+}
+.hero-product-nav::after {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  min-width: 20px;
+  margin-left: -20px;
+  background: linear-gradient(to right, transparent, var(--bg));
+  content: "";
+  pointer-events: none;
+}
+.hero-product-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  flex: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.hero-product-nav a:hover,
+.hero-product-nav a.is-active {
+  border-bottom-color: var(--ink);
+  color: var(--ink);
+}
+.hero-product-nav svg { width: 15px; height: 15px; }
+
+/* Captura do painel inicial */
+.hero-visual {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: clamp(28px, 5vw, 54px) var(--gutter) 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 18% 18%, color-mix(in srgb, var(--accent) 54%, var(--surface)), transparent 32%),
+    radial-gradient(ellipse at 45% 12%, color-mix(in srgb, var(--brand) 48%, var(--surface)), transparent 36%),
+    radial-gradient(ellipse at 74% 8%, color-mix(in srgb, var(--coral-bright) 48%, var(--surface)), transparent 35%),
+    radial-gradient(ellipse at 94% 28%, color-mix(in srgb, var(--brand-strong) 42%, var(--surface)), transparent 34%),
+    linear-gradient(110deg, var(--green-soft), var(--brand-soft) 44%, var(--accent-soft) 72%, var(--coral-soft));
+}
+.hero-visual::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(color-mix(in srgb, var(--surface) 72%, transparent) 0.7px, transparent 0.7px);
+  background-size: 5px 5px;
+  content: "";
+  opacity: 0.48;
+  pointer-events: none;
+}
+.preview-figure {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.hero-screenshot {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 9px 9px 0 0;
+  box-shadow: var(--shadow-md);
+}
+.hero-screenshot--dark { display: none; }
+[data-theme="dark"] .hero-screenshot--light { display: none; }
+[data-theme="dark"] .hero-screenshot--dark { display: block; }
+
+
+@media (min-width: 760px) {
+  .hero-summary { flex-direction: row; align-items: center; justify-content: space-between; gap: 32px; }
+  .hero-actions { flex: none; }
+}
+
+@media (min-width: 960px) {
+  .hero-grid { gap: 30px; }
+  .hero-visual { padding-inline: var(--gutter); }
+}
+
+@media (max-width: 520px) {
+  .hero { padding-top: 116px; }
+  .hero-actions { width: 100%; }
+  .hero-actions .btn { flex: 1; padding-inline: 10px; font-size: 0.76rem; }
+  .hero-visual { padding-top: 24px; }
+}
+@media (max-width: 360px) {
+  .hero-actions { flex-direction: column; }
+}
+
+/* ============================================================
+   5. O que é
+   ============================================================ */
+.two-col { display: grid; gap: 36px; }
+@media (min-width: 900px) {
+  .two-col { grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: start; }
+}
+
+.prose { color: var(--ink-soft); }
+.prose--spaced { margin-top: 24px; }
+.prose p { max-width: 60ch; }
+.prose strong { color: var(--ink); font-weight: 700; }
+
+.pillars {
+  padding: 8px 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.pillar {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 14px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pillar:last-child { border-bottom: 0; }
+.pillar-num {
+  display: grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+.pillar h3 { margin-bottom: 4px; font-size: 0.98rem; letter-spacing: -0.02em; }
+.pillar p { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+
+/* ============================================================
+   6. PAEE e PEI
+   ============================================================ */
+.concepts-heading {
+  display: grid;
+  gap: 20px;
+  margin-bottom: clamp(32px, 5vw, 52px);
+}
+.concepts-heading .section-head { margin: 0; }
+.concepts-heading h2 { max-width: 18ch; font-size: clamp(1.8rem, 3.8vw, 2.65rem); }
+.concepts-heading .lead { max-width: 42ch; margin: 0; align-self: end; }
+
+.concepts { display: grid; gap: 28px 20px; }
+.concept { min-width: 0; }
+.concept-visual {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1.13;
+  overflow: hidden;
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, var(--green-soft), var(--surface-2));
+}
+.concept--pei .concept-visual {
+  background: linear-gradient(145deg, var(--surface-2), var(--brand-softer));
+}
+.concept > h3 {
+  margin-top: 14px;
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+}
+.concept-full {
+  margin: 4px 0 8px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.concept > p:not(.concept-full) { color: var(--muted); font-size: 0.84rem; line-height: 1.55; }
+.concept-note { margin-top: 8px; }
+
+.concept-ui {
+  width: min(78%, 390px);
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+}
+.concept-ui-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.concept-ui-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.concept-ui-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.concept--pei .concept-ui-icon { background: var(--green-soft); color: var(--green); }
+.concept-ui-icon img { width: 14px; height: 14px; }
+.concept-ui-state {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 0.58rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.concept-ui-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.66rem;
+}
+.concept-ui-row:last-child { padding-bottom: 0; border-bottom: 0; }
+.concept-ui-row strong { font-weight: 600; }
+.concept-ui-muted { color: var(--muted); }
+.concept-ui-badge {
+  flex: none;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 0.56rem;
+  font-weight: 600;
+}
+
+.concept-flow {
+  display: grid;
+  justify-items: center;
+  width: min(65%, 330px);
+}
+.concept-flow-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+  border-radius: 9px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.concept-flow-step img { width: 16px; height: 16px; flex: none; }
+.concept-flow-link {
+  width: 1px;
+  height: 16px;
+  border-left: 1px dashed var(--line-strong);
+}
+.concept-flow-add {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.concept-flow-add img { width: 16px; height: 16px; }
+
+.note-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 16px 18px;
+  border-left: 3px solid var(--brand);
+  border-radius: 0 12px 12px 0;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.note-bar img { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+
+@media (min-width: 840px) {
+  .concepts-heading { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); align-items: end; gap: 40px; }
+  .concepts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+}
+
+/* ============================================================
+   7. Problemas
+   ============================================================ */
+.problem-section {
+  background: var(--brand-solid);
+  color: var(--on-brand);
+}
+.problem-panel {
+  --problem-card-bg: color-mix(in srgb, var(--brand-strong) 78%, #000000);
+  --problem-card-text: color-mix(in srgb, var(--on-brand) 78%, transparent);
+  --problem-divider: color-mix(in srgb, var(--on-brand) 9%, transparent);
+}
+[data-theme="dark"] .problem-section {
+  --on-brand: var(--ink);
+  background: var(--brand-softer);
+  color: var(--ink);
+}
+[data-theme="dark"] .problem-section .problem-panel {
+  --problem-card-bg: color-mix(in srgb, var(--brand-soft) 70%, var(--surface));
+  --problem-card-text: var(--ink-soft);
+  --problem-divider: color-mix(in srgb, var(--brand) 18%, transparent);
+}
+.problem-panel .eyebrow { color: var(--on-brand); opacity: 0.78; }
+.problem-panel h2 { max-width: 24ch; color: var(--on-brand); }
+.problem-panel .lead { color: var(--problem-card-text); }
+
+.problem-grid {
+  display: grid;
+  gap: 2px;
+  margin-top: clamp(30px, 5vw, 48px);
+  background: var(--problem-divider);
+}
+.problem-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 260px;
+  padding: clamp(22px, 3vw, 30px);
+  background: var(--problem-card-bg);
+}
+.problem-num {
+  color: var(--problem-card-text);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.problem-item h3 {
+  max-width: 14ch;
+  margin: 10px 0 0;
+  color: var(--on-brand);
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+.problem-item p {
+  max-width: 42ch;
+  margin: auto 0 0;
+  padding-top: 30px;
+  color: var(--problem-card-text);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.premise {
+  margin: 24px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--problem-divider);
+  color: var(--problem-card-text);
+  font-size: 0.86rem;
+}
+.premise strong { color: var(--on-brand); }
+
+@media (min-width: 800px) {
+  .problem-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .problem-item { min-height: clamp(280px, 30vw, 350px); }
+}
+
+/* ============================================================
+   8. Soluções
+   ============================================================ */
+.steps { display: grid; gap: 28px; }
+.step { position: relative; padding-top: 24px; border-top: 2px solid var(--line); }
+.step::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: 0;
+  width: 46px; height: 2px;
+  background: var(--brand);
+}
+.step-num {
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.step h3 { margin: 8px 0 8px; font-size: 1.18rem; letter-spacing: -0.03em; }
+.step p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+.step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.step-tag {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--brand-softer);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.flow-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 34px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.flow-note svg { width: 22px; height: 22px; flex: none; margin-top: 2px; color: var(--brand); }
+.flow-note p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.flow-note strong { color: var(--ink); }
+
+@media (min-width: 820px) {
+  .steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+}
+
+/* ============================================================
+   9. Público-alvo
+   ============================================================ */
+.audience-section {
+  background: var(--ink-panel);
+  color: var(--on-panel);
+}
+.audience {
+  display: grid;
+  gap: clamp(30px, 4.5vw, 52px);
+}
+.audience h2 {
+  max-width: 15ch;
+  color: var(--on-panel);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.5rem, 4.6vw, 3.55rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+.audience .eyebrow {
+  color: var(--panel-blue);
+}
+.audience-content {
+  display: grid;
+  gap: 30px;
+}
+.audience-visual {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  aspect-ratio: 1.4;
+  overflow: hidden;
+  padding: clamp(18px, 4vw, 42px);
+  background:
+    radial-gradient(ellipse at 70% 22%, rgba(255, 255, 255, 0.22), transparent 42%),
+    linear-gradient(145deg, var(--brand-strong), var(--brand));
+  color: var(--on-brand);
+  isolation: isolate;
+}
+.audience-visual::before,
+.audience-visual::after {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  content: "";
+}
+.audience-visual::before {
+  width: 82%;
+  aspect-ratio: 1;
+  top: -62%;
+  left: 9%;
+}
+.audience-visual::after {
+  width: 63%;
+  aspect-ratio: 1;
+  top: -44%;
+  left: 19%;
+}
+.audience-flow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.22);
+}
+.audience-flow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.audience-document {
+  display: grid;
+  place-items: center;
+  width: clamp(54px, 7vw, 76px);
+  aspect-ratio: 1;
+  justify-self: center;
+  margin-bottom: clamp(18px, 3vw, 32px);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--brand-solid);
+  box-shadow: 0 12px 30px rgba(10, 24, 58, 0.18);
+}
+.audience-document svg { width: 40%; height: 40%; }
+.audience-roles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 2.5vw, 22px);
+  max-width: 600px;
+  width: 100%;
+  justify-self: center;
+}
+.audience-role {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  min-width: 0;
+  color: var(--on-brand);
+  font-size: clamp(0.58rem, 1vw, 0.76rem);
+  line-height: 1.2;
+  text-align: center;
+}
+.audience-role-icon {
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 5vw, 54px);
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink-panel);
+}
+.audience-role-icon svg { width: 52%; height: 52%; }
+.audience-note {
+  justify-self: center;
+  margin-top: clamp(16px, 2.5vw, 28px);
+  padding: 5px 9px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--on-panel);
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+.audience-copy {
+  display: grid;
+  align-content: start;
+}
+.audience-intro {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+  color: var(--on-panel);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+.audience-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.audience-list li {
+  padding-block: clamp(18px, 2.5vw, 26px);
+  border-top: 1px solid var(--panel-line);
+}
+.audience-list h3 {
+  margin: 0 0 5px;
+  color: var(--on-panel);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+.audience-list p {
+  margin: 0;
+  color: var(--on-panel-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+@media (min-width: 900px) {
+  .audience-content { grid-template-columns: 1.65fr 1fr; gap: 28px; align-items: stretch; }
+  .audience-visual { min-height: 100%; }
+}
+
+/* ============================================================
+   10. Funções
+   ============================================================ */
+.features { display: grid; gap: 12px; }
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+.feature:hover { transform: translateY(-3px); border-color: var(--line-strong); box-shadow: var(--shadow-sm); }
+.feature-icon {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 11px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.feature-icon svg { width: 20px; height: 20px; }
+.feature--green .feature-icon { background: var(--green-soft); color: var(--green); }
+.feature--orange .feature-icon { background: var(--accent-soft); color: var(--accent-ink); }
+.feature--coral .feature-icon { background: var(--coral-soft); color: var(--coral); }
+.feature h3 { font-size: 1rem; letter-spacing: -0.025em; }
+.feature p { margin: 0; color: var(--muted); font-size: 0.86rem; line-height: 1.55; }
+.feature--wide { background: linear-gradient(150deg, var(--brand-softer), var(--surface) 75%); }
+.feature-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: auto; padding-top: 6px; }
+.feature-chip {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.feature-version { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+.feature-version i { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--line-strong); }
+.feature-version i:first-child { background: var(--brand); }
+.feature-badge {
+  align-self: flex-start;
+  padding: 4px 8px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.feature--soon { border-style: dashed; background: transparent; }
+
+@media (min-width: 700px) { .features { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1040px) {
+  .features { grid-template-columns: repeat(4, 1fr); }
+  .feature--wide { grid-column: span 2; }
+}
+
+/* ============================================================
+   11. Links do projeto
+   ============================================================ */
+.links-grid { display: grid; gap: 12px; }
+.link-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.link-card:hover { transform: translateY(-2px); border-color: var(--brand); background: var(--brand-softer); }
+.link-icon {
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+}
+.link-icon svg { width: 19px; height: 19px; }
+.link-card:hover .link-icon { background: var(--brand-soft); color: var(--brand); }
+.link-body { min-width: 0; }
+.link-body h3 { font-size: 0.94rem; margin-bottom: 3px; }
+.link-body p { margin: 0; color: var(--muted); font-size: 0.8rem; line-height: 1.5; }
+.link-arrow { width: 16px; height: 16px; flex: none; margin-left: auto; margin-top: 3px; color: var(--muted); }
+.link-card:hover .link-arrow { color: var(--brand); }
+.link-card--wide { grid-column: 1 / -1; align-items: center; }
+.link-card--wide .link-icon { width: 44px; height: 44px; }
+.link-card--wide .link-body h3 { font-size: 1rem; }
+.link-card--wide .link-body p { max-width: 60ch; }
+
+@media (min-width: 640px) { .links-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ============================================================
+   12. Integrantes
+   ============================================================ */
+.team { display: grid; gap: 28px 20px; }
+.person {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  text-align: start;
+}
+.avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 0.88;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: var(--surface-2);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(1);
+  background: var(--surface-2);
+}
+.avatar.no-photo img { display: none; }
+.person h3 { margin: 0 0 4px; font-size: 0.92rem; line-height: 1.35; letter-spacing: -0.02em; }
+.person h3 a { color: inherit; text-decoration: none; }
+.person h3 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.person-role { margin: 0 0 8px; color: var(--muted); font-size: 0.76rem; line-height: 1.4; }
+.person-link {
+  display: none;
+}
+
+@media (min-width: 460px) { .team { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 760px) { .team { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 960px) { .team { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; } }
+.team-section .eyebrow {
+  gap: 0;
+  margin-bottom: 12px;
+  padding: 5px 9px;
+  border-radius: 4px;
+  background: var(--brand-softer);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+.team-section .eyebrow::before { display: none; }
+.team-section .section-head h2 { max-width: none; }
+
+/* ============================================================
+   13. Footer
+   ============================================================ */
+.site-footer {
+  margin-top: clamp(24px, 5vw, 56px);
+  padding: clamp(44px, 7vw, 72px) 0 28px;
+  background: var(--ink-panel);
+  color: var(--on-panel);
+}
+.footer-grid { display: grid; gap: 34px; }
+.footer-brand {
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  text-decoration: none;
+}
+.footer-brand span { color: #6692fd; }
+.footer-tagline { max-width: 34ch; margin: 14px 0 0; color: var(--on-panel-muted); font-size: 0.9rem; }
+.footer-academic { margin: 18px 0 0; color: var(--on-panel-muted); font-size: 0.78rem; }
+.footer-title {
+  margin: 0 0 14px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.footer-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+.footer-list a {
+  color: var(--on-panel-muted);
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+.footer-list a:hover { color: #ffffff; text-decoration: underline; }
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 42px;
+  padding-top: 20px;
+  border-top: 1px solid var(--panel-line);
+  color: var(--on-panel-muted);
+  font-size: 0.74rem;
+}
+.footer-bottom a { color: var(--on-panel-muted); text-decoration: none; }
+.footer-bottom a:hover { color: #ffffff; text-decoration: underline; }
+.footer-top-link { display: inline-flex; align-items: center; gap: 6px; }
+.footer-top-link svg { width: 14px; height: 14px; }
+
+@media (min-width: 800px) {
+  .footer-grid { grid-template-columns: 1.2fr 0.8fr 0.55fr; gap: 48px; }
+}
+
+/* ============================================================
+   14. Animações de entrada
+   ============================================================ */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+.delay-1 { --delay: 70ms; }
+.delay-2 { --delay: 140ms; }
+.delay-3 { --delay: 210ms; }
+.delay-4 { --delay: 280ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
+  .site-nav, .site-nav.is-hidden { transition: none !important; }
+}
+</style>
+</head>
+
+<body id="top">
+<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="site-header">
+  <nav class="site-nav" id="site-nav" aria-label="Navegação principal">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Inklu — voltar ao início">
+        <svg class="brand-svg" viewBox="0 0 3486 842" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <g transform="matrix(1,0,0,1,-4307.493342,-1079.080262)">
+        <rect x="4050" y="0" width="4000" height="3000" style="fill:none;"/>
+        <g>
+            <g transform="matrix(1,0,0,1,-91.090528,200.234018)">
+                <g transform="matrix(0.60689,0,0,0.60689,4121.413427,810.351048)">
+                    <path d="M1143.081,1500C1106.504,1500 1076.852,1470.348 1076.852,1433.772C1076.852,1310.935 1076.852,1060.168 1076.852,1060.168C1076.852,866.056 1234.211,708.698 1428.323,708.698L1801.926,708.698C1838.503,708.698 1868.154,738.349 1868.154,774.926L1868.154,926.188C1868.154,947.645 1857.759,967.773 1840.261,980.194C1822.764,992.614 1800.333,995.787 1780.077,988.708C1629.822,936.198 1340.024,834.922 1340.024,834.922C1301.056,821.304 1257.733,831.202 1228.544,860.39C1199.356,889.578 1189.459,932.902 1203.077,971.869C1203.077,971.869 1304.353,1261.667 1356.863,1411.922C1363.942,1432.179 1360.768,1454.609 1348.348,1472.107C1335.928,1489.604 1315.8,1500 1294.342,1500C1245.608,1500 1187.123,1500 1143.081,1500ZM1181.78,112.863C1218.357,112.863 1248.009,142.514 1248.009,179.091C1248.009,301.928 1248.009,552.695 1248.009,552.695C1248.009,746.806 1090.65,904.165 896.538,904.165L522.935,904.165C486.358,904.165 456.706,874.513 456.706,837.936C456.706,793.894 456.706,735.409 456.706,686.675C456.706,665.217 467.102,645.089 484.6,632.669C502.097,620.249 524.528,617.075 544.784,624.154C695.039,676.664 984.837,777.94 984.837,777.94C1023.805,791.558 1067.128,781.661 1096.317,752.473C1125.505,723.285 1135.402,679.961 1121.784,640.993C1121.784,640.993 1020.508,351.195 967.998,200.94C960.919,180.684 964.093,158.253 976.513,140.756C988.933,123.258 1009.061,112.863 1030.519,112.863C1079.252,112.863 1137.738,112.863 1181.78,112.863ZM882.039,383.601C959.948,383.601 1023.2,446.853 1023.2,524.763C1023.2,602.672 959.948,665.924 882.039,665.924C804.13,665.924 740.877,602.672 740.877,524.763C740.877,446.853 804.13,383.601 882.039,383.601Z" fill="currentColor"/>
+                </g>
+                <g transform="matrix(15.847316,0,0,15.847316,-14327.146256,-22641.802963)">
+                    <path d="M1246.596,1528.058L1246.596,1496.354C1246.596,1494.534 1248.072,1493.058 1249.893,1493.058L1254.696,1493.058L1254.696,1524.761C1254.696,1526.582 1253.22,1528.058 1251.399,1528.058L1246.596,1528.058ZM1270.996,1506.814L1270.996,1528.058L1266.789,1528.058C1264.694,1528.058 1262.996,1526.359 1262.996,1524.264L1262.996,1496.018C1262.996,1494.383 1264.321,1493.058 1265.956,1493.058L1268.946,1493.058C1269.421,1493.058 1269.871,1493.271 1270.172,1493.638L1287.096,1514.292L1287.096,1493.058L1291.303,1493.058C1293.398,1493.058 1295.096,1494.756 1295.096,1496.851L1295.096,1525.098C1295.096,1526.732 1293.771,1528.058 1292.136,1528.058L1289.195,1528.058C1288.721,1528.058 1288.272,1527.845 1287.971,1527.479L1270.996,1506.814ZM1311.446,1519.223L1311.446,1528.058L1303.396,1528.058L1303.396,1496.496C1303.396,1495.584 1303.758,1494.71 1304.403,1494.065C1305.048,1493.42 1305.923,1493.058 1306.835,1493.058L1311.446,1493.058L1311.446,1509.39L1325.929,1494.129C1326.578,1493.445 1327.48,1493.058 1328.423,1493.058L1335.946,1493.058L1321.456,1508.651L1336.796,1528.058L1328.978,1528.058C1327.945,1528.058 1326.967,1527.594 1326.314,1526.794L1316.136,1514.327L1311.446,1519.223ZM1343.933,1528.058C1341.98,1528.058 1340.396,1526.474 1340.396,1524.521L1340.396,1493.058L1344.959,1493.058C1345.897,1493.058 1346.797,1493.43 1347.46,1494.094C1348.123,1494.757 1348.496,1495.657 1348.496,1496.595L1348.496,1521.458L1362.416,1521.458C1363.379,1521.458 1364.302,1521.84 1364.983,1522.521C1365.664,1523.201 1366.046,1524.125 1366.046,1525.087L1366.046,1528.058L1343.933,1528.058ZM1385.696,1528.658C1380.729,1528.658 1376.846,1527.274 1374.046,1524.508C1371.246,1521.741 1369.846,1517.791 1369.846,1512.658L1369.846,1494.186C1369.846,1493.887 1369.965,1493.6 1370.177,1493.388C1370.388,1493.177 1370.675,1493.058 1370.975,1493.058L1374.834,1493.058C1376.553,1493.058 1377.946,1494.451 1377.946,1496.17L1377.946,1512.358C1377.946,1515.691 1378.629,1518.091 1379.996,1519.558C1381.363,1521.024 1383.279,1521.758 1385.746,1521.758C1388.213,1521.758 1390.129,1521.024 1391.496,1519.558C1392.863,1518.091 1393.546,1515.691 1393.546,1512.358L1393.546,1496.17C1393.546,1495.345 1393.874,1494.553 1394.458,1493.969C1395.041,1493.386 1395.833,1493.058 1396.659,1493.058L1400.417,1493.058C1400.717,1493.058 1401.004,1493.177 1401.215,1493.388C1401.427,1493.6 1401.546,1493.887 1401.546,1494.186L1401.546,1512.658C1401.546,1517.791 1400.146,1521.741 1397.346,1524.508C1394.546,1527.274 1390.663,1528.658 1385.696,1528.658Z" fill="currentColor"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#o-que-e">O que é</a></li>
+        <li><a href="#paee-pei">PAEE e PEI</a></li>
+        <li><a href="#problemas">Problemas</a></li>
+        <li><a href="#solucoes">Soluções</a></li>
+        <li><a href="#funcoes">Funções</a></li>
+        <li><a href="#links">Links</a></li>
+        <li><a href="#integrantes">Integrantes</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Ativar modo escuro" aria-pressed="false" title="Alternar tema">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+
+        <a class="nav-cta" href="#o-que-e">Conhecer</a>
+
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-panel">
+          <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+          <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" hidden><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="menu-panel" id="menu-panel" data-open="false" aria-hidden="true">
+      <ul>
+        <li><a href="#o-que-e">O que é <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#paee-pei">PAEE e PEI <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#problemas">Problemas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#solucoes">Soluções <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#publico">Público-alvo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#funcoes">Funções <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#links">Links <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+        <li><a href="#integrantes">Integrantes <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main id="conteudo" tabindex="-1">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1 class="reveal delay-1" id="hero-title">Menos burocracia. <span class="hero-line"><span class="hl">Mais tempo</span> para cada estudante.</span></h1>
+        <div class="hero-summary">
+          <p class="hero-sub reveal delay-2">O Inklu reúne alunos, planos PEI e PAEE e documentos em um só lugar — para devolver à rotina o tempo que a papelada consome.</p>
+          <div class="hero-actions reveal delay-3">
+            <a class="btn btn--primary" href="#o-que-e">
+              Conhecer o projeto
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn--ghost" href="#integrantes">
+              Ver integrantes
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+      <nav class="hero-product-nav reveal delay-4" aria-label="Áreas da plataforma Inklu">
+        <a class="is-active" href="#top" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>Visão geral</a>
+        <a href="#funcoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M17 11a4 4 0 1 0-3.5-6M3 21v-2a6 6 0 0 1 12 0v2zM17 16h4M19 14v4"/></svg>Estudantes</a>
+        <a href="#solucoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Planos PEI e PAEE</a>
+        <a href="#funcoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Documentos</a>
+      </nav>
+    </div>
+    <div class="hero-visual reveal delay-2">
+      <figure class="preview-figure">
+        <img class="hero-screenshot hero-screenshot--light" src="images/inklu_screenshot_light.png" alt="Painel inicial do Inklu no tema claro, com tarefas e documentos adaptados." width="2760" height="1630" loading="lazy" decoding="async">
+        <img class="hero-screenshot hero-screenshot--dark" src="images/inklu_screenshot_dark.png" alt="Painel inicial do Inklu no tema escuro, com tarefas e documentos adaptados." width="2760" height="1630" loading="lazy" decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <!-- O QUE É -->
+  <section class="section" id="o-que-e" aria-labelledby="o-que-e-title">
+    <div class="wrap">
+      <div class="two-col">
+        <div>
+          <p class="eyebrow reveal">01 — O que é</p>
+          <h2 class="reveal delay-1" id="o-que-e-title">Uma plataforma para o trabalho que acontece nos bastidores da inclusão.</h2>
+          <div class="prose prose--spaced reveal delay-2">
+            <p>O <strong>Inklu</strong> nasceu como projeto acadêmico da disciplina de Engenharia de Software da Fatec Itu. A proposta é organizar a rotina administrativa de quem acompanha estudantes público-alvo da educação especial.</p>
+            <p>Em vez de espalhar informações entre pastas, planilhas e arquivos soltos, o professor encontra o histórico do aluno, os planos educacionais e os documentos do atendimento no mesmo ambiente.</p>
+            <p>O foco não é substituir o olhar pedagógico. É liberar tempo para ele.</p>
+          </div>
+        </div>
+
+        <div>
+          
+        </div>
+
+        <aside class="pillars reveal delay-3" aria-label="As três frentes do Inklu">
+          <div class="pillar">
+            <span class="pillar-num">01</span>
+            <div>
+              <h3>Pessoas</h3>
+              <p>Alunos, turmas e matérias organizados, com dados escolares, diagnósticos, interesses e responsáveis.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <span class="pillar-num">02</span>
+            <div>
+              <h3>Planos</h3>
+              <p>PEI e PAEE com modelos, rascunho, finalização e histórico de versões por bimestre.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <span class="pillar-num">03</span>
+            <div>
+              <h3>Documentos</h3>
+              <p>Arquivos em pastas, com busca, filtros, visualização em grade ou lista e exportação em PDF ou Word.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAEE E PEI -->
+  <section class="section section--tight" id="paee-pei" aria-labelledby="paee-pei-title">
+    <div class="wrap">
+      <div class="concepts-heading reveal">
+        <div class="section-head">
+          <p class="eyebrow">02 — Conceitos</p>
+          <h2 id="paee-pei-title">PAEE e PEI conectam o atendimento ao planejamento.</h2>
+        </div>
+        <p class="lead">Antes de entender a plataforma, vale conhecer quem é o público do atendimento e qual documento organiza o trabalho pedagógico.</p>
+      </div>
+
+      <div class="concepts">
+        <article class="concept concept--paee reveal">
+          <div class="concept-visual" aria-hidden="true">
+            <div class="concept-ui">
+              <div class="concept-ui-header">
+                <div class="concept-ui-title">
+                  <span class="concept-ui-icon">
+                    <img src="https://placehold.co/24x24" alt="" width="24" height="24" loading="lazy" decoding="async">
+                  </span>
+                  Atendimento PAEE
+                </div>
+                <span class="concept-ui-state">Organizado</span>
+              </div>
+              <div class="concept-ui-row">
+                <strong>Perfil do estudante</strong>
+                <span class="concept-ui-badge">Atualizado</span>
+              </div>
+              <div class="concept-ui-row">
+                <strong>Plano de atendimento</strong>
+                <span class="concept-ui-badge">Em andamento</span>
+              </div>
+              <div class="concept-ui-row">
+                <strong>Registros do bimestre</strong>
+                <span class="concept-ui-muted">03 registros</span>
+              </div>
+            </div>
+          </div>
+          <h3>PAEE</h3>
+          <p class="concept-full">Público-Alvo da Educação Especial</p>
+          <p>São os estudantes com deficiência, transtornos globais do desenvolvimento (como o TEA) e altas habilidades ou superdotação. É o público que orienta as adaptações e os apoios oferecidos pela escola.</p>
+          <p class="concept-note">No sistema, o registro de atendimento desse estudante aparece como plano PAEE.</p>
+        </article>
+
+        <article class="concept concept--pei reveal delay-1">
+          <div class="concept-visual" aria-hidden="true">
+            <div class="concept-flow">
+              <div class="concept-flow-step">
+                <img src="https://placehold.co/24x24" alt="" width="24" height="24" loading="lazy" decoding="async">
+                Objetivos de aprendizagem
+              </div>
+              <span class="concept-flow-link"></span>
+              <div class="concept-flow-step">
+                <img src="https://placehold.co/24x24" alt="" width="24" height="24" loading="lazy" decoding="async">
+                Estratégias e adaptações
+              </div>
+              <span class="concept-flow-link"></span>
+              <div class="concept-flow-step">
+                <img src="https://placehold.co/24x24" alt="" width="24" height="24" loading="lazy" decoding="async">
+                Acompanhamento bimestral
+              </div>
+              <span class="concept-flow-add"><img src="https://placehold.co/24x24" alt="" width="24" height="24" loading="lazy" decoding="async"></span>
+            </div>
+          </div>
+          <h3>PEI</h3>
+          <p class="concept-full">Plano Educacional Individualizado</p>
+          <p>É o documento que organiza objetivos, estratégias e adaptações para cada estudante, considerando suas necessidades e potencialidades. O plano orienta o trabalho pedagógico e acompanha a evolução ao longo do ano.</p>
+          <p class="concept-note">No Inklu, o PEI é criado por aluno, bimestre e ano letivo.</p>
+        </article>
+      </div>
+
+      <div class="note-bar reveal">
+        <img src="https://placehold.co/24x24" alt="" width="24" height="24" loading="lazy" decoding="async">
+        <p>Os modelos de PEI e PAEE do projeto seguem os anexos da Resolução SEDUC nº 129/2025 e podem ser salvos como rascunho, finalizados e mantidos em versões anteriores.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEMAS -->
+  <section class="section problem-section" id="problemas" aria-labelledby="problemas-title">
+    <div class="wrap">
+      <div class="problem-panel reveal">
+        <p class="eyebrow">03 — O problema</p>
+        <h2 id="problemas-title">O excesso de tarefas administrativas rouba tempo do que importa.</h2>
+        <p class="lead">A sobrecarga não está apenas no acompanhamento em si. Está no que vem antes e depois dele: preencher, procurar, revisar e organizar.</p>
+
+        <div class="problem-grid">
+          <article class="problem-item">
+            <span class="problem-num">01</span>
+            <h3>Documentos em todo lugar</h3>
+            <p>PEI, PAEE, relatórios e atividades vivem em pastas e arquivos diferentes. Encontrar a versão certa vira uma tarefa à parte.</p>
+          </article>
+          <article class="problem-item">
+            <span class="problem-num">02</span>
+            <h3>Dados que não conversam</h3>
+            <p>Diagnóstico, interesses, responsáveis e histórico do estudante ficam espalhados. O professor repete informação e perde contexto.</p>
+          </article>
+          <article class="problem-item">
+            <span class="problem-num">03</span>
+            <h3>Prazos e versões</h3>
+            <p>Cada bimestre gera novas versões. Sem um histórico claro, é difícil saber o que foi alterado e o que está valendo.</p>
+          </article>
+        </div>
+
+        <p class="premise"><strong>A premissa do Inklu:</strong> quanto menos tempo gasto com organização manual, mais tempo para o acompanhamento direto, o desenvolvimento social e emocional e o planejamento pedagógico.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUÇÕES -->
+  <section class="section section--tight" id="solucoes" aria-labelledby="solucoes-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">04 — A solução</p>
+        <h2 id="solucoes-title">Um fluxo contínuo, do cadastro à exportação.</h2>
+        <p class="lead">O Inklu conecta as informações do estudante ao plano e ao documento final, sem retrabalho e sem perder o histórico.</p>
+      </div>
+
+      <div class="steps">
+        <article class="step reveal">
+          <span class="step-num">01</span>
+          <h3>Organize as pessoas</h3>
+          <p>Cadastre alunos, turmas e matérias. O perfil do aluno reúne dados escolares, diagnósticos, interesses, preferências e responsáveis.</p>
+          <div class="step-tags"><span class="step-tag">Alunos</span><span class="step-tag">Turmas</span><span class="step-tag">Matérias</span></div>
+        </article>
+        <article class="step reveal delay-1">
+          <span class="step-num">02</span>
+          <h3>Construa o plano</h3>
+          <p>Crie PEI e PAEE a partir de modelos. Os dados do aluno já entram preenchidos, e você completa objetivos, estratégias e adaptações.</p>
+          <div class="step-tags"><span class="step-tag">PEI</span><span class="step-tag">PAEE</span><span class="step-tag">Versões</span></div>
+        </article>
+        <article class="step reveal delay-2">
+          <span class="step-num">03</span>
+          <h3>Finalize e exporte</h3>
+          <p>Salve como rascunho, finalize quando estiver pronto e exporte em PDF ou Word (DOCX) para compartilhar com a escola.</p>
+          <div class="step-tags"><span class="step-tag">PDF</span><span class="step-tag">DOCX</span><span class="step-tag">A4</span></div>
+        </article>
+      </div>
+
+      <div class="flow-note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+        <p><strong>O editor funciona como uma folha A4.</strong> Tem formatação de texto, títulos, alinhamento, tabelas, imagens, zoom e navegação por páginas — para o plano ficar pronto sem sair da plataforma.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PÚBLICO-ALVO -->
+  <section class="section section--tight audience-section" id="publico" aria-labelledby="publico-title">
+    <div class="wrap">
+      <div class="audience reveal">
+        <header>
+          <p class="eyebrow">05 — Para quem</p>
+          <h2 id="publico-title">Feito para quem acompanha cada estudante.</h2>
+        </header>
+        <div class="audience-content">
+          <div class="audience-visual" role="img" aria-label="Professor, estudante, PEI e PAEE conectados pelo acompanhamento inclusivo">
+            <svg class="audience-flow" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M500 180 C500 250 130 210 130 330"/>
+              <path d="M500 180 C500 250 380 230 380 330"/>
+              <path d="M500 180 C500 250 620 230 620 330"/>
+              <path d="M500 180 C500 250 870 210 870 330"/>
+            </svg>
+            <div class="audience-document" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6M8 13h8M8 17h5"/>
+              </svg>
+            </div>
+            <div class="audience-roles" aria-hidden="true">
+              <div class="audience-role">
+                <span class="audience-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                <span>Professor</span>
+              </div>
+              <div class="audience-role">
+                <span class="audience-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></span>
+                <span>Estudante</span>
+              </div>
+              <div class="audience-role">
+                <span class="audience-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span>
+                <span>PEI</span>
+              </div>
+              <div class="audience-role">
+                <span class="audience-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01M16 13v.01M16 16v.01M16 19v.01"/></svg></span>
+                <span>PAEE</span>
+              </div>
+            </div>
+            <span class="audience-note">Inclusão acompanhada no dia a dia</span>
+          </div>
+          <div class="audience-copy">
+            <p class="audience-intro">O Inklu foi pensado para professores de apoio e profissionais da educação inclusiva no contexto escolar brasileiro — especialmente quem precisa manter PEI e PAEE organizados sem virar refém da papelada.</p>
+          <ul class="audience-list">
+            <li>
+              <h3>Para professores de apoio.</h3>
+              <p>Mais clareza para acompanhar estudantes PAEE e manter as informações pedagógicas organizadas.</p>
+            </li>
+            <li>
+              <h3>Para quem constrói PEI e PAEE.</h3>
+              <p>Planos e documentos reunidos em um só lugar, prontos para revisar e compartilhar com a escola.</p>
+            </li>
+            <li>
+              <h3>Para escolas e equipes.</h3>
+              <p>Um histórico organizado para dar continuidade ao acompanhamento de cada estudante.</p>
+            </li>
+          </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNÇÕES -->
+  <section class="section" id="funcoes" aria-labelledby="funcoes-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">06 — Funções</p>
+        <h2 id="funcoes-title">O que já está no Inklu.</h2>
+        <p class="lead">Recursos pensados para reduzir o trabalho manual sem tirar o professor do centro da decisão pedagógica.</p>
+      </div>
+
+      <div class="features">
+        <article class="feature reveal">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <h3>Alunos</h3>
+          <p>Cadastro, busca e visão de ativos e inativos. O perfil reúne dados escolares, diagnósticos, interesses, preferências e responsáveis.</p>
+        </article>
+
+        <article class="feature feature--wide reveal delay-1">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+          </span>
+          <h3>PEI e PAEE</h3>
+          <p>Crie planos a partir de modelos, salve rascunhos, finalize e acompanhe o histórico de versões por bimestre e ano letivo. Os dados do aluno entram preenchidos no documento.</p>
+          <div class="feature-meta">
+            <span class="feature-chip">Rascunho</span>
+            <span class="feature-chip">Finalizado</span>
+            <span class="feature-chip">Histórico</span>
+            <span class="feature-version" aria-label="Controle de versões"><i></i><i></i><i></i></span>
+          </div>
+        </article>
+
+        <article class="feature feature--green reveal delay-2">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </span>
+          <h3>Editor em folha A4</h3>
+          <p>Formatação, títulos, alinhamento, tabelas, imagens, zoom e navegação por páginas.</p>
+        </article>
+
+        <article class="feature feature--orange reveal delay-2">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+          </span>
+          <h3>Exportação</h3>
+          <p>Gere PDF ou Word (DOCX) com o layout do plano, pronto para imprimir ou compartilhar.</p>
+        </article>
+
+        <article class="feature reveal">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.4-.6L9.4 4.6A2 2 0 0 0 8 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>
+          </span>
+          <h3>Documentos e pastas</h3>
+          <p>Organize arquivos, pesquise, filtre, alterne entre grade e lista, renomeie, mova ou exclua.</p>
+        </article>
+
+        <article class="feature feature--coral reveal delay-1">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2Z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7Z"/></svg>
+          </span>
+          <h3>Turmas e matérias</h3>
+          <p>Cadastre e filtre turmas e matérias, com ativação, inativação e paginação.</p>
+        </article>
+
+        <article class="feature reveal delay-2">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          </span>
+          <h3>Painel inicial</h3>
+          <p>Uma visão com tarefas pendentes e documentos adaptados recentemente.</p>
+        </article>
+
+        <article class="feature feature--soon reveal delay-3">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18h20"/><path d="M4 18V9l8-5 8 5v9"/><path d="M9 18v-5h6v5"/><path d="m2 9 2-2"/><path d="m20 7 2 2"/></svg>
+          </span>
+          <span class="feature-badge">Em construção</span>
+          <h3>Tarefas e calendário</h3>
+          <p>As áreas já fazem parte da navegação, mas ainda estão em desenvolvimento.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINKS -->
+  <section class="section section--tight" id="links" aria-labelledby="links-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">07 — Links do projeto</p>
+        <h2 id="links-title">Acompanhe o projeto por dentro.</h2>
+        <p class="lead">Documentação, protótipo, organização e código — tudo aberto para consulta.</p>
+      </div>
+
+      <div class="links-grid">
+        <a class="link-card reveal" href="https://drive.google.com/drive/folders/1jK5MWw4MHqhwms5YI6WmAED73FlfaHfP?hl=pt-br" target="_blank" rel="noopener noreferrer">
+          <span class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2Z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7Z"/></svg></span>
+          <div class="link-body"><h3>Documentação</h3><p>Requisitos, atas e artefatos da disciplina.</p></div>
+          <span class="sr-only">(abre em nova aba)</span>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+
+        <a class="link-card reveal delay-1" href="https://www.figma.com/design/JZQhmmTiSCEQVZTVarJMqR/INKLU" target="_blank" rel="noopener noreferrer">
+          <span class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M3 9h18"/></svg></span>
+          <div class="link-body"><h3>Figma</h3><p>Protótipos e identidade visual da plataforma.</p></div>
+          <span class="sr-only">(abre em nova aba)</span>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+
+        <a class="link-card reveal delay-1" href="https://app.notion.com/p/Inklu-Projeto-de-Engenharia-de-Software-37942ea14da9808fac65d7c83b7a6b68" target="_blank" rel="noopener noreferrer">
+          <span class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5Z"/><path d="M15 3v4h4"/><path d="M9 12h6"/><path d="M9 16h4"/></svg></span>
+          <div class="link-body"><h3>Notion</h3><p>Organização e bastidores do projeto.</p></div>
+          <span class="sr-only">(abre em nova aba)</span>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+
+        <a class="link-card reveal delay-2" href="https://trello.com/b/g6w9zYot/inklu" target="_blank" rel="noopener noreferrer">
+          <span class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 8v6"/><path d="M16 8v3"/></svg></span>
+          <div class="link-body"><h3>Trello</h3><p>Backlog, andamento e critérios de aceite.</p></div>
+          <span class="sr-only">(abre em nova aba)</span>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+
+        <a class="link-card link-card--wide reveal" href="https://github.com/LorenaCorsato/Inklu" target="_blank" rel="noopener noreferrer">
+          <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.814 1.103.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></span>
+          <div class="link-body"><h3>Repositório</h3><p>Código-fonte do frontend e do backend do Inklu.</p></div>
+          <span class="sr-only">(abre em nova aba)</span>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRANTES -->
+  <section class="section team-section" id="integrantes" aria-labelledby="integrantes-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">O time</p>
+        <h2 id="integrantes-title">Conheça o time do Inklu.</h2>
+      </div>
+
+      <div class="team">
+        <article class="person reveal">
+          <div class="avatar" data-avatar>
+            <span aria-hidden="true">CM</span>
+            <img src="https://github.com/CarlosMattei.png?size=240" alt="Foto de perfil de Carlos Henrique Mattei de Oliveira no GitHub" width="240" height="240" loading="lazy" referrerpolicy="no-referrer" data-avatar-img>
+          </div>
+          <h3><a href="https://github.com/CarlosMattei" target="_blank" rel="noopener noreferrer" aria-label="Perfil GitHub de Carlos Henrique Mattei de Oliveira (abre em nova aba)">Carlos Henrique Mattei de Oliveira</a></h3>
+          <p class="person-role">Frontend</p>
+          <a class="person-link" href="https://github.com/CarlosMattei" target="_blank" rel="noopener noreferrer" aria-label="GitHub de Carlos Henrique Mattei de Oliveira (abre em nova aba)">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.814 1.103.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </article>
+
+        <article class="person reveal delay-1">
+          <div class="avatar" data-avatar>
+            <span aria-hidden="true">LK</span>
+            <img src="https://github.com/LavKeiller.png?size=240" alt="Foto de perfil de Lavínia Keiller no GitHub" width="240" height="240" loading="lazy" referrerpolicy="no-referrer" data-avatar-img>
+          </div>
+          <h3><a href="https://github.com/LavKeiller" target="_blank" rel="noopener noreferrer" aria-label="Perfil GitHub de Lavínia Keiller (abre em nova aba)">Lavínia Keiller</a></h3>
+          <p class="person-role">Backend</p>
+          <a class="person-link" href="https://github.com/LavKeiller" target="_blank" rel="noopener noreferrer" aria-label="GitHub de Lavínia Keiller (abre em nova aba)">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.814 1.103.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </article>
+
+        <article class="person reveal delay-2">
+          <div class="avatar" data-avatar>
+            <span aria-hidden="true">LC</span>
+            <img src="https://github.com/LorenaCorsato.png?size=240" alt="Foto de perfil de Lorena Gonçalves Ribeiro Corsato no GitHub" width="240" height="240" loading="lazy" referrerpolicy="no-referrer" data-avatar-img>
+          </div>
+          <h3><a href="https://github.com/LorenaCorsato" target="_blank" rel="noopener noreferrer" aria-label="Perfil GitHub de Lorena Gonçalves Ribeiro Corsato (abre em nova aba)">Lorena Gonçalves Ribeiro Corsato</a></h3>
+          <p class="person-role">Backend</p>
+          <a class="person-link" href="https://github.com/LorenaCorsato" target="_blank" rel="noopener noreferrer" aria-label="GitHub de Lorena Gonçalves Ribeiro Corsato (abre em nova aba)">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.814 1.103.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </article>
+
+        <article class="person reveal delay-3">
+          <div class="avatar" data-avatar>
+            <span aria-hidden="true">LS</span>
+            <img src="https://github.com/Lyncon224.png?size=240" alt="Foto de perfil de Lyncon de Oliveira Santos no GitHub" width="240" height="240" loading="lazy" referrerpolicy="no-referrer" data-avatar-img>
+          </div>
+          <h3><a href="https://github.com/Lyncon224" target="_blank" rel="noopener noreferrer" aria-label="Perfil GitHub de Lyncon de Oliveira Santos (abre em nova aba)">Lyncon de Oliveira Santos</a></h3>
+          <p class="person-role">Backend</p>
+          <a class="person-link" href="https://github.com/Lyncon224" target="_blank" rel="noopener noreferrer" aria-label="GitHub de Lyncon de Oliveira Santos (abre em nova aba)">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.24 2.873.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.814 1.103.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="footer-brand" href="#top" aria-label="Inklu — voltar ao início">Inklu<span>.</span></a>
+        <p class="footer-tagline">Tecnologia para devolver tempo ao acompanhamento humano.</p>
+        <p class="footer-academic">Projeto acadêmico · Fatec Itu · Engenharia de Software</p>
+      </div>
+
+      <div>
+        <h2 class="footer-title">Navegação</h2>
+        <ul class="footer-list">
+          <li><a href="#o-que-e">O que é</a></li>
+          <li><a href="#paee-pei">PAEE e PEI</a></li>
+          <li><a href="#problemas">Problemas</a></li>
+          <li><a href="#solucoes">Soluções</a></li>
+          <li><a href="#funcoes">Funções</a></li>
+          <li><a href="#integrantes">Integrantes</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-title">Projeto</h2>
+        <ul class="footer-list">
+          <li><a href="https://github.com/LorenaCorsato/Inklu" target="_blank" rel="noopener noreferrer">Repositório <span class="sr-only">(abre em nova aba)</span></a></li>
+          <li><a href="#links">Todos os links</a></li>
+          <li><a href="#top">Voltar ao topo</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Inklu. Projeto acadêmico.</span>
+      <a class="footer-top-link" href="#top">
+        Voltar ao início
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    'use strict';
+
+    var root = document.documentElement;
+    var nav = document.getElementById('site-nav');
+    var menuToggle = document.getElementById('menu-toggle');
+    var menuPanel = document.getElementById('menu-panel');
+    var themeToggle = document.getElementById('theme-toggle');
+    var themeMeta = document.querySelector('meta[name="theme-color"]');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    /* ---------- Tema claro/escuro ---------- */
+    function isDark() { return root.dataset.theme === 'dark'; }
+
+    function syncThemeButton() {
+      var dark = isDark();
+      if (themeToggle) {
+        themeToggle.setAttribute('aria-pressed', String(dark));
+        themeToggle.setAttribute('aria-label', dark ? 'Ativar modo claro' : 'Ativar modo escuro');
+        themeToggle.title = dark ? 'Ativar modo claro' : 'Ativar modo escuro';
+      }
+      if (themeMeta) themeMeta.setAttribute('content', dark ? '#121218' : '#FBFBFB');
+    }
+
+    if (themeToggle) {
+      syncThemeButton();
+      themeToggle.addEventListener('click', function () {
+        var next = isDark() ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try { localStorage.setItem('inklu-theme', next); } catch (e) { /* armazenamento indisponível */ }
+        syncThemeButton();
+      });
+    }
+
+    var colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (colorScheme.addEventListener) {
+      colorScheme.addEventListener('change', function (event) {
+        var saved = null;
+        try { saved = localStorage.getItem('inklu-theme'); } catch (e) { /* sem acesso */ }
+        if (saved) return;
+        root.dataset.theme = event.matches ? 'dark' : 'light';
+        syncThemeButton();
+      });
+    }
+
+    /* ---------- Menu mobile ---------- */
+    var menuOpen = false;
+
+    function setMenu(open, returnFocus) {
+      if (!menuToggle || !menuPanel) return;
+      menuOpen = open;
+      menuPanel.dataset.open = String(open);
+      menuPanel.setAttribute('aria-hidden', String(!open));
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+      nav.classList.toggle('menu-open', open);
+      var openIcon = menuToggle.querySelector('.icon-open');
+      var closeIcon = menuToggle.querySelector('.icon-close');
+      if (openIcon) openIcon.hidden = open;
+      if (closeIcon) closeIcon.hidden = !open;
+      if (returnFocus) menuToggle.focus();
+    }
+
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function () { setMenu(!menuOpen); });
+    }
+
+    if (menuPanel) {
+      menuPanel.addEventListener('click', function (event) {
+        if (event.target.closest('a')) setMenu(false);
+      });
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && menuOpen) setMenu(false, true);
+    });
+
+    document.addEventListener('click', function (event) {
+      if (menuOpen && nav && !nav.contains(event.target)) setMenu(false);
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 960 && menuOpen) setMenu(false);
+    });
+
+    /* ---------- Navbar que recolhe ao rolar para baixo ---------- */
+    var lastY = window.scrollY;
+    var ticking = false;
+
+    function showNav() { nav.classList.remove('is-hidden'); }
+    function hideNav() { nav.classList.add('is-hidden'); }
+
+    function updateNav() {
+      var y = Math.max(0, window.scrollY);
+      var delta = y - lastY;
+
+      if (y < 90) {
+        showNav();
+      } else if (menuOpen || nav.contains(document.activeElement)) {
+        showNav();
+      } else if (delta > 5) {
+        hideNav();
+      } else if (delta < -5) {
+        showNav();
+      }
+      lastY = y;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNav);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    if (nav) {
+      nav.addEventListener('focusin', showNav);
+    }
+
+    /* ---------- Revelação das seções ---------- */
+    var revealItems = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+
+    function showAllReveals() {
+      revealItems.forEach(function (item) { item.classList.add('is-visible'); });
+    }
+
+    if (reduceMotion.matches || !('IntersectionObserver' in window)) {
+      showAllReveals();
+    } else {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+      revealItems.forEach(function (item) { observer.observe(item); });
+
+      if (reduceMotion.addEventListener) {
+        reduceMotion.addEventListener('change', function (event) {
+          if (event.matches) {
+            observer.disconnect();
+            showAllReveals();
+          }
+        });
+      }
+    }
+
+    /* ---------- Fallback das fotos de perfil ---------- */
+    Array.prototype.slice.call(document.querySelectorAll('[data-avatar]')).forEach(function (avatar) {
+      var img = avatar.querySelector('[data-avatar-img]');
+      if (!img) return;
+      var fail = function () { avatar.classList.add('no-photo'); };
+      img.addEventListener('error', fail);
+      if (img.complete && img.naturalWidth === 0) fail();
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,8 +1,10 @@
 :host {
   position: fixed;
-  bottom: var(--ds-spacing-4);
-  right: var(--ds-spacing-4);
+  bottom: calc(var(--ds-spacing-4) + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 9999;
+  width: min(30rem, calc(100vw - 2rem));
 }
 
 .toast-wrapper {
@@ -14,8 +16,8 @@
   background-color: var(--ds-surface);
   border: 1px solid var(--ds-border);
   box-shadow: var(--ds-shadow-md);
-  min-width: 300px;
-  max-width: 480px;
+  width: 100%;
+  max-width: 100%;
   animation: slideIn 0.25s ease;
 }
 
@@ -84,10 +86,16 @@
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(24px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-wrapper {
+    animation: none;
   }
 }

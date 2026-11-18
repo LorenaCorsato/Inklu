@@ -1,0 +1,430 @@
+<main class="auth-page">
+  <div class="auth-shell auth-shell--wide">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Cadastrar escola</h1>
+      <p class="auth-subtitle">
+        Crie a conta da escola. O responsável será o primeiro coordenador.
+      </p>
+
+      <nav class="progresso-etapas" aria-label="Etapas do cadastro da escola">
+        <ol>
+          @for (etapa of etapas; track etapa.numero) {
+            <li [attr.aria-current]="etapaAtual() === etapa.numero ? 'step' : null">
+              {{ etapa.numero }}. {{ etapa.rotulo }}
+            </li>
+          }
+        </ol>
+      </nav>
+
+      @if (erroRede()) {
+        <div id="escola-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erroRede() }}
+        </div>
+      }
+
+      <form class="auth-form" novalidate [attr.aria-busy]="enviando()" (ngSubmit)="criarEscola()">
+        @if (etapaAtual() === 1) {
+          <h2 id="etapa-titulo" class="etapa-titulo" tabindex="-1">Dados da escola</h2>
+
+          <div class="campo">
+            <label class="form-label" for="escola-cnpj">CNPJ</label>
+            <input
+              id="escola-cnpj"
+              name="cnpj"
+              type="text"
+              class="form-control"
+              inputmode="numeric"
+              placeholder="00.000.000/0000-00"
+              [ngModel]="escola.cnpj"
+              (ngModelChange)="aoDigitarCnpj($event)"
+              [attr.aria-invalid]="erro1('cnpj') ? 'true' : null"
+              [attr.aria-describedby]="erro1('cnpj') ? 'escola-cnpj-erro' : null"
+            />
+            @if (erro1('cnpj')) {
+              <p class="campo__erro" id="escola-cnpj-erro">{{ erro1('cnpj') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-nome">Nome da escola</label>
+            <input
+              id="escola-nome"
+              name="nomeEscola"
+              type="text"
+              class="form-control"
+              autocomplete="organization"
+              [ngModel]="escola.nomeEscola"
+              (ngModelChange)="escola.nomeEscola = $event"
+              [attr.aria-invalid]="erro1('nomeEscola') ? 'true' : null"
+              [attr.aria-describedby]="erro1('nomeEscola') ? 'escola-nome-erro' : null"
+            />
+            @if (erro1('nomeEscola')) {
+              <p class="campo__erro" id="escola-nome-erro">{{ erro1('nomeEscola') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-email">E-mail institucional</label>
+            <input
+              id="escola-email"
+              name="emailInstitucional"
+              type="email"
+              class="form-control"
+              autocomplete="email"
+              spellcheck="false"
+              [ngModel]="escola.emailInstitucional"
+              (ngModelChange)="escola.emailInstitucional = $event"
+              [attr.aria-invalid]="erro1('emailInstitucional') ? 'true' : null"
+              [attr.aria-describedby]="
+                erro1('emailInstitucional') ? 'escola-email-erro' : null
+              "
+            />
+            @if (erro1('emailInstitucional')) {
+              <p class="campo__erro" id="escola-email-erro">
+                {{ erro1('emailInstitucional') }}
+              </p>
+            }
+          </div>
+
+          <h3 class="auth-secao__titulo">Endereço</h3>
+
+          <div class="campo">
+            <label class="form-label" for="escola-cep">CEP</label>
+            <input
+              id="escola-cep"
+              name="cep"
+              type="text"
+              class="form-control"
+              inputmode="numeric"
+              autocomplete="postal-code"
+              placeholder="00000-000"
+              [ngModel]="escola.endereco.cep"
+              (ngModelChange)="aoDigitarCep($event)"
+              (blur)="aoSairDoCep()"
+              [attr.aria-invalid]="erro1('cep') ? 'true' : null"
+              [attr.aria-describedby]="erro1('cep') ? 'escola-cep-erro' : null"
+            />
+            @if (buscandoCep()) {
+              <p class="campo__dica" aria-live="polite">Buscando endereço…</p>
+            }
+            @if (erro1('cep')) {
+              <p class="campo__erro" id="escola-cep-erro">{{ erro1('cep') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-logradouro">Logradouro</label>
+            <input
+              id="escola-logradouro"
+              name="logradouro"
+              type="text"
+              class="form-control"
+              autocomplete="address-line1"
+              [ngModel]="escola.endereco.logradouro"
+              (ngModelChange)="escola.endereco.logradouro = $event"
+              [attr.aria-invalid]="erro1('logradouro') ? 'true' : null"
+              [attr.aria-describedby]="erro1('logradouro') ? 'escola-logradouro-erro' : null"
+            />
+            @if (erro1('logradouro')) {
+              <p class="campo__erro" id="escola-logradouro-erro">{{ erro1('logradouro') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-numero">Número</label>
+            <input
+              id="escola-numero"
+              name="numero"
+              type="text"
+              class="form-control"
+              [ngModel]="escola.endereco.numero"
+              (ngModelChange)="escola.endereco.numero = $event"
+              [attr.aria-invalid]="erro1('numero') ? 'true' : null"
+              [attr.aria-describedby]="erro1('numero') ? 'escola-numero-erro' : null"
+            />
+            @if (erro1('numero')) {
+              <p class="campo__erro" id="escola-numero-erro">{{ erro1('numero') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-complemento">Complemento (opcional)</label>
+            <input
+              id="escola-complemento"
+              name="complemento"
+              type="text"
+              class="form-control"
+              autocomplete="address-line2"
+              [ngModel]="escola.endereco.complemento"
+              (ngModelChange)="escola.endereco.complemento = $event"
+            />
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-bairro">Bairro (opcional)</label>
+            <input
+              id="escola-bairro"
+              name="bairro"
+              type="text"
+              class="form-control"
+              [ngModel]="escola.endereco.bairro"
+              (ngModelChange)="escola.endereco.bairro = $event"
+            />
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-cidade">Cidade</label>
+            <input
+              id="escola-cidade"
+              name="cidade"
+              type="text"
+              class="form-control"
+              autocomplete="address-level2"
+              [ngModel]="escola.endereco.cidade"
+              (ngModelChange)="escola.endereco.cidade = $event"
+              [attr.aria-invalid]="erro1('cidade') ? 'true' : null"
+              [attr.aria-describedby]="erro1('cidade') ? 'escola-cidade-erro' : null"
+            />
+            @if (erro1('cidade')) {
+              <p class="campo__erro" id="escola-cidade-erro">{{ erro1('cidade') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="escola-uf">UF</label>
+            <input
+              id="escola-uf"
+              name="uf"
+              type="text"
+              class="form-control"
+              maxlength="2"
+              autocomplete="address-level1"
+              [ngModel]="escola.endereco.uf"
+              (ngModelChange)="escola.endereco.uf = $event"
+              [attr.aria-invalid]="erro1('uf') ? 'true' : null"
+              [attr.aria-describedby]="erro1('uf') ? 'escola-uf-erro' : null"
+            />
+            @if (erro1('uf')) {
+              <p class="campo__erro" id="escola-uf-erro">{{ erro1('uf') }}</p>
+            }
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary w-100"
+            (click)="proximo()"
+          >
+            Continuar
+          </button>
+        } @else if (etapaAtual() === 2) {
+          <h2 id="etapa-titulo" class="etapa-titulo" tabindex="-1">Responsável</h2>
+
+          <div class="alert alert-warning auth-alert">
+            Esta conta terá acesso a todos os dados da escola. Será exigida verificação em
+            duas etapas.
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="responsavel-nome">Nome completo</label>
+            <input
+              id="responsavel-nome"
+              name="responsavelNome"
+              type="text"
+              class="form-control"
+              autocomplete="name"
+              [ngModel]="responsavel.nome"
+              (ngModelChange)="responsavel.nome = $event"
+              [attr.aria-invalid]="erro2('nome') ? 'true' : null"
+              [attr.aria-describedby]="erro2('nome') ? 'responsavel-nome-erro' : null"
+            />
+            @if (erro2('nome')) {
+              <p class="campo__erro" id="responsavel-nome-erro">{{ erro2('nome') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="responsavel-email">E-mail</label>
+            <input
+              id="responsavel-email"
+              name="responsavelEmail"
+              type="email"
+              class="form-control"
+              autocomplete="email"
+              spellcheck="false"
+              [ngModel]="responsavel.email"
+              (ngModelChange)="responsavel.email = $event"
+              [attr.aria-invalid]="erro2('email') ? 'true' : null"
+              [attr.aria-describedby]="erro2('email') ? 'responsavel-email-erro' : null"
+            />
+            @if (erro2('email')) {
+              <p class="campo__erro" id="responsavel-email-erro">{{ erro2('email') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="responsavel-senha">Senha</label>
+            <div class="campo-senha">
+              <input
+                id="responsavel-senha"
+                name="responsavelSenha"
+                [type]="senhaVisivel() ? 'text' : 'password'"
+                class="form-control"
+                autocomplete="new-password"
+                [ngModel]="responsavel.senha"
+                (ngModelChange)="aoDigitarSenhaResponsavel($event)"
+                [attr.aria-invalid]="erro2('senha') ? 'true' : null"
+                [attr.aria-describedby]="erro2('senha') ? 'responsavel-senha-erro' : null"
+              />
+              <button
+                type="button"
+                class="campo-senha__toggle"
+                [attr.aria-pressed]="senhaVisivel()"
+                (click)="senhaVisivel.set(!senhaVisivel())"
+              >
+                {{ senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha' }}
+              </button>
+            </div>
+            <p class="campo__dica">
+              Mínimo de 8 caracteres, com pelo menos uma letra e um número. Ex.: Senha1234
+            </p>
+            @if (responsavel.senha) {
+              <p
+                class="forca-senha"
+                [class.forca-senha--fraca]="forca().nivel === 'fraca'"
+                [class.forca-senha--razoavel]="forca().nivel === 'razoavel'"
+                [class.forca-senha--forte]="forca().nivel === 'forte'"
+                aria-live="polite"
+              >
+                <span aria-hidden="true" class="forca-senha__barra">
+                  <span class="forca-senha__preenchimento"></span>
+                </span>
+                {{ forca().rotulo }}
+              </p>
+            }
+            @if (erro2('senha')) {
+              <p class="campo__erro" id="responsavel-senha-erro">{{ erro2('senha') }}</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label class="form-label" for="responsavel-confirmacao">Confirmar senha</label>
+            <div class="campo-senha">
+              <input
+                id="responsavel-confirmacao"
+                name="responsavelConfirmacao"
+                [type]="confirmacaoVisivel() ? 'text' : 'password'"
+                class="form-control"
+                autocomplete="new-password"
+                [ngModel]="responsavel.confirmacao"
+                (ngModelChange)="responsavel.confirmacao = $event"
+                [attr.aria-invalid]="erro2('confirmacao') ? 'true' : null"
+                [attr.aria-describedby]="
+                  erro2('confirmacao') ? 'responsavel-confirmacao-erro' : null
+                "
+              />
+              <button
+                type="button"
+                class="campo-senha__toggle"
+                [attr.aria-pressed]="confirmacaoVisivel()"
+                (click)="confirmacaoVisivel.set(!confirmacaoVisivel())"
+              >
+                {{ confirmacaoVisivel() ? 'Ocultar senha' : 'Mostrar senha' }}
+              </button>
+            </div>
+            @if (erro2('confirmacao')) {
+              <p class="campo__erro" id="responsavel-confirmacao-erro">
+                {{ erro2('confirmacao') }}
+              </p>
+            }
+          </div>
+
+          <div class="auth-acoes">
+            <button type="button" class="btn btn-outline" (click)="voltar()">Voltar</button>
+            <button type="button" class="btn btn-primary" (click)="proximo()">
+              Continuar
+            </button>
+          </div>
+        } @else {
+          <h2 id="etapa-titulo" class="etapa-titulo" tabindex="-1">Revisão</h2>
+
+          <div class="resumo-secao">
+            <div class="resumo-secao__cabecalho">
+              <h3 class="resumo-secao__titulo">Dados da escola</h3>
+              <button type="button" class="btn btn-outline" (click)="editar(1)">
+                Editar
+              </button>
+            </div>
+            <dl>
+              <dt>CNPJ</dt>
+              <dd>{{ escola.cnpj }}</dd>
+              <dt>Nome</dt>
+              <dd>{{ escola.nomeEscola }}</dd>
+              <dt>E-mail</dt>
+              <dd>{{ escola.emailInstitucional }}</dd>
+              <dt>Endereço</dt>
+              <dd>
+                {{ escola.endereco.logradouro }}, {{ escola.endereco.numero }}
+                @if (escola.endereco.complemento) {
+                  — {{ escola.endereco.complemento }}
+                }
+                <br />
+                {{ escola.endereco.bairro ? escola.endereco.bairro + ', ' : '' }}{{
+                  escola.endereco.cidade
+                }}/{{ escola.endereco.uf }} — CEP {{ escola.endereco.cep }}
+              </dd>
+            </dl>
+          </div>
+
+          <div class="resumo-secao">
+            <div class="resumo-secao__cabecalho">
+              <h3 class="resumo-secao__titulo">Responsável</h3>
+              <button type="button" class="btn btn-outline" (click)="editar(2)">
+                Editar
+              </button>
+            </div>
+            <dl>
+              <dt>Nome</dt>
+              <dd>{{ responsavel.nome }}</dd>
+              <dt>E-mail</dt>
+              <dd>{{ responsavel.email }}</dd>
+            </dl>
+          </div>
+
+          <div class="form-check mb-3">
+            <input
+              id="escola-declaro"
+              name="declaro"
+              type="checkbox"
+              class="form-check-input"
+              [ngModel]="declaro()"
+              (ngModelChange)="declaro.set($event)"
+            />
+            <label class="form-check-label" for="escola-declaro">
+              Declaro que sou responsável por esta escola e concordo com os termos.
+            </label>
+          </div>
+
+          <div class="auth-acoes">
+            <button type="button" class="btn btn-outline" (click)="voltar()">Voltar</button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!declaro() || enviando()"
+              [attr.aria-busy]="enviando()"
+            >
+              {{ enviando() ? 'Criando escola…' : 'Criar escola' }}
+            </button>
+          </div>
+        }
+      </form>
+
+      <div class="auth-links">
+        <a routerLink="/entrar">Já tenho conta</a>
+      </div>
+    </section>
+  </div>
+</main>

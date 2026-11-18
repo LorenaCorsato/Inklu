@@ -11,6 +11,28 @@ import { Documentos } from './documentos/documentos';
 import { Turmas } from './turmas/turmas';
 import { Materias } from './materias/materias';
 import { pendingChangesGuard } from './documentos/editor/pending-changes.guard';
+import { Login } from './auth/login/login';
+import { Cadastro } from './auth/cadastro/cadastro';
+import { VerificarEmail } from './auth/verificar-email/verificar-email';
+import { EscolherFuncao } from './auth/escolher-funcao/escolher-funcao';
+import { RecuperarSenha } from './auth/recuperar-senha/recuperar-senha';
+import { RedefinirSenha } from './auth/redefinir-senha/redefinir-senha';
+import { Mfa } from './auth/mfa/mfa';
+import { Contexto } from './auth/contexto/contexto';
+import { SemAcesso } from './auth/sem-acesso/sem-acesso';
+import { AceitarConvite } from './auth/aceitar-convite/aceitar-convite';
+import { ConviteInvalido } from './auth/convite-invalido/convite-invalido';
+import { CadastroEscola } from './auth/cadastro-escola/cadastro-escola';
+import { ConvidarProfessor } from './auth/convidar-professor/convidar-professor';
+import { Painel } from './auth/painel/painel';
+import {
+  contextoGuard,
+  coordenacaoGuard,
+  funcaoGuard,
+  mfaGuard,
+  painelGuard,
+  semAcessoGuard,
+} from './auth/guards/auth.guards';
 
 export const routes: Routes = [
   {
@@ -70,5 +92,69 @@ export const routes: Routes = [
   {
     path: 'materias',
     component: Materias,
+  },
+
+  // ─── Autenticação (seção 2 da especificação) ────────────────────────────────
+  {
+    path: 'entrar',
+    component: Login,
+  },
+  {
+    path: 'entrar/mfa',
+    component: Mfa,
+    canActivate: [mfaGuard],
+  },
+  {
+    path: 'cadastro',
+    component: Cadastro,
+  },
+  {
+    path: 'cadastro/funcao',
+    component: EscolherFuncao,
+    canActivate: [funcaoGuard],
+  },
+  {
+    path: 'verificar-email',
+    component: VerificarEmail,
+  },
+  {
+    path: 'recuperar-senha',
+    component: RecuperarSenha,
+  },
+  {
+    path: 'redefinir-senha',
+    component: RedefinirSenha,
+  },
+  {
+    path: 'contexto',
+    component: Contexto,
+    canActivate: [contextoGuard],
+  },
+  {
+    path: 'sem-acesso',
+    component: SemAcesso,
+    canActivate: [semAcessoGuard],
+  },
+  {
+    path: 'convite/invalido',
+    component: ConviteInvalido,
+  },
+  {
+    path: 'convite/:token',
+    component: AceitarConvite,
+  },
+  {
+    path: 'escola/cadastro',
+    component: CadastroEscola,
+  },
+  {
+    path: 'escola/convites',
+    component: ConvidarProfessor,
+    canActivate: [coordenacaoGuard],
+  },
+  {
+    path: 'painel',
+    component: Painel,
+    canActivate: [painelGuard],
   },
 ];

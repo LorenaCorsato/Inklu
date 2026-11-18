@@ -1,0 +1,50 @@
+<main class="auth-page">
+  <div class="auth-shell">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Escolha onde você quer entrar</h1>
+      <p class="auth-subtitle">
+        Sua conta tem mais de um vínculo. Escolha o contexto que deseja usar agora.
+      </p>
+
+      @if (erro()) {
+        <div class="alert alert-danger auth-alert" role="alert">{{ erro() }}</div>
+      }
+
+      @if (carregando()) {
+        <div class="skeleton-lista" aria-busy="true" aria-label="Carregando vínculos">
+          <span></span>
+          <span></span>
+        </div>
+      } @else {
+        <div class="lista-vinculos">
+          @for (vinculo of vinculos(); track vinculo.id) {
+            <button
+              type="button"
+              class="vinculo-card"
+              [disabled]="enviandoId() !== null"
+              [attr.aria-busy]="enviandoId() === vinculo.id"
+              (click)="escolher(vinculo)"
+            >
+              <span>
+                <span class="vinculo-card__nome">{{ nomeVinculo(vinculo) }}</span>
+                <span class="vinculo-card__funcao">{{ rotulo(vinculo) }}</span>
+              </span>
+              <span class="vinculo-card__lado">
+                @if (vinculo.ultimoUsado) {
+                  <span class="badge-ultimo">Último usado</span>
+                }
+                @if (enviandoId() === vinculo.id) {
+                  <span>Entrando…</span>
+                }
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</main>

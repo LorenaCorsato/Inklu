@@ -1,0 +1,96 @@
+:host { display: block; }
+
+.calendar-card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  padding: 12px;
+}
+
+.calendar-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.calendar-month { font-size: var(--ds-font-size-md); font-weight: 500; color: var(--ds-muted); }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.cal-dow { font-size: var(--ds-font-size-sm); color: var(--ds-muted); padding: 6px 0; }
+.cal-day-wrap { position: relative; }
+
+.cal-day {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ds-body);
+  font-size: var(--ds-font-size-sm);
+
+  &:hover { background: var(--ds-border-subtle); }
+  &:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 1px; }
+
+  &.outside { color: #b6b6c8; }
+  &.today .cal-num {
+    background: #5b2eff;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+}
+
+.cal-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ds-primary);
+  margin-top: 1px;
+}
+
+.cal-pill {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--ds-body);
+  color: var(--ds-surface);
+  border-radius: var(--ds-radius-pill);
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  box-shadow: var(--ds-shadow-md);
+}
+
+.cal-pill-item { line-height: 1.3; }
+
+.btn-ghost-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  background: var(--ds-surface);
+  border-radius: 8px;
+  color: var(--ds-muted);
+  cursor: pointer;
+
+  &:hover { background: var(--ds-border-subtle); color: var(--ds-body); }
+  &:focus-visible { outline: 2px solid var(--ds-primary); outline-offset: 2px; }
+}

@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
 import { LucideX, LucideAlertCircle, LucideCheckCircle, LucideInfo } from '@lucide/angular';
 
 @Component({
@@ -7,7 +15,7 @@ import { LucideX, LucideAlertCircle, LucideCheckCircle, LucideInfo } from '@luci
   templateUrl: './toast.html',
   styleUrl: './toast.scss',
 })
-export class Toast implements OnChanges {
+export class Toast implements OnChanges, OnDestroy {
   @Input() isOpen = false;
   @Input() message = '';
   @Input() type: 'error' | 'success' | 'info' = 'error';
@@ -20,6 +28,10 @@ export class Toast implements OnChanges {
     if (changes['isOpen'] && this.isOpen) {
       this.startTimer();
     }
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutId) clearTimeout(this.timeoutId);
   }
 
   close(): void {

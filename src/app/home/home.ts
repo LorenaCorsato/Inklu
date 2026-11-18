@@ -1,143 +1,109 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import {
-  LucideBookOpenText,
-  LucideCalendarClock,
   LucideCheckCheck,
-  LucideChevronDown,
   LucideClock3,
-  LucideDiamond,
-  LucideEllipsisVertical,
-  LucideFileText,
+  LucideEllipsis,
   LucideFiles,
-  LucideTriangleAlert,
-  LucideUser,
 } from '@lucide/angular';
-
-type Priority = 'Alta' | 'Médio' | 'Baixa';
-
-interface TaskCard {
-  title: string;
-  description: string;
-  fileName: string;
-  dueLabel: string;
-  priority: Priority;
-}
-
-interface DocumentCard {
-  title: string;
-  subject: string;
-  timeAgo: string;
-  student: string;
-}
-
-interface MetricCard {
-  label: string;
-  value: string;
-  iconClass: string;
-  icon: 'pending' | 'success' | 'primary';
-}
+import { DocumentosService } from '../services/documentos.service';
+import { HomeCalendar } from './home-calendar/home-calendar';
+import { MONTHS_PT, seedHomeTasks } from './home-tasks';
+import { TaskStack } from './task-stack/task-stack';
 
 @Component({
   selector: 'app-home',
   imports: [
     CommonModule,
-    LucideBookOpenText,
-    LucideCalendarClock,
+    RouterLink,
     LucideCheckCheck,
-    LucideChevronDown,
     LucideClock3,
-    LucideDiamond,
-    LucideEllipsisVertical,
-    LucideFileText,
+    LucideEllipsis,
     LucideFiles,
-    LucideTriangleAlert,
-    LucideUser,
+    TaskStack,
+    HomeCalendar,
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class Home {
-  protected readonly metrics: MetricCard[] = [
-    {
-      label: 'Tarefas pendentes',
-      value: '32',
-      iconClass: 'metric-icon--danger',
-      icon: 'pending',
-    },
-    {
-      label: 'Tarefas concluídas',
-      value: '4',
-      iconClass: 'metric-icon--success',
-      icon: 'success',
-    },
-    {
-      label: 'Docs. adaptados',
-      value: '32',
-      iconClass: 'metric-icon--primary',
-      icon: 'primary',
-    },
-  ] as const;
+  private readonly router = inject(Router);
+  private readonly documentos = inject(DocumentosService);
 
-  protected readonly tasks: TaskCard[] = [
-    {
-      title: 'Fazer Relatórios para pais João',
-      description: 'Realizar o relatório de aproveitamento para os pais do João e salvar em PDF.',
-      fileName: 'pei_aluna.pdf',
-      dueLabel: '12/06 às 12h30',
-      priority: 'Médio',
-    },
-    {
-      title: 'Fazer Relatórios para pais João',
-      description: 'Revisar as observações, ajustar a linguagem e validar com coordenação.',
-      fileName: 'pei_aluna.pdf',
-      dueLabel: '12/06 às 12h30',
-      priority: 'Alta',
-    },
-    {
-      title: 'Fazer Relatórios para pais João',
-      description: 'Atualizar o documento com adaptações de leitura e anexar exemplos de apoio.',
-      fileName: 'pei_aluna.pdf',
-      dueLabel: '12/06 às 12h30',
-      priority: 'Baixa',
-    },
-    {
-      title: 'Fazer Relatórios para pais João',
-      description: 'Conferir status final e encaminhar para assinatura do responsável.',
-      fileName: 'pei_aluna.pdf',
-      dueLabel: '12/06 às 12h30',
-      priority: 'Alta',
-    },
-  ];
+  protected readonly now = signal(new Date());
 
-  protected readonly recentDocuments: DocumentCard[] = [
-    {
-      title: 'Atividade_matematica_felipe_2b',
-      subject: 'Matemática',
-      timeAgo: 'Há 30 min',
-      student: 'Felipe',
-    },
-    {
-      title: 'Atividade_matematica_felipe_2b',
-      subject: 'Matemática',
-      timeAgo: 'Há 30 min',
-      student: 'Felipe',
-    },
-    {
-      title: 'Atividade_matematica_felipe_2b',
-      subject: 'Matemática',
-      timeAgo: 'Há 30 min',
-      student: 'Felipe',
-    },
-    {
-      title: 'Atividade_matematica_felipe_2b',
-      subject: 'Matemática',
-      timeAgo: 'Há 30 min',
-      student: 'Felipe',
-    },
-  ];
+  protected readonly dateChip = computed(() => {
+    const d = this.now();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${d.getDate()} de ${MONTHS_PT[d.getMonth()]} | ${hh}:${mm}`;
+  });
 
-  protected getPriorityClass(priority: Priority): string {
-    return `priority--${priority.toLowerCase()}`;
+  protected readonly greeting = computed(() => {
+    const h = this.now().getHours();
+    if (h < 12) return 'Bom dia';
+    if (h < 18) return 'Boa tarde';
+    return 'Boa noite';
+  });
+
+  // Tarefas ordenadas, compartilhadas entre pilha e calendário.
+  protected readonly tasks = signal(seedHomeTasks());
+  protected readonly pendingCount = computed(() => this.tasks().length);
+  protected readonly doneCount = computed(() => 3);
+  protected readonly docsCount = computed(() => this.documentos.files().length);
+
+  // ─── Documentos recentes (5 mais recentes) ───
+  protected readonly recentFiles = computed(() =>
+    [...this.documentos.files()]
+      .sort((a, b) => +new Date(b.modifiedAt) - +new Date(a.modifiedAt))
+      .slice(0, 5),
+  );
+
+  protected readonly recentDisplay = computed(() => {
+    const real = this.recentFiles();
+    if (real.length >= 5) {
+      return real.map((f) => ({
+        real: f as { id: string; name: string; size: number; type: string; modifiedAt: string } | null,
+      }));
+    }
+    const out: { real: { id: string; name: string; size: number; type: string; modifiedAt: string } | null }[] =
+      real.map((f) => ({ real: f }));
+    while (out.length < 5) out.push({ real: null });
+    return out;
+  });
+
+  protected sizeLabel(bytes: number): string {
+    if (bytes >= 1_048_576) {
+      const mb = bytes / 1_048_576;
+      return `${mb >= 10 ? Math.round(mb) : mb.toFixed(mb % 1 ? 1 : 0)}mb`;
+    }
+    return `${Math.max(1, Math.round(bytes / 1024))}kb`;
+  }
+
+  protected fileDateLabel(iso: string): string {
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mi = String(d.getMinutes()).padStart(2, '0');
+    return `${dd}/${mm} | ${hh}:${mi}`;
+  }
+
+  protected typeLabel(mime: string, name: string): string {
+    if (mime.includes('pdf') || name.endsWith('.pdf')) return 'Atividade';
+    if (mime.includes('word') || name.endsWith('.docx')) return 'Avaliação';
+    if (mime.includes('sheet') || name.endsWith('.xlsx')) return 'Planilha';
+    if (mime.startsWith('image/')) return 'Imagem';
+    return 'Documento';
+  }
+
+  protected subjectLabel(): string {
+    return 'Matemática';
+  }
+
+  protected openDoc(id: string | null): void {
+    if (id) void this.router.navigate(['/documentos/editor', id]);
+    else void this.router.navigate(['/documentos']);
   }
 }

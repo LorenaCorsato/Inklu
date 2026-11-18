@@ -1,11 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <title>Inklu</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- Fonte da interface: Rethink Sans (self-hosted). O preload evita o
+         salto de layout quando o woff2 chega, e o `crossorigin` é exigido
+         mesmo para arquivos da própria origem. -->
+    <link
+      rel="preload"
+      href="/fonts/rethink-sans/rethink-sans-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preconnect" href="https://placehold.net" />
   </head>
   <body>
     <app-root></app-root>

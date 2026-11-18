@@ -1,0 +1,113 @@
+<div class="task-stack-wrapper" (keydown)="onKeyDown($event)">
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <h2 class="section-title mb-0">Tarefas</h2>
+      @if (tasks().length > 0) {
+        <span class="task-counter" aria-live="polite">
+          {{ safeIndex() + 1 }} / {{ tasks().length }}
+        </span>
+      }
+    </div>
+
+    <div class="d-flex gap-1">
+      <button
+        class="btn-ghost-icon"
+        type="button"
+        (click)="prev()"
+        [disabled]="!canPrev()"
+        aria-label="Tarefa anterior"
+      >
+        <svg lucideChevronLeft [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+      </button>
+      <button
+        class="btn-ghost-icon"
+        type="button"
+        (click)="next()"
+        [disabled]="!canNext()"
+        aria-label="Próxima tarefa"
+      >
+        <svg lucideChevronRight [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+      </button>
+    </div>
+  </div>
+
+  @if (tasks().length === 0) {
+    <div class="card border p-4 text-center text-muted">Você não tem tarefas pendentes</div>
+  } @else {
+    <div
+      class="task-stack"
+      tabindex="0"
+      role="region"
+      aria-label="Pilha de tarefas"
+    >
+      <!-- Cards saindo do topo com efeito de fade -->
+      @for (exit of exitingCards(); track exit.uid) {
+        <article
+          class="task-card task-exiting"
+          [class.dir-next]="exit.dir === 'next'"
+          [class.dir-prev]="exit.dir === 'prev'"
+          aria-hidden="true"
+        >
+          <span class="task-kind">{{ exit.task.kind }}</span>
+          <h3 class="task-title">{{ exit.task.title }}</h3>
+          <p class="task-desc">{{ exit.task.description }}</p>
+
+          <div class="task-footer">
+            <p class="task-meta">
+              <span class="d-inline-flex align-items-center gap-1">
+                <svg lucideClock3 [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+                {{ exit.task.minutes }} min
+              </span>
+              <span class="d-inline-flex align-items-center gap-1">
+                <svg lucideCalendarDays [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+                {{ dueLabel(exit.task.due) }}
+              </span>
+            </p>
+            <button class="btn-do" type="button" tabindex="-1">Fazer agora</button>
+          </div>
+        </article>
+      }
+
+      <!-- Pilha visível (até 3 cards consecutivos) -->
+      @for (task of visibleStack(); track task.id; let pos = $index) {
+        <article
+          class="task-card"
+          [style.--pos]="pos"
+          [style.--drag-x]="pos === 0 ? dragOffsetX() : 0"
+          [class.task-front]="pos === 0"
+          [class.is-dragging]="pos === 0 && dragging()"
+          [class.is-entering]="pos === 0 && enteringId() === task.id"
+          [class.dir-next]="animDir() === 'next'"
+          [class.dir-prev]="animDir() === 'prev'"
+          [attr.aria-hidden]="pos > 0 ? 'true' : null"
+          (click)="pos > 0 ? jumpBy(pos) : null"
+          (pointerdown)="pos === 0 ? onPointerDown($event) : null"
+          (pointermove)="pos === 0 ? onPointerMove($event) : null"
+          (pointerup)="pos === 0 ? onPointerUp($event) : null"
+          (pointercancel)="pos === 0 ? onPointerCancel() : null"
+        >
+          <span class="task-kind">{{ task.kind }}</span>
+          <h3 class="task-title">{{ task.title }}</h3>
+          <p class="task-desc">{{ task.description }}</p>
+
+          <div class="task-footer">
+            <p class="task-meta">
+              <span class="d-inline-flex align-items-center gap-1">
+                <svg lucideClock3 [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+                {{ task.minutes }} min
+              </span>
+              <span class="d-inline-flex align-items-center gap-1">
+                <svg lucideCalendarDays [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+                {{ dueLabel(task.due) }}
+              </span>
+            </p>
+
+            @if (pos === 0) {
+              <button class="btn-do" type="button" (click)="goTask()">Fazer agora</button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

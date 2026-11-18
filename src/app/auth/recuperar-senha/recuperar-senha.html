@@ -1,0 +1,62 @@
+<main class="auth-page">
+  <div class="auth-shell">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Recuperar senha</h1>
+      <p class="auth-subtitle">
+        Informe o e-mail da sua conta e enviaremos as instruções para criar uma nova
+        senha.
+      </p>
+
+      @if (erroRede()) {
+        <div id="recuperar-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erroRede() }}
+        </div>
+      }
+
+      @if (enviado()) {
+        <div class="alert alert-success auth-alert" role="status" aria-live="polite">
+          Se o e-mail estiver cadastrado, enviaremos as instruções em alguns minutos.
+        </div>
+      }
+
+      <form class="auth-form" novalidate [attr.aria-busy]="enviando()" (ngSubmit)="enviar()">
+        <div class="campo">
+          <label class="form-label" for="recuperar-email">E-mail</label>
+          <input
+            id="recuperar-email"
+            name="email"
+            type="email"
+            class="form-control"
+            autocomplete="email"
+            spellcheck="false"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            [readOnly]="enviando()"
+            [attr.aria-invalid]="erro() ? 'true' : null"
+            [attr.aria-describedby]="erro() ? 'recuperar-email-erro' : null"
+          />
+          @if (erro()) {
+            <p class="campo__erro" id="recuperar-email-erro">{{ erro() }}</p>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="enviando()"
+          [attr.aria-busy]="enviando()"
+        >
+          {{ enviando() ? 'Enviando…' : 'Enviar instruções' }}
+        </button>
+      </form>
+
+      <div class="auth-links">
+        <a routerLink="/entrar">Voltar para o login</a>
+      </div>
+    </section>
+  </div>
+</main>
