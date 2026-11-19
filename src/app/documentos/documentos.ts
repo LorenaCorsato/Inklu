@@ -2,21 +2,18 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   LucideArrowLeft,
+  LucideChevronDown,
   LucideChevronRight,
-  LucideEllipsis,
-  LucideFilePlus,
-  LucideFolderInput,
+  LucideFolder,
   LucideFolderOpen,
   LucideFolderPlus,
   LucideLayoutGrid,
   LucideList,
-  LucidePencilLine,
-  LucideSquarePen,
   LucidePlus,
   LucideRotateCcw,
   LucideSearch,
   LucideSlidersHorizontal,
-  LucideTrash2,
+  LucideUpload,
   LucideX,
 } from '@lucide/angular';
 import {
@@ -29,6 +26,8 @@ import {
   DocumentosService,
 } from '../services/documentos.service';
 import { ModalExclusao } from './modal-exclusao/modal-exclusao';
+import { ArquivoCard } from './arquivo-card/arquivo-card';
+import { PastaCard } from './pasta-card/pasta-card';
 import {
   ItemDialogDestination,
   ItemDialogKind,
@@ -48,26 +47,25 @@ interface ItemRef {
 @Component({
   selector: 'app-documentos',
   imports: [
+    ArquivoCard,
     LucideArrowLeft,
+    LucideChevronDown,
     LucideChevronRight,
-    LucideEllipsis,
-    LucideFilePlus,
-    LucideFolderInput,
+    LucideFolder,
     LucideFolderOpen,
     LucideFolderPlus,
     LucideLayoutGrid,
     LucideList,
-    LucidePencilLine,
-    LucideSquarePen,
     LucidePlus,
     LucideRotateCcw,
     LucideSearch,
     LucideSlidersHorizontal,
-    LucideTrash2,
+    LucideUpload,
     LucideX,
     ModalDocumento,
     ModalExclusao,
     ModalItem,
+    PastaCard,
   ],
   host: {
     '(document:click)': 'closeItemMenus()',
@@ -485,6 +483,25 @@ export class Documentos {
 
   formatDate(isoDate: string): string {
     return new Date(isoDate).toLocaleDateString('pt-BR');
+  }
+
+  /** Data + hora no formato da referência (“18/11 | 16:52”). */
+  formatDateTime(isoDate: string): string {
+    const date = new Date(isoDate);
+    const day = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return `${day} | ${time}`;
+  }
+
+  /** Nome da pasta de origem do arquivo (rodapé do card). */
+  folderNameOf(file: DocumentoArquivo): string {
+    if (!file.folderId) return 'Documentos';
+    return this.folderById(file.folderId)?.name ?? 'Documentos';
+  }
+
+  /** Indica pastas “compartilhadas” (ícone de usuários na referência). */
+  isSharedFolder(name: string): boolean {
+    return name.toLowerCase().includes('compart');
   }
 
   private openItemDialog(mode: ItemDialogMode, kind: ItemDialogKind, id: string): void {
