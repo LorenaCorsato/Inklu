@@ -3,7 +3,6 @@ Desenvolvida como um projeto acadêmico para a disciplina de Engenharia de Softw
 
 ## :busts_in_silhouette:Integrantes
 - Carlos Henrique Mattei de Oliveira - Frontend
-- Diego Stocco Oliveira - Documentação e testes
 - Lavínia Keiller - Backend
 - Lorena Gonçalves Ribeiro Corsato - Backend
 - Lyncon de Oliveira Santos - Backend
