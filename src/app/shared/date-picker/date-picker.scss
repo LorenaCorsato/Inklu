@@ -1,0 +1,364 @@
+// Campo de data com calendário interativo.
+// Cores 100% via tokens do projeto (--ds-*); adapta a light/dark (html.dark).
+// O popup usa `position: fixed`; o topo/esquerda chegam via sinais (trava na tela).
+
+.dp {
+  position: relative;
+  width: 100%;
+}
+
+.dp__gatilho {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--ds-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cal-ink, var(--ds-body));
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: start;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+
+  &:hover {
+    border-color: var(--cal-accent, var(--ds-brand));
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--cal-accent, var(--ds-brand));
+    box-shadow: 0 0 0 3px var(--ds-primary-soft);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  svg {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    color: var(--cal-muted, var(--ds-muted));
+  }
+}
+
+.dp__texto {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--vazio {
+    color: var(--cal-muted, var(--ds-muted));
+  }
+}
+
+.dp__popup {
+  position: fixed;
+  z-index: 1300;
+  padding: 16px;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-surface);
+  color: var(--ds-body);
+  color-scheme: light dark;
+  box-shadow: var(--ds-shadow-md);
+  overscroll-behavior: contain;
+  animation: dp-aparecer 140ms ease;
+
+  button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes dp-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.dp__topo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dp__titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-body);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+
+  &:first-child {
+    margin-inline-start: -8px;
+  }
+
+  &:hover {
+    background: var(--ds-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-brand);
+    outline-offset: 1px;
+  }
+
+  svg {
+    color: var(--ds-muted);
+  }
+}
+
+.dp__espaco {
+  flex: 1;
+}
+
+.dp__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-neutral-600);
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-brand);
+    outline-offset: 1px;
+  }
+}
+
+.dp__semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin-top: 12px;
+  color: var(--ds-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+
+  span {
+    padding: 4px 0;
+  }
+}
+
+.dp__grade {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  justify-items: center;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.dp__dia {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--ds-radius-pill);
+  background: transparent;
+  color: var(--ds-body);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: var(--ds-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-brand);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &--fora {
+    color: var(--ds-muted);
+    opacity: 0.65;
+  }
+
+  &--hoje {
+    box-shadow: inset 0 0 0 1px var(--ds-brand);
+  }
+
+  &--ativo,
+  &--ativo:hover {
+    background: var(--ds-neutral-900);
+    color: var(--ds-surface);
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  &--ativo .dp__ponto {
+    background: var(--ds-surface);
+  }
+}
+
+.dp__ponto {
+  position: absolute;
+  bottom: 4px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ds-muted);
+}
+
+.dp__meses {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+  max-height: 264px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dp__mes {
+  min-height: 56px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-neutral-100);
+  color: var(--ds-body);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: var(--ds-border-subtle);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-brand);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+
+    &:hover {
+      background: var(--ds-neutral-100);
+    }
+  }
+
+  &--ativo,
+  &--ativo:hover {
+    background: var(--ds-neutral-900);
+    color: var(--ds-surface);
+    font-weight: 600;
+  }
+}
+
+.dp__rodape {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ds-border);
+}
+
+.dp__dica {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ds-muted);
+  font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dp__limpar {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-neutral-600);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-brand);
+    outline-offset: 1px;
+  }
+}
+
+.dp__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp__popup {
+    animation: none;
+  }
+}

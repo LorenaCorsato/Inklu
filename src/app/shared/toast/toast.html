@@ -1,30 +1,67 @@
-@if (isOpen) {
-  <div
-    class="toast-wrapper"
-    [class]="'toast-wrapper toast--' + type"
-    [attr.role]="type === 'error' ? 'alert' : 'status'"
-    [attr.aria-live]="type === 'error' ? 'assertive' : 'polite'"
-    aria-atomic="true"
-  >
-    <div class="toast-icon">
-      @if (type === 'error') {
-        <svg lucideAlertCircle [size]="20" [strokeWidth]="2"></svg>
-      }
-      @if (type === 'success') {
-        <svg lucideCheckCircle [size]="20" [strokeWidth]="2"></svg>
-      }
-      @if (type === 'info') {
-        <svg lucideInfo [size]="20" [strokeWidth]="2"></svg>
-      }
-    </div>
-    <span class="toast-message">{{ message }}</span>
-    <button
-      class="toast-close"
-      type="button"
-      aria-label="Fechar notificação"
-      (click)="close()"
+<div class="toast-stack" aria-live="polite">
+  @for (toast of toasts(); track toast.id) {
+    <div
+      class="toast-slot"
+      [class.is-mounted]="toast.mounted"
+      [class.is-collapsing-slot]="toast.slotCollapsing"
     >
-      <svg lucideX [size]="16" [strokeWidth]="2"></svg>
-    </button>
-  </div>
-}
+      <div class="toast-slot-inner">
+        <div
+          class="toast-wrapper toast--{{ toast.type }}"
+          [class.is-expanded]="toast.expanded"
+          [class.is-leaving]="toast.leaving"
+          [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
+          [attr.aria-live]="toast.type === 'error' ? 'assertive' : 'polite'"
+          aria-atomic="true"
+          (mouseenter)="onMouseEnter(toast.id)"
+          (mouseleave)="onMouseLeave(toast.id)"
+        >
+          <div class="toast-pill">
+            <span class="toast-icon-wrap" aria-hidden="true">
+              <svg class="toast-progress-ring" viewBox="0 0 36 36">
+                <circle class="toast-progress-track" cx="18" cy="18" r="16" />
+                @if (toast.expanded && !toast.leaving) {
+                  <circle
+                    class="toast-progress-bar"
+                    cx="18"
+                    cy="18"
+                    r="16"
+                    pathLength="100"
+                    [style.animationDuration]="toast.duration + 'ms'"
+                  />
+                }
+              </svg>
+
+              <span class="toast-icon">
+                @if (toast.type === 'error') {
+                  <svg lucideTriangleAlert [size]="14" [strokeWidth]="2.5"></svg>
+                }
+                @if (toast.type === 'success') {
+                  <svg lucideCheck [size]="14" [strokeWidth]="3"></svg>
+                }
+                @if (toast.type === 'info') {
+                  <svg lucideInfo [size]="14" [strokeWidth]="2.5"></svg>
+                }
+              </span>
+            </span>
+
+            <div class="toast-content-grid">
+              <div class="toast-content-inner">
+                <span class="toast-message">{{ toast.message }}</span>
+                <button
+                  class="toast-close"
+                  type="button"
+                  aria-label="Fechar notificação"
+                  (click)="close(toast.id)"
+                  tabindex="0"
+                >
+                  <svg lucideX [size]="14" [strokeWidth]="2.5"></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

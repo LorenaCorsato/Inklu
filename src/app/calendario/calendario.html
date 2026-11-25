@@ -1,16 +1,387 @@
-<div class="calendario-breadcrumb p-2 border-bottom d-flex align-items-center gap-2">
-  <p class="mb-0 text-muted">Calendário</p>
+<nav class="cal-breadcrumb" aria-label="Caminho da página">
+  <span>Calendário</span>
+</nav>
+
+<div class="cal">
+  <!-- ─── Barra de ferramentas ─── -->
+  <header class="cal__toolbar">
+    <div class="cal__navegacao">
+      <button type="button" class="cal__seta" aria-label="Período anterior" (click)="passo(true)">
+        <svg lucideChevronLeft [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+      </button>
+      <button type="button" class="cal__seta" aria-label="Próximo período" (click)="passo(false)">
+        <svg lucideChevronRight [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+      </button>
+      <button type="button" class="cal__hoje" (click)="irParaHoje()">Hoje</button>
+      <h1 class="cal__titulo">{{ tituloPeriodo() }}</h1>
+      <span class="cal__contagem" aria-live="polite">
+        {{ totalNaReferencia() }} {{ totalNaReferencia() === 1 ? 'tarefa' : 'tarefas' }}
+      </span>
+    </div>
+
+    <div class="cal__acoes">
+      <div class="cal__segmento" role="group" aria-label="Alternar visão do calendário">
+        <button
+          type="button"
+          [class.cal__segmento--ativo]="visao() === 'semana'"
+          [attr.aria-pressed]="visao() === 'semana'"
+          (click)="definirVisao('semana')"
+        >
+          Semana
+        </button>
+        <button
+          type="button"
+          [class.cal__segmento--ativo]="visao() === 'mes'"
+          [attr.aria-pressed]="visao() === 'mes'"
+          (click)="definirVisao('mes')"
+        >
+          Mês
+        </button>
+        <button
+          type="button"
+          [class.cal__segmento--ativo]="visao() === 'ano'"
+          [attr.aria-pressed]="visao() === 'ano'"
+          (click)="definirVisao('ano')"
+        >
+          Ano
+        </button>
+      </div>
+      <button type="button" class="cal__novo" (click)="abrirCriacao()">
+        <svg lucidePlus [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+        Nova tarefa
+      </button>
+    </div>
+  </header>
+
+  <ul class="cal__legenda" aria-label="Legenda de tipos de tarefa">
+    @for (tipo of tipos; track tipo.id) {
+      <li class="cal__legenda-item">
+        <span class="cal__ponto" [class]="'cal__ponto cal__ponto--' + tipo.id" aria-hidden="true"></span>
+        {{ tipo.rotulo }}
+      </li>
+    }
+    <li class="cal__dica">Arraste uma tarefa para reagendar</li>
+  </ul>
+
+  <!-- ─── Visão Mês ─── -->
+  @if (visao() === 'mes') {
+    <section class="cal__mes" aria-label="Calendário mensal">
+      <div class="cal__semana-cabecalho" aria-hidden="true">
+        @for (dia of nomesDiasSemana; track dia) {
+          <span>{{ dia }}</span>
+        }
+      </div>
+      <div class="cal__grade">
+        @for (dia of diasMes(); track dia.iso) {
+          <div
+            class="cal__dia"
+            [class.cal__dia--fora]="dia.foraDoMes"
+            [class.cal__dia--hoje]="dia.hoje"
+            [class.cal__dia--alvo]="diaAlvo() === dia.iso"
+            (dragover)="aoSobreDia($event, dia.iso)"
+            (dragleave)="aoSairDoDia(dia.iso)"
+            (drop)="aoSoltarNoDia($event, dia.iso)"
+          >
+            <div class="cal__dia-topo">
+              <span class="cal__dia-numero">{{ dia.numero }}</span>
+              @if (dia.hoje) {
+                <span class="cal__dia-hoje">Hoje</span>
+              }
+              <button
+                type="button"
+                class="cal__dia-add"
+                [attr.aria-label]="'Adicionar tarefa em ' + formatarDataCurta(dia.iso)"
+                (click)="abrirCriacao(dia.iso)"
+              >
+                <svg lucidePlus [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+              </button>
+            </div>
+
+            <div class="cal__eventos">
+              @for (evento of diaExpandido() === dia.iso ? eventosDoDia(dia.iso) : eventosDoDia(dia.iso).slice(0, 3); track evento.id) {
+                <app-cartao-tarefa
+                  modo="mes"
+                  [evento]="evento"
+                  [arrastando]="arrastandoId() === evento.id"
+                  (abrir)="abrirDetalhe($event)"
+                  (iniciarArrasto)="aoIniciarArrasto($event.event, $event.id)"
+                  (terminarArrasto)="aoTerminarArrasto()"
+                />
+              } @empty {
+                <span class="cal__vazio" aria-hidden="true"></span>
+              }
+              @if (diaExpandido() !== dia.iso && eventosDoDia(dia.iso).length > 3) {
+                <button type="button" class="cal__mais" (click)="alternarExpandido(dia.iso)">
+                  +{{ eventosDoDia(dia.iso).length - 3 }} mais
+                </button>
+              }
+              @if (diaExpandido() === dia.iso && eventosDoDia(dia.iso).length > 3) {
+                <button type="button" class="cal__mais" (click)="alternarExpandido(dia.iso)">
+                  Mostrar menos
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ─── Visão Semana ─── -->
+  @if (visao() === 'semana') {
+    <section class="cal__semana" aria-label="Calendário semanal">
+      @for (dia of diasDaSemana(); track dia.iso) {
+        <article
+          class="cal__coluna"
+          [class.cal__coluna--hoje]="dia.hoje"
+          [class.cal__coluna--alvo]="diaAlvo() === dia.iso"
+          (dragover)="aoSobreDia($event, dia.iso)"
+          (dragleave)="aoSairDoDia(dia.iso)"
+          (drop)="aoSoltarNoDia($event, dia.iso)"
+        >
+          <button type="button" class="cal__coluna-cabecalho" (click)="abrirCriacao(dia.iso)" [attr.aria-label]="'Adicionar tarefa em ' + formatarDataExtensa(dia.iso)">
+            <span class="cal__coluna-dia">{{ dia.hoje ? 'Hoje' : nomeDiaSemana(dia.data) }}</span>
+            <span class="cal__coluna-numero">{{ dia.numero }}</span>
+          </button>
+          <div class="cal__coluna-lista">
+            @for (evento of eventosDoDia(dia.iso); track evento.id) {
+              <app-cartao-tarefa
+                modo="semana"
+                [evento]="evento"
+                [arrastando]="arrastandoId() === evento.id"
+                (abrir)="abrirDetalhe($event)"
+                (iniciarArrasto)="aoIniciarArrasto($event.event, $event.id)"
+                (terminarArrasto)="aoTerminarArrasto()"
+              />
+            } @empty {
+              <span class="cal__coluna-vazia">Sem tarefas</span>
+            }
+          </div>
+        </article>
+      }
+    </section>
+  }
+
+  <!-- ─── Visão Ano ─── -->
+  @if (visao() === 'ano') {
+    <section class="cal__ano" aria-label="Calendário anual">
+      @for (mes of mesesDoAno(); track mes.mes) {
+        <article class="cal__mini">
+          <button type="button" class="cal__mini-titulo" (click)="irParaMes(mes.mes)" [attr.aria-label]="'Ver mês de ' + mes.nome">
+            {{ mes.nome }}
+          </button>
+          <div class="cal__mini-grade" aria-hidden="false">
+            @for (dia of nomesDiasSemana; track dia) {
+              <span class="cal__mini-dow">{{ dia.charAt(0) }}</span>
+            }
+            @for (celula of mes.celulas; track $index) {
+              @if (celula) {
+                <button
+                  type="button"
+                  class="cal__mini-dia"
+                  [class.cal__mini-dia--hoje]="celula.iso === hojeISO"
+                  [class.cal__mini-dia--alvo]="diaAlvo() === celula.iso"
+                  [attr.aria-label]="formatarDataExtensa(celula.iso) + (celula.total ? ': ' + celula.total + ' tarefas' : '')"
+                  (click)="irParaDia(celula.iso, 'semana')"
+                  (dragover)="aoSobreDia($event, celula.iso)"
+                  (dragleave)="aoSairDoDia(celula.iso)"
+                  (drop)="aoSoltarNoDia($event, celula.iso)"
+                >
+                  {{ celula.numero }}
+                  @if (celula.total > 0) {
+                    <span class="cal__mini-ponto" aria-hidden="true"></span>
+                  }
+                </button>
+              } @else {
+                <span aria-hidden="true"></span>
+              }
+            }
+          </div>
+        </article>
+      }
+    </section>
+  }
 </div>
 
-<div class="coming-soon-page d-flex flex-column align-items-center justify-content-center h-100">
-  <div class="coming-soon-card text-center">
-    <div class="coming-soon-icon mb-4">
-      <svg lucideConstruction [size]="64" [strokeWidth]="1.5"></svg>
+<!-- ─── Modal de detalhes ─── -->
+@if (detalhe(); as evento) {
+  <div class="cal__overlay" (click)="fecharDetalhe()">
+    <div
+      class="cal__modal"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'Detalhes de ' + evento.titulo"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="cal__modal-topo">
+        <span class="cal__selo" [class]="'cal__selo cal__selo--' + evento.tipo">
+          {{ rotuloTipo(evento.tipo) }}
+        </span>
+        <button type="button" class="cal__fechar" aria-label="Fechar detalhes" (click)="fecharDetalhe()">
+          <svg lucideX [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <h2 class="cal__modal-titulo">{{ evento.titulo }}</h2>
+
+      <ul class="cal__modal-meta">
+        <li>
+          <svg lucideCalendarDays [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+          {{ formatarDataExtensa(evento.data) }}
+        </li>
+        <li>
+          <svg lucideClock [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+          {{ evento.horaInicio }} – {{ evento.horaFim }}
+        </li>
+        @if (evento.turma && evento.turma !== '—') {
+          <li>
+            <svg lucideUsers [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+            Turma: {{ evento.turma }}
+          </li>
+        }
+        @if (evento.local) {
+          <li>
+            <svg lucideMapPin [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+            {{ evento.local }}
+          </li>
+        }
+      </ul>
+
+      @if (evento.descricao) {
+        <p class="cal__modal-descricao">{{ evento.descricao }}</p>
+      } @else {
+        <p class="cal__modal-descricao cal__modal-descricao--vazia">Nenhuma descrição</p>
+      }
+
+      <p class="cal__modal-responsavel">Responsável: <strong>{{ evento.responsavel }}</strong></p>
+
+      <footer class="cal__modal-rodape">
+        <button type="button" class="cal__btn cal__btn--perigo" (click)="excluirEvento(evento.id)">
+          <svg lucideTrash2 [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+          Excluir
+        </button>
+        <span class="cal__modal-espaco"></span>
+        <button type="button" class="cal__btn cal__btn--secundario" (click)="fecharDetalhe()">Fechar</button>
+        <button type="button" class="cal__btn cal__btn--primario" (click)="abrirEdicao(evento.id)">
+          <svg lucidePencil [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+          Editar
+        </button>
+      </footer>
     </div>
-    <h1 class="coming-soon-title fw-bold mb-2">Em construção</h1>
-    <p class="coming-soon-text text-muted mb-0">
-      Essa página ainda está sendo construída ou será construída.<br>
-      Volte depois para ver ela completa!
-    </p>
   </div>
-</div>
+}
+
+<!-- ─── Modal criar / editar ─── -->
+@if (editorAberto()) {
+  <div class="cal__overlay" (click)="fecharEditor()">
+    <div
+      class="cal__modal"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="editandoId() ? 'Editar tarefa' : 'Nova tarefa'"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="cal__modal-topo">
+        <h2 class="cal__modal-titulo cal__modal-titulo--form">
+          {{ editandoId() ? 'Editar tarefa' : 'Nova tarefa' }}
+        </h2>
+        <button type="button" class="cal__fechar" aria-label="Fechar editor" (click)="fecharEditor()">
+          <svg lucideX [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <div class="cal__form">
+        <label class="cal__campo">
+          <span>Título</span>
+          <input
+            type="text"
+            required
+            placeholder="Título da tarefa"
+            [value]="fTitulo()"
+            (input)="atualizarTitulo($event)"
+          />
+        </label>
+
+        <div class="cal__linha">
+          <div class="cal__campo">
+            <span id="cal-data-rotulo">Data</span>
+            <app-date-picker
+              [value]="fData()"
+              [marcadores]="datasComEvento()"
+              etiquetaId="cal-data-rotulo"
+              (valueChange)="definirData($event)"
+            />
+          </div>
+          <label class="cal__campo">
+            <span>Tipo</span>
+            <select [value]="fTipo()" (change)="atualizarTipo($event)">
+              @for (tipo of tipos; track tipo.id) {
+                <option [value]="tipo.id" [selected]="fTipo() === tipo.id">{{ tipo.rotulo }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <div class="cal__linha">
+          <label class="cal__campo">
+            <span>Início</span>
+            <input type="time" [value]="fInicio()" (input)="atualizarInicio($event)" />
+          </label>
+          <label class="cal__campo">
+            <span>Fim</span>
+            <input type="time" [value]="fFim()" (input)="atualizarFim($event)" />
+          </label>
+        </div>
+
+        <div class="cal__linha">
+          <label class="cal__campo">
+            <span>Turma</span>
+            <input
+              type="text"
+              placeholder="Turma"
+              [value]="fTurma()"
+              (input)="atualizarTurma($event)"
+            />
+          </label>
+          <label class="cal__campo">
+            <span>Local</span>
+            <input
+              type="text"
+              placeholder="Local"
+              [value]="fLocal()"
+              (input)="atualizarLocal($event)"
+            />
+          </label>
+        </div>
+
+        <label class="cal__campo">
+          <span>Descrição</span>
+          <textarea
+            rows="3"
+            placeholder="Observações e materiais"
+            [value]="fDescricao()"
+            (input)="atualizarDescricao($event)"
+          ></textarea>
+        </label>
+
+        @if (fErro()) {
+          <p class="cal__erro" role="alert">{{ fErro() }}</p>
+        }
+      </div>
+
+      <footer class="cal__modal-rodape">
+        @if (editandoId()) {
+          <button type="button" class="cal__btn cal__btn--perigo" (click)="excluirEvento(editandoId()!)">
+            <svg lucideTrash2 [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+            Excluir
+          </button>
+        }
+        <span class="cal__modal-espaco"></span>
+        <button type="button" class="cal__btn cal__btn--secundario" (click)="fecharEditor()">Cancelar</button>
+        <button type="button" class="cal__btn cal__btn--primario" (click)="salvarEvento()">
+          {{ editandoId() ? 'Salvar' : 'Criar tarefa' }}
+        </button>
+      </footer>
+    </div>
+  </div>
+}

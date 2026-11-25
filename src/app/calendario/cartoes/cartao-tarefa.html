@@ -1,0 +1,18 @@
+@let evt = evento();
+@let modoAtual = modo();
+
+<button
+  type="button"
+  [class]="classes()"
+  [attr.draggable]="true"
+  [attr.aria-label]="modoAtual === 'mes' ? evt.titulo : evt.titulo + ' ' + rotuloHora()"
+  (dragstart)="aoIniciarArrasto($event)"
+  (dragend)="aoTerminarArrasto()"
+  (click)="aoClicar()"
+>
+  <span class="ct__hora">{{ rotuloHora() }}</span>
+  <span class="ct__titulo">{{ evt.titulo }}</span>
+  @if (modoAtual === 'semana' && evt.turma && evt.turma !== '—') {
+    <span class="ct__turma">{{ evt.turma }}</span>
+  }
+</button>
