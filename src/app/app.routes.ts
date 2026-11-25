@@ -12,6 +12,7 @@ import { Turmas } from './turmas/turmas';
 import { Materias } from './materias/materias';
 import { pendingChangesGuard } from './documentos/editor/pending-changes.guard';
 import { Login } from './auth/login/login';
+import { LoginFirebase } from './auth/login-firebase/login-firebase';
 import { Cadastro } from './auth/cadastro/cadastro';
 import { VerificarEmail } from './auth/verificar-email/verificar-email';
 import { EscolherFuncao } from './auth/escolher-funcao/escolher-funcao';
@@ -98,6 +99,11 @@ export const routes: Routes = [
   {
     path: 'entrar',
     component: Login,
+  },
+  {
+    // Demonstração da integração com Firebase Authentication.
+    path: 'entrar-firebase',
+    component: LoginFirebase,
   },
   {
     path: 'entrar/mfa',

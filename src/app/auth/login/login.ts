@@ -6,6 +6,8 @@ import { ROTAS } from '../auth.config';
 import { formatarMMSS, mensagem } from '../auth.messages';
 import { mapearErro } from '../api/mapear-erro';
 import { AuthService } from '../services/auth.service';
+import { FirebaseAuthService } from '../../services/firebase-auth.service';
+import { VerificacaoEmailModalService } from '../verificacao-email-modal/verificacao-email-modal.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { SessaoStore } from '../state/sessao.store';
 import {
@@ -28,6 +30,8 @@ export class Login implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(SessaoStore);
   private readonly toast = inject(ToastService);
+  private readonly firebase = inject(FirebaseAuthService);
+  private readonly modalVerificacao = inject(VerificacaoEmailModalService);
 
   readonly rotas = ROTAS;
 
@@ -38,6 +42,7 @@ export class Login implements OnInit, OnDestroy {
   readonly erroEmail = signal<string | null>(null);
   readonly erroSenha = signal<string | null>(null);
   readonly anuncio = signal('');
+  readonly entrandoGoogle = signal(false);
 
   readonly estado = signal<LoginState>(estadoInicialLogin());
 
@@ -100,7 +105,12 @@ export class Login implements OnInit, OnDestroy {
 
         switch (resposta.status) {
           case 'ok':
-            void this.router.navigateByUrl(redirect || ROTAS.painel);
+            // Atualiza a sessão antes de entrar, para a navbar exibir o
+            // nome real do usuário (e não o perfil demo).
+            this.auth.carregarSessao(true).subscribe({
+              next: () => this.irParaInicio(redirect),
+              error: () => this.irParaInicio(redirect),
+            });
             break;
           case 'mfa_requerido':
             this.store.marcarSessaoPendenteMfa(email);
@@ -141,10 +151,45 @@ export class Login implements OnInit, OnDestroy {
     });
   }
 
+  entrarComGoogle(): void {
+    if (this.entrandoGoogle() || this.enviando() || this.bloqueado()) return;
+
+    this.erroEmail.set(null);
+    this.erroSenha.set(null);
+    this.entrandoGoogle.set(true);
+
+    this.auth.loginComGoogle().subscribe({
+      next: (resposta) => {
+        this.entrandoGoogle.set(false);
+        // Pop-up fechado pelo usuário: volta ao repouso, sem erro nem toast.
+        if (!resposta) return;
+        const redirect = this.route.snapshot.queryParamMap.get('redirect');
+        this.senha.set('');
+        this.auth.carregarSessao(true).subscribe({
+          next: () => this.irParaInicio(redirect),
+          error: () => this.irParaInicio(redirect),
+        });
+      },
+      error: (erro: unknown) => {
+        this.entrandoGoogle.set(false);
+        const mapeado = mapearErro(erro);
+        this.toast.erro(mapeado.mensagem);
+        this.focar('login-alerta');
+      },
+    });
+  }
+
   reenviarVerificacao(): void {
     void this.router.navigate([ROTAS.verificarEmail], {
       state: { email: this.email().trim(), modo: 'reenvio', nome: '' },
     });
+  }
+
+  private irParaInicio(redirect: string | null): void {
+    // Quem entrou com e-mail/senha e ainda não confirmou o endereço vê o
+    // modal global "Verifique seu e-mail" na tela inicial.
+    if (this.firebase.precisaVerificarEmail()) this.modalVerificacao.abrir();
+    void this.router.navigateByUrl(redirect || ROTAS.inicio);
   }
 
   private despachar(evento: EventoLogin): void {

@@ -32,6 +32,33 @@ export class SessaoStore {
     return this.carregada() && Date.now() - this.carregadaEm() < CACHE_SESSAO_MS;
   }
 
+  /**
+   * Sessão vinda do Firebase Authentication (fonte da verdade atual).
+   * Usuários Firebase ainda não têm vínculos de escola no backend, então a
+   * lista começa vazia — a home (`/`) não exige vínculo.
+   */
+  definirSessaoFirebase(
+    dados: { uid: string; email: string | null; nome: string | null; emailVerificado: boolean } | null,
+  ): void {
+    if (!dados) {
+      this.limpar();
+      return;
+    }
+    const email = dados.email ?? '';
+    this.usuario.set({
+      id: dados.uid,
+      nome: dados.nome?.trim() || email.split('@')[0] || 'Usuário',
+      email,
+      emailVerificado: dados.emailVerificado,
+      funcao: null,
+    });
+    this.vinculos.set([]);
+    this.contexto.set(null);
+    this.mfaPendente.set(false);
+    this.carregada.set(true);
+    this.carregadaEm.set(Date.now());
+  }
+
   definirSessao(resposta: RespostaMe): void {
     const lista = resposta.vinculos ?? [];
     const anterior = this.contexto();

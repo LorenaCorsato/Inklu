@@ -42,7 +42,7 @@ describe('Verificação de e-mail (S03)', () => {
 
   it('[TDD-050] [BDD-010] com token chama a API e mostra "Confirmando…"', () => {
     window.history.replaceState({}, '', '/verificar-email?token=tok-1');
-    const pendente = new Subject<{ proximo?: string }>();
+    const pendente = new Subject<{ proximo: string }>();
     auth.verificarEmail.mockReturnValue(pendente.asObservable());
 
     const el = criar();
@@ -54,15 +54,28 @@ describe('Verificação de e-mail (S03)', () => {
     pendente.complete();
   });
 
-  it('[TDD-051] [BDD-010] após sucesso navega para /cadastro/funcao', () => {
+  it('[TDD-051] [BDD-010] após sucesso vai para a tela inicial já logado', () => {
     window.history.replaceState({}, '', '/verificar-email?token=tok-1');
     const navegar = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     criar();
 
-    expect(navegar).toHaveBeenCalledWith(['/cadastro/funcao'], {
+    expect(navegar).toHaveBeenCalledWith(['/'], {
       replaceUrl: true,
     });
+  });
+
+  it('aceita o oobCode dos links enviados pelo Firebase', () => {
+    window.history.replaceState({}, '', '/verificar-email?mode=verifyEmail&oobCode=cod-1');
+    const pendente = new Subject<{ proximo: string }>();
+    auth.verificarEmail.mockReturnValue(pendente.asObservable());
+
+    criar();
+
+    expect(auth.verificarEmail).toHaveBeenCalledWith('cod-1');
+
+    pendente.next({ proximo: 'inicio' });
+    pendente.complete();
   });
 
   it('[TDD-052] [BDD-011] 410 mostra link expirado e botão de reenvio', () => {

@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build",
-    "start:backend": "npm run dev --prefix backend",
+    "start:backend": "cd ./backend && npm run dev",
     "start:frontend": "ng s -o",
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "watch": "ng build --watch --configuration development",
@@ -36,6 +36,7 @@
     "bootstrap": "^5.3.8",
     "dompurify": "^3.4.16",
     "dotenv": "^17.4.2",
+    "firebase": "^13.4.0",
     "ngx-img-cropper": "^14.0.1",
     "rxjs": "~7.8.0",
     "sass": "^1.100.0",

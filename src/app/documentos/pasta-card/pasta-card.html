@@ -1,0 +1,86 @@
+<article
+  class="folder-card"
+  [class.folder-card--menu-open]="menuOpen()"
+  role="button"
+  tabindex="0"
+  [style.--folder]="folder().color"
+  [attr.aria-label]="'Abrir pasta ' + folder().name"
+  (click)="open.emit(folder().id)"
+  (keydown.enter)="open.emit(folder().id)"
+  (keydown.space)="open.emit(folder().id); $event.preventDefault()"
+>
+  <div class="folder-visual">
+    <!-- Traseira com aba à esquerda -->
+    <svg class="folder-back" viewBox="0 0 200 160" preserveAspectRatio="none" aria-hidden="true">
+      <path
+        d="M0 14 C0 6 6 0 14 0 H66 C72 0 76 2 80 6 L86 12 C89 15 93 16 98 16 H186 C194 16 200 22 200 30 V146 C200 154 194 160 186 160 H14 C6 160 0 154 0 146 Z"
+      />
+    </svg>
+
+    <!-- Folhas -->
+    <span class="folder-paper folder-paper--back" aria-hidden="true"></span>
+    <span class="folder-paper folder-paper--front" aria-hidden="true"></span>
+
+    <!-- Painel frontal -->
+    <div class="folder-front" aria-hidden="true">
+      <svg viewBox="0 0 200 110" preserveAspectRatio="none">
+        <path
+          class="folder-front-base"
+          d="M0 16 C0 8 6 2 14 2 H186 C194 2 200 8 200 16 V96 C200 103 194 108 187 108 H13 C6 108 0 103 0 96 Z"
+        />
+        <path class="folder-front-edge" d="M14 2.75 H186" />
+      </svg>
+    </div>
+
+    @if (shared()) {
+      <span class="folder-badge" title="Pasta compartilhada">
+        <svg lucideUsers [size]="14" [strokeWidth]="2.25" aria-hidden="true"></svg>
+      </span>
+    }
+
+    <!-- Menu -->
+    <div class="item-options" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="item-menu-button"
+        [attr.aria-label]="'Mais opções para ' + folder().name"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-controls]="'item-menu-' + folder().id"
+        aria-haspopup="menu"
+        (click)="menuToggle.emit({ id: folder().id, event: $event })"
+      >
+        <svg lucideEllipsis [size]="18" [strokeWidth]="2.5" aria-hidden="true"></svg>
+      </button>
+      @if (menuOpen()) {
+        <div class="item-dropdown-menu" role="menu" [id]="'item-menu-' + folder().id">
+          <button type="button" class="item-dropdown-item" role="menuitem" (click)="addFile.emit(folder().id)">
+            <svg lucideFilePlus [size]="16" aria-hidden="true"></svg>
+            Adicionar arquivo
+          </button>
+          <button type="button" class="item-dropdown-item" role="menuitem" (click)="rename.emit(folder().id)">
+            <svg lucidePencilLine [size]="16" aria-hidden="true"></svg>
+            Renomear
+          </button>
+          <button type="button" class="item-dropdown-item" role="menuitem" (click)="move.emit(folder().id)">
+            <svg lucideFolderInput [size]="16" aria-hidden="true"></svg>
+            Mover
+          </button>
+          <button
+            type="button"
+            class="item-dropdown-item item-dropdown-item--danger"
+            role="menuitem"
+            (click)="remove.emit(folder().id)"
+          >
+            <svg lucideTrash2 [size]="16" aria-hidden="true"></svg>
+            Excluir
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="folder-label">
+    <h3 [attr.title]="folder().name">{{ folder().name }}</h3>
+    <p>{{ summary() }}</p>
+  </div>
+</article>

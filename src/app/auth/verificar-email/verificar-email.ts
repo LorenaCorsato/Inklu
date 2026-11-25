@@ -45,7 +45,10 @@ export class VerificarEmail implements OnInit, OnDestroy {
     if (typeof email === 'string') this.email.set(email);
     if (typeof nome === 'string') this.nome.set(nome);
 
-    const token = new URLSearchParams(window.location.search).get('token');
+    // Links do Firebase chegam como `?mode=verifyEmail&oobCode=…`; o formato
+    // legado `?token=…` continua aceito.
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('oobCode') ?? params.get('token');
     if (token) {
       this.modo.set('confirmando');
       this.confirmar(token);
@@ -98,7 +101,9 @@ export class VerificarEmail implements OnInit, OnDestroy {
   private confirmar(token: string): void {
     this.auth.verificarEmail(token).subscribe({
       next: () => {
-        void this.router.navigate([ROTAS.escolherFuncao], { replaceUrl: true });
+        // E-mail confirmado: usuário segue já logado na tela inicial.
+        this.toast.sucesso('E-mail verificado com sucesso!');
+        void this.router.navigate([ROTAS.inicio], { replaceUrl: true });
       },
       error: (erro: unknown) => {
         const mapeado = mapearErro(erro);

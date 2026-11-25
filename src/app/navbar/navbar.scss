@@ -207,11 +207,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
   padding: 8px;
+  border: 0;
   border-radius: 8px;
+  background: transparent;
   color: var(--ds-neutral-600);
+  font-family: inherit;
   font-size: 12.5px;
   font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
   transition:
     background-color 150ms ease,
     color 150ms ease;
@@ -219,6 +226,16 @@
 
 .conta-menu__btn--upgrade {
   color: var(--ds-primary);
+}
+
+.conta-menu__btn--sair {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: #b3261e;
 }
 
 /* ─── Busca ───────────────────────────────────────────────────────────────── */
@@ -518,6 +535,11 @@
   .conta-menu__btn:hover {
     background: var(--ds-neutral-100);
     color: var(--ds-body);
+  }
+
+  .conta-menu__btn--sair:hover {
+    background: #fdecea;
+    color: #b3261e;
   }
 
   .conta-item:not(.conta-item--ativa):hover {

@@ -1,0 +1,270 @@
+// Estilos copiados de documentos.scss (sem alteração visual).
+.file-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ds-border);
+  border-radius: 12px;
+  background: var(--ds-surface);
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, #1653ff 45%, var(--ds-border));
+    box-shadow: 0 6px 18px rgb(16 24 40 / 10%);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1653ff;
+    outline-offset: 2px;
+  }
+}
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 18px 14px;
+  background: #f1f2f4;
+  border-bottom: 1px solid var(--ds-border-subtle, #f1f5f9);
+}
+
+.file-preview-doc {
+  position: relative;
+  display: block;
+  width: 118px;
+  height: 150px;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgb(16 24 40 / 18%);
+  overflow: hidden;
+  padding: 12px 10px;
+
+  &::before {
+    content: '';
+    display: block;
+    height: 8px;
+    margin-bottom: 8px;
+    border-radius: 2px;
+    background: #e5e7eb;
+  }
+}
+
+.file-preview-lines {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    #e5e7eb 0 3px,
+    transparent 3px 8px
+  );
+  opacity: 0.9;
+}
+
+.file-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+
+  h4 {
+    overflow: hidden;
+    margin: 0;
+    color: var(--ds-body);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.file-origin {
+  margin: 0 0 1px;
+  color: #b6b9c0;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.file-date {
+  margin: 2px 0 0;
+  color: var(--ds-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.file-note {
+  overflow: hidden;
+  margin: 2px 0 0;
+  color: var(--ds-muted);
+  font-size: 0.75rem;
+  font-style: italic;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-body);
+  cursor: pointer;
+  flex: 0 0 32px;
+  margin: -4px -4px 0 0;
+  color: var(--ds-neutral-500, #64748b);
+
+  &:hover {
+    background: var(--ds-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1653ff;
+    outline-offset: 1px;
+  }
+}
+
+.item-options {
+  position: relative;
+  flex: 0 0 32px;
+}
+
+.item-dropdown-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  right: 0;
+  display: grid;
+  width: max-content;
+  min-width: 190px;
+  padding: 4px;
+  border: 1px solid var(--ds-border);
+  border-radius: 8px;
+  background: var(--ds-surface);
+  box-shadow: var(--ds-shadow-md);
+  color: var(--ds-body);
+}
+
+.item-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-body);
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--ds-neutral-100);
+    outline: none;
+  }
+
+  &--danger {
+    color: #c62828;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .file-card {
+    transition: none;
+  }
+}
+
+// ─── Linha da visualização em lista ───────────────────────────────────
+.file-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--ds-border-subtle, #f1f5f9);
+  cursor: pointer;
+  transition: background-color 160ms ease;
+
+  &:hover {
+    background: var(--ds-neutral-50, #f8fafc);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1653ff;
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
+}
+
+.file-row-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-row-doc {
+  display: block;
+  width: 26px;
+  height: 34px;
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  background:
+    linear-gradient(to bottom, #e5e7eb 0 4px, transparent 4px 7px),
+    repeating-linear-gradient(to bottom, #e5e7eb 0 2px, transparent 2px 5px),
+    #fff;
+  background-position: 4px 4px, 4px 12px, 0 0;
+  background-size: calc(100% - 8px) 8px, calc(100% - 8px) calc(100% - 16px), 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: 0 1px 3px rgb(16 24 40 / 12%);
+}
+
+.file-row-name {
+  overflow: hidden;
+  color: var(--ds-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-row-origin,
+.file-row-date {
+  overflow: hidden;
+  color: var(--ds-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .file-row {
+    grid-template-columns: 36px minmax(0, 1fr) 32px;
+  }
+
+  .file-row-origin,
+  .file-row-date {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .file-row {
+    transition: none;
+  }
+}

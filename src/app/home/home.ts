@@ -8,6 +8,7 @@ import {
   LucideFiles,
 } from '@lucide/angular';
 import { DocumentosService } from '../services/documentos.service';
+import { SessaoStore } from '../auth/state/sessao.store';
 import { HomeCalendar } from './home-calendar/home-calendar';
 import { MONTHS_PT, seedHomeTasks } from './home-tasks';
 import { TaskStack } from './task-stack/task-stack';
@@ -30,8 +31,14 @@ import { TaskStack } from './task-stack/task-stack';
 export class Home {
   private readonly router = inject(Router);
   private readonly documentos = inject(DocumentosService);
+  private readonly sessao = inject(SessaoStore);
 
   protected readonly now = signal(new Date());
+
+  /** Primeiro nome do usuário logado; sem sessão mantém o perfil demo. */
+  protected readonly primeiroNome = computed(
+    () => this.sessao.usuario()?.nome?.trim().split(/\s+/)[0] || 'Sara',
+  );
 
   protected readonly dateChip = computed(() => {
     const d = this.now();

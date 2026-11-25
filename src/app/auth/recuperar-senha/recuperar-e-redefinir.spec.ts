@@ -100,6 +100,17 @@ describe('Redefinição de senha (S06)', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
+  function criarComOobCode(oobCode = 'cod-1'): HTMLElement {
+    window.history.replaceState(
+      {},
+      '',
+      `/redefinir-senha?mode=resetPassword&oobCode=${oobCode}`,
+    );
+    fixture = TestBed.createComponent(RedefinirSenha);
+    fixture.detectChanges();
+    return fixture.nativeElement as HTMLElement;
+  }
+
   function preencherSenhas(): void {
     preencher(fixture, '#redefinir-senha', 'NovaSenha123');
     preencher(fixture, '#redefinir-confirmacao', 'NovaSenha123');
@@ -115,6 +126,15 @@ describe('Redefinição de senha (S06)', () => {
     expect(texto(el)).toContain('Senha redefinida.');
     expect(window.location.search).toBe('');
     expect(window.location.pathname).toBe('/redefinir-senha');
+  });
+
+  it('aceita o oobCode dos links enviados pelo Firebase', () => {
+    criarComOobCode();
+    preencherSenhas();
+    submeter(fixture.nativeElement.querySelector('form') as HTMLFormElement);
+    fixture.detectChanges();
+
+    expect(auth.redefinirSenha).toHaveBeenCalledWith('cod-1', 'NovaSenha123');
   });
 
   it('[TDD-093] [BDD-073] 410 mostra link expirado com link para S05', () => {

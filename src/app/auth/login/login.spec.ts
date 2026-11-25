@@ -5,6 +5,8 @@ import { of, Subject, throwError } from 'rxjs';
 
 import { Login } from './login';
 import { AuthService } from '../services/auth.service';
+import { FirebaseAuthService } from '../../services/firebase-auth.service';
+import { VerificacaoEmailModalService } from '../verificacao-email-modal/verificacao-email-modal.service';
 import { ApiError } from '../api/api-error';
 import { criarAuthFake, preencher, submeter, texto, type AuthFake } from '../test-auth.fake';
 
@@ -13,10 +15,14 @@ describe('Login (S01)', () => {
   let router: Router;
   let fixture: ComponentFixture<Login>;
   let queryParams: Record<string, string>;
+  let precisaVerificar: ReturnType<typeof vi.fn>;
+  let modalAbrir: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     auth = criarAuthFake();
     queryParams = {};
+    precisaVerificar = vi.fn(() => false);
+    modalAbrir = vi.fn();
 
     const rotaFake = {
       get snapshot() {
@@ -30,6 +36,8 @@ describe('Login (S01)', () => {
         provideRouter([]),
         { provide: AuthService, useValue: auth },
         { provide: ActivatedRoute, useValue: rotaFake },
+        { provide: FirebaseAuthService, useValue: { precisaVerificarEmail: precisaVerificar } },
+        { provide: VerificacaoEmailModalService, useValue: { abrir: modalAbrir } },
       ],
     }).compileComponents();
 
@@ -227,12 +235,47 @@ describe('Login (S01)', () => {
     expect(botao.disabled).toBe(false);
   });
 
-  it('[BDD-060] login com sucesso único vai para o painel', async () => {
+  it('[BDD-060] login com sucesso vai para a tela inicial', async () => {
     const navegar = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
     criar();
     await logar();
 
-    expect(navegar).toHaveBeenCalledWith('/painel');
+    expect(navegar).toHaveBeenCalledWith('/');
+    expect(modalAbrir).not.toHaveBeenCalled();
+  });
+
+  it('com e-mail ainda não verificado abre o modal na tela inicial', async () => {
+    precisaVerificar.mockReturnValue(true);
+    const navegar = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    criar();
+    await logar();
+
+    expect(navegar).toHaveBeenCalledWith('/');
+    expect(modalAbrir).toHaveBeenCalledTimes(1);
+  });
+
+  it('entrar com Google vai para a tela inicial sem abrir o modal', async () => {
+    const navegar = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    const el = criar();
+    (el.querySelector('#login-google') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await Promise.resolve();
+
+    expect(auth.loginComGoogle).toHaveBeenCalled();
+    expect(navegar).toHaveBeenCalledWith('/');
+    expect(modalAbrir).not.toHaveBeenCalled();
+  });
+
+  it('pop-up do Google fechado volta ao repouso sem navegar nem toast', async () => {
+    auth.loginComGoogle.mockReturnValue(of(null) as never);
+    const navegar = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    const el = criar();
+    (el.querySelector('#login-google') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await Promise.resolve();
+
+    expect(navegar).not.toHaveBeenCalled();
+    expect(modalAbrir).not.toHaveBeenCalled();
   });
 
   it('não chama a API quando a validação local falha', () => {

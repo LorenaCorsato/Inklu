@@ -2,13 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Navbar } from './navbar/navbar';
+import { VerificacaoEmailModal } from './auth/verificacao-email-modal/verificacao-email-modal';
 import { ThemeService } from './services/theme.service';
 import { Toast } from './shared/toast/toast';
 import { ToastService } from './shared/toast/toast.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, Toast],
+  imports: [RouterOutlet, Navbar, Toast, VerificacaoEmailModal],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -35,7 +36,7 @@ export class App {
       const url = router.url.split('?')[0];
       this.isEditorRoute.set(url.startsWith('/documentos/editor') || /^\/alunos\/[^/]+\/planos\//.test(url));
       this.isAuthRoute.set(
-        /^\/(entrar|cadastro|verificar-email|recuperar-senha|redefinir-senha|contexto|sem-acesso|convite|escola\/cadastro)(\/|$)/.test(
+        /^\/(entrar|cadastro|verificar-email|recuperar-senha|redefinir-senha|contexto|sem-acesso|convite|escola\/cadastro|entrar-firebase)(\/|$)/.test(
           url,
         ),
       );

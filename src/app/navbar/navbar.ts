@@ -6,8 +6,9 @@ import {
   inject,
   signal,
   viewChild,
+  OnInit,
 } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   LucideBookOpen,
   LucideCalendar,
@@ -19,6 +20,7 @@ import {
   LucideGraduationCap,
   LucideHome,
   LucideIdCard,
+  LucideLogOut,
   LucidePanelLeftClose,
   LucidePanelLeftOpen,
   LucidePlus,
@@ -27,12 +29,16 @@ import {
   LucideUsers,
   LucideX,
 } from '@lucide/angular';
+import { ROTAS } from '../auth/auth.config';
 import { rotuloFuncao } from '../auth/auth.models';
+import { AuthService } from '../auth/services/auth.service';
 import { SessaoStore } from '../auth/state/sessao.store';
+import { ToastService } from '../shared/toast/toast.service';
 import {
   DocumentoFile,
   ModalDocumento,
 } from '../alunos/detalhe-aluno/modal-documento/modal-documento';
+import { ModalUpgradeEscola } from './modal-upgrade-escola/modal-upgrade-escola';
 import { DocumentosService } from '../services/documentos.service';
 
 type IconeNav =
@@ -89,6 +95,7 @@ function normalizar(texto: string): string {
     LucideGraduationCap,
     LucideHome,
     LucideIdCard,
+    LucideLogOut,
     LucidePanelLeftClose,
     LucidePanelLeftOpen,
     LucidePlus,
@@ -97,6 +104,7 @@ function normalizar(texto: string): string {
     LucideUsers,
     LucideX,
     ModalDocumento,
+    ModalUpgradeEscola,
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
@@ -105,14 +113,18 @@ function normalizar(texto: string): string {
     '(document:click)': 'aoClicarNoDocumento($event)',
   },
 })
-export class Navbar {
+export class Navbar implements OnInit {
   private readonly documentos = inject(DocumentosService);
   private readonly sessao = inject(SessaoStore);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
 
   private readonly campoBusca = viewChild<ElementRef<HTMLInputElement>>('campoBusca');
 
   isCollapsed = false;
   isDocumentoModalOpen = false;
+  isUpgradeModalOpen = false;
   contaAberta = false;
 
   readonly busca = signal('');
@@ -183,6 +195,21 @@ export class Navbar {
     return this.isCollapsed;
   }
 
+  ngOnInit(): void {
+    // Recarrega a sessão (usa o cache quando válido): garante o nome real
+    // do usuário logado, inclusive ao recarregar a página direto na home.
+    this.auth.carregarSessao().subscribe({ error: () => undefined });
+  }
+
+  /** Sai da conta, volta ao login e confirma com um toast. */
+  sair(): void {
+    this.contaAberta = false;
+    this.auth.logout().subscribe(() => {
+      this.toast.sucesso('Você saiu da conta.');
+      void this.router.navigate([ROTAS.login]);
+    });
+  }
+
   opcoesLink(item: ItemNav): OpcoesLinkAtivo {
     return item.exato ? LINK_EXATO : LINK_PARCIAL;
   }
@@ -245,6 +272,10 @@ export class Navbar {
       this.contaAberta = false;
       return;
     }
+    if (evento.key === 'Escape' && this.isUpgradeModalOpen) {
+      this.isUpgradeModalOpen = false;
+      return;
+    }
     if (evento.key !== '/' || evento.metaKey || evento.ctrlKey || evento.altKey) return;
 
     const alvo = evento.target as HTMLElement | null;
@@ -259,6 +290,15 @@ export class Navbar {
 
   openDocumentoModal() {
     this.isDocumentoModalOpen = true;
+  }
+
+  abrirUpgrade(): void {
+    this.contaAberta = false;
+    this.isUpgradeModalOpen = true;
+  }
+
+  closeUpgradeModal(): void {
+    this.isUpgradeModalOpen = false;
   }
 
   closeDocumentoModal() {

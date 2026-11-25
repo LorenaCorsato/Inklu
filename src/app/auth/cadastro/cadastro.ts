@@ -5,6 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { ROTAS } from '../auth.config';
 import { mapearErro } from '../api/mapear-erro';
 import { AuthService } from '../services/auth.service';
+import { FirebaseAuthService } from '../../services/firebase-auth.service';
+import { VerificacaoEmailModalService } from '../verificacao-email-modal/verificacao-email-modal.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { validarEmail } from '../validators/validarEmail';
 import { validarNome } from '../validators/validarNome';
@@ -22,6 +24,8 @@ export class Cadastro implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly firebase = inject(FirebaseAuthService);
+  private readonly modalVerificacao = inject(VerificacaoEmailModalService);
 
   readonly rotas = ROTAS;
 
@@ -41,6 +45,7 @@ export class Cadastro implements OnInit {
   readonly errosServidor = signal<Record<string, string>>({});
   readonly erroRede = signal<string | null>(null);
   readonly enviando = signal(false);
+  readonly criandoGoogle = signal(false);
 
   readonly forca = computed(() => forcaSenha(this.senha()));
   readonly emailEmUso = computed(() => Boolean(this.errosServidor()['email']));
@@ -121,8 +126,11 @@ export class Cadastro implements OnInit {
           this.enviando.set(false);
           this.senha.set('');
           this.confirmacao.set('');
-          void this.router.navigate([ROTAS.verificarEmail], {
-            state: { email, nome: this.nome().trim(), modo: 'aguardando' },
+          // Atualiza a sessão antes de entrar, para a navbar e a home
+          // exibirem o nome real do usuário (e não o perfil demo).
+          this.auth.carregarSessao(true).subscribe({
+            next: () => this.irParaInicio(),
+            error: () => this.irParaInicio(),
           });
         },
         error: (erro: unknown) => {
@@ -147,6 +155,40 @@ export class Cadastro implements OnInit {
           this.focar('cadastro-alerta');
         },
       });
+  }
+
+  entrarComGoogle(): void {
+    if (this.criandoGoogle() || this.enviando()) return;
+
+    this.errosServidor.set({});
+    this.erroRede.set(null);
+    this.criandoGoogle.set(true);
+
+    this.auth.loginComGoogle().subscribe({
+      next: (resposta) => {
+        this.criandoGoogle.set(false);
+        // Pop-up fechado pelo usuário: volta ao repouso, sem erro nem toast.
+        if (!resposta) return;
+        this.auth.carregarSessao(true).subscribe({
+          next: () => this.irParaInicio(),
+          error: () => this.irParaInicio(),
+        });
+      },
+      error: (erro: unknown) => {
+        this.criandoGoogle.set(false);
+        const mapeado = mapearErro(erro);
+        this.erroRede.set(mapeado.mensagem);
+        this.toast.erro(mapeado.mensagem);
+        this.focar('cadastro-alerta');
+      },
+    });
+  }
+
+  private irParaInicio(): void {
+    // Conta criada já sai logada na tela inicial; o modal global pede a
+    // verificação do e-mail (só aparece para e-mail/senha).
+    void this.router.navigate([ROTAS.inicio]);
+    if (this.firebase.precisaVerificarEmail()) this.modalVerificacao.abrir();
   }
 
   private erro(resultado: ResultadoValidacao): string | null {
