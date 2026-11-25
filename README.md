@@ -1,4 +1,11 @@
-# INKLU
+<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+<image src="public\Inklu_visual\Inklu_logo_and_typo.svg" style="max-width: 430px; width: 100%; height: auto;" />
+</div>
+
+<image src="images\inklu_screenshot_light.png" style="width: 100%; height: auto; border-radius: 12px; margin: 20px 0;" />
+
+
+## O que é o Inklu?
 Desenvolvida como um projeto acadêmico para a disciplina de Engenharia de Software da Fatec Itu, esta é uma plataforma web voltada a otimizar a rotina de professores de apoio na educação inclusiva. O sistema visa reduzir a sobrecarga administrativa desses profissionais, permitindo que dediquem mais tempo e energia ao que realmente importa: o acompanhamento direto, o desenvolvimento social e emocional, e o planejamento pedagógico dos estudantes com necessidades educacionais específicas.
 
 ## :busts_in_silhouette:Integrantes
