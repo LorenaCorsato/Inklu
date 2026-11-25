@@ -1,6 +1,6 @@
-<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-<image src="public\Inklu_visual\Inklu_logo_and_typo.svg" style="max-width: 430px; width: 100%; height: auto;" />
-</div>
+<p align="center">
+  <img src="public/Inklu_visual/Inklu_logo_and_typo.svg" alt="Logotipo do Inklu" width="250" />
+</p>
 
 <image src="images\inklu_screenshot_light.png" style="width: 100%; height: auto; border-radius: 12px; margin: 20px 0;" />
 
