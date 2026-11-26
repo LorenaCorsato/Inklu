@@ -1,0 +1,139 @@
+<div class="dp" (focusout)="aoSairFoco($event)">
+  <button
+    #gatilho
+    type="button"
+    class="dp__gatilho"
+    aria-haspopup="dialog"
+    [attr.aria-expanded]="aberto()"
+    [attr.aria-labelledby]="etiquetaId() ? etiquetaId() : null"
+    [attr.aria-label]="etiquetaId() ? null : rotuloCampo()"
+    [disabled]="disabled()"
+    (click)="alternar()"
+    (keydown)="aoTeclaGatilho($event)"
+  >
+    <span class="dp__texto" [class.dp__texto--vazio]="!textoExibicao()">
+      {{ textoExibicao() || placeholder() }}
+    </span>
+    <svg lucideCalendarDays [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+  </button>
+
+  @if (aberto()) {
+    <div
+      #popup
+      class="dp__popup"
+      role="dialog"
+      [attr.aria-label]="tituloAcessivel()"
+      [style.top.px]="topoPx()"
+      [style.left.px]="esquerdaPx()"
+      [style.width.px]="larguraPx()"
+      (keydown)="aoTeclaGrade($event)"
+    >
+      <div class="dp__topo">
+        <button
+          type="button"
+          class="dp__titulo"
+          [attr.aria-expanded]="visao() === 'meses'"
+          [attr.aria-label]="'Escolher mês, atual ' + rotuloMes()"
+          (click)="alternarVisao('meses')"
+        >
+          {{ rotuloMes() }}
+          <svg lucideChevronDown [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+        </button>
+        <button
+          type="button"
+          class="dp__titulo"
+          [attr.aria-expanded]="visao() === 'anos'"
+          [attr.aria-label]="'Escolher ano, atual ' + anoRef()"
+          (click)="alternarVisao('anos')"
+        >
+          {{ anoRef() }}
+          <svg lucideChevronDown [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+        </button>
+        <span class="dp__espaco" aria-hidden="true"></span>
+        <button
+          type="button"
+          class="dp__nav"
+          aria-label="Período anterior"
+          (click)="passo(-1)"
+        >
+          <svg lucideChevronLeft [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+        </button>
+        <button
+          type="button"
+          class="dp__nav"
+          aria-label="Próximo período"
+          (click)="passo(1)"
+        >
+          <svg lucideChevronRight [size]="16" [strokeWidth]="1.5" aria-hidden="true"></svg>
+        </button>
+      </div>
+
+      @if (visao() === 'dias') {
+        <div class="dp__semana" aria-hidden="true">
+          @for (dia of diasSemana(); track dia) {
+            <span>{{ dia }}</span>
+          }
+        </div>
+        <div class="dp__grade" role="group" [attr.aria-label]="tituloAcessivel()">
+          @for (celula of celulas(); track celula.iso) {
+            <button
+              type="button"
+              class="dp__dia"
+              [class.dp__dia--fora]="celula.fora"
+              [class.dp__dia--hoje]="celula.hoje"
+              [class.dp__dia--ativo]="celula.selecionado"
+              [attr.data-iso]="celula.iso"
+              [attr.aria-label]="rotuloDia(celula)"
+              [attr.aria-pressed]="celula.selecionado"
+              [disabled]="celula.desabilitado"
+              (click)="selecionarDia(celula.iso)"
+            >
+              {{ celula.dia }}
+              @if (celula.marcado) {
+                <span class="dp__ponto" aria-hidden="true"></span>
+              }
+            </button>
+          }
+        </div>
+      } @else if (visao() === 'meses') {
+        <div class="dp__meses" role="group" aria-label="Escolher mês">
+          @for (mes of meses(); track mes.indice) {
+            <button
+              type="button"
+              class="dp__mes"
+              [class.dp__mes--ativo]="mes.indice === mesRef()"
+              [attr.aria-pressed]="mes.indice === mesRef()"
+              [disabled]="mes.desabilitado"
+              (click)="escolherMes(mes.indice)"
+            >
+              {{ mes.nome }}
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="dp__meses" role="group" aria-label="Escolher ano">
+          @for (item of anosGrade(); track item.ano) {
+            <button
+              type="button"
+              class="dp__mes"
+              [class.dp__mes--ativo]="item.ano === anoRef()"
+              [attr.aria-pressed]="item.ano === anoRef()"
+              [disabled]="item.desabilitado"
+              (click)="escolherAno(item.ano)"
+            >
+              {{ item.ano }}
+            </button>
+          }
+        </div>
+      }
+
+      <div class="dp__rodape">
+        <span class="dp__dica">{{ hint() }}</span>
+        <button type="button" class="dp__limpar" (click)="limpar()">
+          {{ clearLabel() }}
+        </button>
+      </div>
+      <p class="dp__status" aria-live="polite">{{ anuncio() }}</p>
+    </div>
+  }
+</div>

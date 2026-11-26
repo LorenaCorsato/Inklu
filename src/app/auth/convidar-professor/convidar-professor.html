@@ -1,0 +1,209 @@
+<main class="auth-page">
+  <div class="auth-shell auth-shell--wide">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Convidar professor</h1>
+      <p class="auth-subtitle">
+        A função vem do convite. Turmas e matérias só se aplicam ao Professor Regente.
+      </p>
+
+      @if (erro()) {
+        <div id="convites-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erro() }}
+        </div>
+      }
+      @if (erroRede()) {
+        <div id="convites-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erroRede() }}
+        </div>
+      }
+
+      <p class="visually-hidden" aria-live="polite">{{ mensagemSucesso() }}</p>
+      @if (mensagemSucesso()) {
+        <div class="alert alert-success auth-alert" role="status">{{ mensagemSucesso() }}</div>
+      }
+
+      <form class="auth-form" novalidate [attr.aria-busy]="enviando()" (ngSubmit)="convidar()">
+        <div class="campo">
+          <label class="form-label" for="convite-form-email">E-mail do professor</label>
+          <input
+            id="convite-form-email"
+            name="email"
+            type="email"
+            class="form-control"
+            autocomplete="email"
+            spellcheck="false"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            [readOnly]="enviando()"
+            [attr.aria-invalid]="erroEmail() ? 'true' : null"
+            [attr.aria-describedby]="erroEmail() ? 'convite-form-email-erro' : null"
+          />
+          @if (erroEmail()) {
+            <p class="campo__erro" id="convite-form-email-erro">{{ erroEmail() }}</p>
+          }
+        </div>
+
+        <fieldset class="grupo-opcoes">
+          <legend>Função</legend>
+          @for (opcao of funcoesConvite(); track opcao.valor) {
+            <label class="opcao-card" [class.opcao-card--selecionada]="funcao() === opcao.valor">
+              <input
+                type="radio"
+                name="funcaoConvite"
+                [value]="opcao.valor"
+                [checked]="funcao() === opcao.valor"
+                (change)="escolherFuncao(opcao.valor)"
+              />
+              <span class="opcao-card__titulo">{{ opcao.rotulo }}</span>
+            </label>
+          }
+        </fieldset>
+
+        @if (mostrarTurmasMaterias()) {
+          <fieldset class="grupo-opcoes">
+            <legend>Turmas</legend>
+            @if (turmas().length === 0) {
+              <p class="campo__dica">Nenhuma turma disponível.</p>
+            }
+            @for (turma of turmas(); track turma.id) {
+              <label class="opcao-card">
+                <input
+                  type="checkbox"
+                  [checked]="turmaMarcada(turma.id)"
+                  (change)="alternarTurma(turma.id, $any($event.target).checked)"
+                />
+                <span class="opcao-card__titulo">{{ turma.nome }}</span>
+              </label>
+            }
+          </fieldset>
+
+          <fieldset class="grupo-opcoes">
+            <legend>Matérias</legend>
+            @if (materias().length === 0) {
+              <p class="campo__dica">Nenhuma matéria disponível.</p>
+            }
+            @for (materia of materias(); track materia.id) {
+              <label class="opcao-card">
+                <input
+                  type="checkbox"
+                  [checked]="materiaMarcada(materia.id)"
+                  (change)="alternarMateria(materia.id, $any($event.target).checked)"
+                />
+                <span class="opcao-card__titulo">{{ materia.nome }}</span>
+              </label>
+            }
+          </fieldset>
+        }
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="enviando()"
+          [attr.aria-busy]="enviando()"
+        >
+          {{ enviando() ? 'Enviando convite…' : 'Enviar convite' }}
+        </button>
+      </form>
+
+      <div class="auth-secao">
+        <h2 class="auth-secao__titulo">Convites enviados</h2>
+
+        @if (erroLista()) {
+          <div class="alert alert-danger auth-alert" role="alert">{{ erroLista() }}</div>
+        }
+
+        @if (carregandoLista()) {
+          <div class="skeleton-lista" aria-busy="true" aria-label="Carregando convites">
+            <span></span>
+            <span></span>
+          </div>
+        } @else if (convites().length === 0) {
+          <p class="text-muted">Nenhum convite enviado ainda.</p>
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="focarFormulario()"
+          >
+            Convidar professor
+          </button>
+        } @else {
+          <div class="lista-convites">
+            @for (convite of convites(); track convite.id) {
+              <article class="convite-item">
+                <div class="convite-item__info">
+                  <p class="convite-item__email">{{ convite.email }}</p>
+                  <p class="convite-item__meta">
+                    {{ rotuloFuncao(convite.funcao) }} ·
+                    <span
+                      class="status-convite"
+                      [class.status-convite--pendente]="convite.status === 'pendente'"
+                      [class.status-convite--aceito]="convite.status === 'aceito'"
+                      [class.status-convite--expirado]="convite.status === 'expirado'"
+                      [class.status-convite--cancelado]="convite.status === 'cancelado'"
+                    >
+                      {{ statusRotulo(convite.status) }}
+                    </span>
+                    @if (convite.enviadoEm) {
+                      · Enviado em {{ convite.enviadoEm }}
+                    }
+                  </p>
+                </div>
+
+                @if (convite.status === 'pendente') {
+                  <div class="convite-item__acoes">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      (click)="reenviarConvite(convite)"
+                    >
+                      Reenviar
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      (click)="abrirDialogoCancelamento(convite, $event)"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                }
+              </article>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</main>
+
+@if (conviteParaCancelar(); as convite) {
+  <div class="dialogo-fundo">
+    <div
+      id="dialogo-cancelar"
+      class="dialogo"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialogo-cancelar-titulo"
+      (keydown)="aoTeclar($event)"
+    >
+      <h2 id="dialogo-cancelar-titulo" class="dialogo__titulo">
+        Cancelar o convite para {{ convite.email }}?
+      </h2>
+      <p class="dialogo__texto">
+        O link enviado deixa de funcionar. Você pode enviar um novo convite depois.
+      </p>
+      <div class="dialogo__acoes">
+        <button id="dialogo-manter" type="button" class="btn btn-outline" (click)="fecharDialogo()">
+          Manter convite
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmarCancelamento()">
+          Cancelar convite
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,134 +1,633 @@
+/* ─── Barra lateral ──────────────────────────────────────────────────────────
+   Layout do mockup: marca + recolher, cartão da conta, busca, grupos de
+   navegação e, no rodapé, a ação principal seguida dos links utilitários.
+   Todas as cores e raios vêm dos tokens do design system. */
+
 :host {
   display: block;
+  flex: 0 0 auto;
   height: 100%;
-  width: 300px;
-  transition: width 0.3s ease;
-  
+  width: 222px;
+  transition: width 200ms cubic-bezier(0.2, 0, 0, 1);
+
   &.collapsed {
-    width: 80px;
+    width: 76px;
   }
 }
 
-nav {
-  min-height: 100%;
-  overflow-x: hidden;
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+  padding: 6px;
+  overflow: visible;
 }
 
-// O modal é position: fixed, então o host não pode virar item do layout flex
-// da navbar (senão os botões sobem com o justify-content: space-between).
+/* O modal é `position: fixed`; `display: contents` o tira do fluxo flex. */
 .modal-documento-host {
   display: contents;
 }
 
-a {
-  text-decoration: none;
-  color: var(--ds-muted);
-  transition: background-color 0.15s ease, color 0.15s ease;
-  
-  &:hover {
-    background-color: var(--ds-surface);
-    color: var(--ds-primary);
-  }
+/* ─── Foco visível ─────────────────────────────────────────────────────────── */
+
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--ds-primary);
+  outline-offset: 2px;
 }
 
-.nav-active {
-  background-color: var(--ds-surface) !important;
-  border: 1px solid var(--ds-border) !important;
-  box-shadow: inset 0px -2.5px 0px 0px var(--ds-border) !important;
-  color: var(--ds-body) !important;
+/* ─── Cabeçalho: marca e botão de recolher ────────────────────────────────── */
 
-  svg {
-    color: var(--ds-primary);
-  }
-}
-
-// Container do logo para manter alinhamento
-.logoContainer {
-  min-height: 48px;
+.sidebar__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
-  .logo-wrapper {
-    transition: all 0.3s ease;
-    overflow: hidden;
-    
-    &.hidden {
-      width: 0;
-      opacity: 0;
-      visibility: hidden;
-      margin: 0;
-      padding: 0;
-    }
-    
-    img {
-      transition: all 0.3s ease;
-      min-width: 150px;
-    }
-  }
-  
-  .closeNavBar {
-    flex-shrink: 0;
-    margin-left: auto;
-    
-    svg {
-      transition: transform 0.3s ease;
-      display: block;
-      
-      &.rotated {
-        transform: rotate(180deg);
-      }
-    }
-  }
+  gap: 8px;
+  min-height: 32px;
 }
 
-// Estilos para o estado colapsado
-:host.collapsed {
-  .btn {
-    justify-content: center !important;
-    padding: 0.5rem !important;
-    
-    span {
-      display: none;
-      color: var(--ds-muted);
-    }
-  }
-  
-  .logoContainer {
-    justify-content: center !important;
-    
-    .logo-wrapper {
-      width: 0;
-      opacity: 0;
-      visibility: hidden;
-    }
-    
-    .closeNavBar {
-      margin-left: 0;
-    }
-  }
-  
-  .buttonContainer span,
-  ul li a span {
-    display: none;
-  }
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ds-surface);
+  color: var(--ds-primary);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
 }
 
-// Animações
-.btn, 
-.logo-wrapper,
-.closeNavBar svg {
-  transition: all 0.3s ease;
-}
+/* ─── Cartão da conta ─────────────────────────────────────────────────────── */
 
-// Garantir alinhamento dos botões
-.btn {
-  white-space: nowrap;
+.conta {
   display: flex;
   align-items: center;
   gap: 8px;
-  
-  svg {
-    flex-shrink: 0;
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ds-surface);
+  color: var(--ds-body);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px var(--ds-border);
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.conta__avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--ds-primary-soft);
+  color: var(--ds-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.conta__texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.conta__funcao {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ds-muted);
+}
+
+.conta__nome {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conta__chevron {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--ds-muted);
+}
+
+/* ─── Dropdown de contas ─────────────────────────────────────────────────── */
+
+.conta-wrap {
+  position: relative;
+}
+
+.conta-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--ds-surface);
+  box-shadow:
+    0 0 0 1px var(--ds-border),
+    0 12px 32px -12px rgba(20, 17, 42, 0.35);
+}
+
+.conta-menu__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 240px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.conta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ds-body);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.conta-item--ativa {
+  background: var(--ds-neutral-100);
+}
+
+.conta-item__selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--ds-primary-soft);
+  color: var(--ds-primary);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.conta-menu__acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--ds-border-subtle);
+}
+
+.conta-menu__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-neutral-600);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.conta-menu__btn--upgrade {
+  color: var(--ds-primary);
+}
+
+.conta-menu__btn--sair {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: #b3261e;
+}
+
+/* ─── Busca ───────────────────────────────────────────────────────────────── */
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 6px 0 10px;
+  border-radius: 9px;
+  background: var(--ds-surface);
+  box-shadow: 0 0 0 1px var(--ds-border);
+  transition: box-shadow 150ms ease;
+}
+
+.busca:focus-within {
+  box-shadow:
+    0 0 0 1px var(--ds-primary),
+    0 0 0 3px var(--ds-primary-soft);
+}
+
+.busca__icone {
+  flex: 0 0 auto;
+  color: var(--ds-muted);
+}
+
+.busca__campo {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ds-body);
+  font-size: 13px;
+}
+
+/* O anel de foco é o do contêiner; o campo não desenha o seu. */
+.busca__campo:focus,
+.busca__campo:focus-visible {
+  outline: none;
+}
+
+.busca__campo::placeholder {
+  color: var(--ds-muted);
+}
+
+.busca__campo::-webkit-search-cancel-button,
+.busca__campo::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.busca__atalho {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: var(--ds-neutral-100);
+  color: var(--ds-muted);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.busca__limpar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ds-muted);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+/* Botão que substitui o campo quando a barra está recolhida. */
+.icone-busca-atalho {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: var(--ds-surface);
+  color: var(--ds-muted);
+  box-shadow: 0 0 0 1px var(--ds-border);
+  cursor: pointer;
+}
+
+/* ─── Grupos de navegação ─────────────────────────────────────────────────── */
+
+.sidebar__corpo {
+  display: flex;
+  flex: 1;
+  padding: 0 1px;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  border-top: 1px solid var(--ds-border-subtle);
+}
+
+.grupo--primeiro {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: 0;
+}
+
+.grupo__titulo {
+  margin: 0 0 6px;
+  padding: 0 8px;
+  color: var(--ds-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.grupo__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: var(--ds-neutral-600);
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.item__icone {
+  flex: 0 0 auto;
+  color: var(--ds-neutral-500);
+  transition: color 150ms ease;
+}
+
+.item__rotulo {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item--ativo {
+  background: var(--ds-surface);
+  color: var(--ds-body);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--ds-border);
+}
+
+.item--ativo .item__icone {
+  color: var(--ds-primary);
+}
+
+/* Contorno é o padrão; o preenchimento marca o item ativo. */
+.item--ativo .item__icone--solido {
+  fill: currentColor;
+}
+
+.busca-vazia {
+  margin: 8px;
+  color: var(--ds-muted);
+  font-size: 12px;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+/* ─── Rodapé ──────────────────────────────────────────────────────────────── */
+
+.sidebar__rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-acao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ds-primary);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.btn-acao__icone {
+  display: none;
+}
+
+.rodape__links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ds-border-subtle);
+}
+
+.link-util {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: var(--ds-neutral-600);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.link-util svg {
+  flex: 0 0 auto;
+  color: var(--ds-muted);
+  transition: color 150ms ease;
+}
+
+/* ─── Estados de ponteiro (só em dispositivos com hover) ──────────────────── */
+
+@media (hover: hover) {
+  .icon-button:hover {
+    background: var(--ds-primary-soft);
+  }
+
+  .conta:hover {
+    box-shadow:
+      0 0 0 1px var(--ds-border),
+      0 2px 6px -2px rgba(20, 17, 42, 0.18);
+  }
+
+  .busca__limpar:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  .icone-busca-atalho:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  .item:not(.item--ativo):hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  .item:not(.item--ativo):hover .item__icone {
+    color: var(--ds-neutral-700);
+  }
+
+  .btn-acao:hover {
+    background: var(--ds-primary-hover);
+    transform: translateY(-1px);
+  }
+
+  .conta-menu__btn:hover {
+    background: var(--ds-neutral-100);
+    color: var(--ds-body);
+  }
+
+  .conta-menu__btn--sair:hover {
+    background: #fdecea;
+    color: #b3261e;
+  }
+
+  .conta-item:not(.conta-item--ativa):hover {
+    background: var(--ds-neutral-100);
+  }
+
+  .link-util:hover {
+    background: var(--ds-surface);
+    color: var(--ds-body);
+  }
+
+  .link-util:hover svg {
+    color: var(--ds-neutral-700);
+  }
+}
+
+.btn-acao:active {
+  transform: translateY(0);
+}
+
+/* ─── Estado recolhido ────────────────────────────────────────────────────── */
+
+:host.collapsed {
+  .sidebar {
+    padding: 12px 10px;
+  }
+
+  .sidebar__header {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .conta {
+    justify-content: center;
+    padding: 4px;
+  }
+
+  .conta-menu {
+    left: calc(100% + 8px);
+    right: auto;
+    top: 0;
+    width: 240px;
+  }
+
+  .conta > .conta__texto,
+  .conta > .conta__chevron,
+  .busca {
+    display: none;
+  }
+
+  .conta-menu .conta__texto {
+    display: flex;
+  }
+
+  .icone-busca-atalho {
+    display: flex;
+  }
+
+  .grupo__titulo,
+  .item__rotulo,
+  .btn-acao__rotulo,
+  .link-util__rotulo {
+    display: none;
+  }
+
+  .grupo {
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+
+  .grupo--primeiro {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .item,
+  .link-util {
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+  }
+
+  .btn-acao {
+    padding: 0;
+  }
+
+  .btn-acao__icone {
+    display: block;
   }
 }

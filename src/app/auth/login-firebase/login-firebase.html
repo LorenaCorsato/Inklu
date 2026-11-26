@@ -1,0 +1,156 @@
+<main class="auth-split" aria-labelledby="login-firebase-titulo">
+  <section class="auth-split__form-col">
+    <div class="auth-split__form-stack">
+      <header class="auth-split__brand auth-split__brand--compact">
+        <img
+          src="/Inklu_visual/Inklu_logo_and_typo.svg"
+          class="auth-split__brand-logo"
+          width="3486"
+          height="842"
+          alt="Inklu"
+        />
+      </header>
+
+      <h1 id="login-firebase-titulo" class="auth-split__heading" tabindex="-1">
+        Entrar com Firebase
+      </h1>
+      <p class="auth-split__sub">Exemplo de integração do Firebase Authentication.</p>
+
+      <!-- Estado atual do usuário -->
+      @if (currentUser$ | async; as user) {
+        <div class="alert alert-success auth-alert" role="status">
+          <p class="mb-1">
+            Logado como <strong>{{ user.displayName || user.email }}</strong>
+          </p>
+          @if (user.photoURL) {
+            <img
+              [src]="user.photoURL"
+              [alt]="'Foto de ' + (user.displayName || user.email)"
+              width="40"
+              height="40"
+              class="rounded-circle"
+            />
+          }
+          <div class="mt-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="sair()">
+              Sair
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="alert alert-secondary auth-alert" role="status">
+          Nenhum usuário logado no Firebase.
+        </div>
+      }
+
+      @if (erro()) {
+        <div id="login-firebase-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erro() }}
+        </div>
+      }
+      @if (sucesso()) {
+        <div class="alert alert-success auth-alert" role="status">
+          {{ sucesso() }}
+        </div>
+      }
+
+      <form
+        class="auth-form"
+        novalidate
+        [attr.aria-busy]="carregando()"
+        (ngSubmit)="entrar()"
+      >
+        <div class="campo">
+          <label class="form-label" for="login-firebase-email">E-mail</label>
+          <input
+            id="login-firebase-email"
+            name="email"
+            type="email"
+            class="form-control"
+            placeholder="voce@exemplo.com"
+            autocomplete="username"
+            spellcheck="false"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            [disabled]="carregando()"
+          />
+        </div>
+
+        <div class="campo">
+          <label class="form-label" for="login-firebase-senha">Senha</label>
+          <div class="campo-senha">
+            <input
+              id="login-firebase-senha"
+              name="senha"
+              [type]="senhaVisivel() ? 'text' : 'password'"
+              class="form-control"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              [ngModel]="senha()"
+              (ngModelChange)="senha.set($event)"
+              [disabled]="carregando()"
+            />
+            <button
+              type="button"
+              class="campo-senha__toggle"
+              [attr.aria-label]="senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha'"
+              [attr.aria-pressed]="senhaVisivel()"
+              [disabled]="carregando()"
+              (click)="senhaVisivel.set(!senhaVisivel())"
+            >
+              {{ senhaVisivel() ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="carregando()"
+          [attr.aria-busy]="carregando()"
+        >
+          {{ carregando() ? 'Aguarde…' : 'Entrar com e-mail' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-primary w-100 mt-2"
+          [disabled]="carregando()"
+          (click)="cadastrar()"
+        >
+          Criar conta
+        </button>
+
+        <div class="login-firebase__divisor" aria-hidden="true"><span>ou</span></div>
+
+        <button
+          type="button"
+          class="btn btn-outline-dark w-100"
+          [disabled]="carregando()"
+          (click)="entrarComGoogle()"
+        >
+          Entrar com Google
+        </button>
+      </form>
+
+      <footer class="auth-split__footer">
+        <p>
+          Está usando o login do sistema?
+          <a routerLink="/entrar">Ir para o login principal</a>
+        </p>
+      </footer>
+    </div>
+  </section>
+
+  <aside class="auth-split__media" aria-label="Ilustração da tela de login">
+    <img
+      class="auth-split__foto"
+      src="/Inklu_visual/banner_login.jpg"
+      alt=""
+      width="1400"
+      height="900"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </aside>
+</main>

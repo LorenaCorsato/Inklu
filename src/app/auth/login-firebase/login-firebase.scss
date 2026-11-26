@@ -1,0 +1,15 @@
+.login-firebase__divisor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  color: var(--bs-secondary-color, #6c757d);
+  font-size: 0.875rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--bs-border-color, #dee2e6);
+  }
+}

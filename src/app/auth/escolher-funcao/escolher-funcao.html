@@ -1,0 +1,53 @@
+<main class="auth-page">
+  <div class="auth-shell">
+    <header class="auth-brand">
+      <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="auth-brand__logo" alt="Inklu" />
+    </header>
+
+    <section class="auth-card">
+      <h1 class="auth-title" tabindex="-1">Escolha sua função</h1>
+      <p class="auth-subtitle">
+        Sua função define o que você poderá acessar. Você pode criar vínculos com
+        escolas depois, por convite da coordenação.
+      </p>
+
+      @if (erro()) {
+        <div class="alert alert-danger auth-alert" role="alert">{{ erro() }}</div>
+      }
+
+      <form class="auth-form" novalidate (ngSubmit)="continuar()">
+        <fieldset class="grupo-opcoes">
+          <legend>Sua função</legend>
+
+          @for (opcao of opcoes; track opcao.valor) {
+            <label
+              class="opcao-card"
+              [class.opcao-card--selecionada]="selecionada() === opcao.valor"
+            >
+              <input
+                type="radio"
+                name="funcao"
+                [value]="opcao.valor"
+                [checked]="selecionada() === opcao.valor"
+                (change)="escolher(opcao.valor)"
+              />
+              <span>
+                <span class="opcao-card__titulo">{{ opcao.rotulo }}</span>
+                <span class="opcao-card__descricao">{{ opcao.descricao }}</span>
+              </span>
+            </label>
+          }
+        </fieldset>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="!selecionada() || enviando()"
+          [attr.aria-busy]="enviando()"
+        >
+          {{ enviando() ? 'Salvando…' : 'Continuar' }}
+        </button>
+      </form>
+    </section>
+  </div>
+</main>

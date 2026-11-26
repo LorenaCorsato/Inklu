@@ -14,3 +14,14 @@
   min-height: 0;
   overflow: hidden;
 }
+
+/**
+ * Telas de autenticação podem ser mais altas que a janela (o cadastro tem
+ * quatro campos). Nelas a shell rola dentro da própria coluna, sem empurrar
+ * a página inteira; o foco do teclado continua visível.
+ */
+.app-content--auth {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}

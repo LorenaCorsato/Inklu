@@ -1,5 +1,7 @@
 @use "abstract/tokens";
 
+@import "base/fonts";
+
 @import "bootstrap/scss/functions";
 @import "abstract/variables-bootstrap";
 @import "bootstrap/scss/variables";
@@ -37,3 +39,5 @@
 @import "components/toast";
 @import "components/tooltip";
 @import "components/table";
+@import "components/auth";
+

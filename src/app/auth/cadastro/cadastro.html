@@ -1,0 +1,252 @@
+<main class="auth-split" aria-labelledby="cadastro-titulo">
+  <section class="auth-split__form-col">
+    <div class="auth-split__form-stack">
+      <header class="auth-split__brand auth-split__brand--compact">
+        <img
+          src="/Inklu_visual/Inklu_logo_and_typo.svg"
+          class="auth-split__brand-logo"
+          width="3486"
+          height="842"
+          alt="Inklu"
+        />
+      </header>
+
+      <h1 id="cadastro-titulo" class="auth-split__heading" tabindex="-1">Criar sua conta</h1>
+      <p class="auth-split__sub">
+        Cadastro individual para professoras e professores. Se a sua escola já usa o
+        Inklu, peça um convite à coordenação.
+      </p>
+
+      @if (erroRede()) {
+        <div id="cadastro-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ erroRede() }}
+        </div>
+      }
+
+      <form
+        class="auth-form"
+        novalidate
+        [attr.aria-busy]="enviando()"
+        (ngSubmit)="criarConta()"
+      >
+        <div class="campo">
+          <label class="form-label" for="cadastro-nome">Nome completo</label>
+          <input
+            id="cadastro-nome"
+            placeholder="digite seu nome completo"
+            name="nome"
+            type="text"
+            class="form-control"
+            autocomplete="name"
+            [ngModel]="nome()"
+            (ngModelChange)="nome.set($event)"
+            (blur)="nomeTocado.set(true)"
+            [readOnly]="enviando()"
+            [attr.aria-invalid]="erroNome() ? 'true' : null"
+            [attr.aria-describedby]="erroNome() ? 'cadastro-nome-erro' : null"
+          />
+          @if (erroNome()) {
+            <p class="campo__erro" id="cadastro-nome-erro">{{ erroNome() }}</p>
+          }
+        </div>
+
+        <div class="campo">
+          <label class="form-label" for="cadastro-email">E-mail</label>
+          <input
+            id="cadastro-email"
+            placeholder="e-mail"
+            name="email"
+            type="email"
+            class="form-control"
+            autocomplete="email"
+            spellcheck="false"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            (blur)="emailTocado.set(true)"
+            [readOnly]="enviando()"
+            [attr.aria-invalid]="erroEmail() ? 'true' : null"
+            [attr.aria-describedby]="erroEmail() ? 'cadastro-email-erro' : null"
+          />
+          @if (erroEmail()) {
+            <p class="campo__erro" id="cadastro-email-erro">
+              {{ erroEmail() }}
+              @if (emailEmUso()) {
+                <a routerLink="/entrar">Entrar</a>
+              }
+            </p>
+          }
+        </div>
+
+        <div class="campo">
+          <label class="form-label" for="cadastro-senha">Senha</label>
+          <div class="campo-senha">
+            <input
+              id="cadastro-senha"
+              name="senha"
+              placeholder="senha"
+              [type]="senhaVisivel() ? 'text' : 'password'"
+              class="form-control"
+              autocomplete="new-password"
+              [ngModel]="senha()"
+              (ngModelChange)="senha.set($event)"
+              (blur)="senhaTocado.set(true)"
+              [readOnly]="enviando()"
+              [attr.aria-invalid]="erroSenha() ? 'true' : null"
+              [attr.aria-describedby]="erroSenha() ? 'cadastro-senha-erro' : null"
+            />
+            <button
+              type="button"
+              class="campo-senha__toggle"
+              [attr.aria-label]="senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha'"
+              [attr.aria-pressed]="senhaVisivel()"
+              [disabled]="enviando()"
+              (click)="senhaVisivel.set(!senhaVisivel())"
+            >
+              <svg
+                class="campo-senha__icone"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                @if (senhaVisivel()) {
+                  <path d="M3 3l18 18" />
+                  <path d="M10.6 10.7a2.4 2.4 0 0 0 3.4 3.3" />
+                  <path d="M9.9 5.2A9.7 9.7 0 0 1 12 5c5 0 9 4.3 9 7 0 .9-.5 2.1-1.3 3.2M6.1 6.7C3.9 8.1 3 9.9 3 12c0 2.7 4 7 9 7 1.6 0 3-.3 4.3-.9" />
+                } @else {
+                  <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                  <circle cx="12" cy="12" r="2.8" />
+                }
+              </svg>
+            </button>
+          </div>
+          <p class="campo__dica">
+            Mínimo de 8 caracteres, com pelo menos uma letra e um número. Ex.: Senha1234
+          </p>
+          @if (senha()) {
+            <p
+              class="forca-senha"
+              [class.forca-senha--fraca]="forca().nivel === 'fraca'"
+              [class.forca-senha--razoavel]="forca().nivel === 'razoavel'"
+              [class.forca-senha--forte]="forca().nivel === 'forte'"
+              aria-live="polite"
+            >
+              <span aria-hidden="true" class="forca-senha__barra">
+                <span class="forca-senha__preenchimento"></span>
+              </span>
+              {{ forca().rotulo }}
+            </p>
+          }
+          @if (erroSenha()) {
+            <p class="campo__erro" id="cadastro-senha-erro">{{ erroSenha() }}</p>
+          }
+        </div>
+
+        <div class="campo">
+          <label class="form-label" for="cadastro-confirmacao">Confirmar senha</label>
+          <div class="campo-senha">
+            <input
+              id="cadastro-confirmacao"
+              name="confirmacao"
+              placeholder="confirmar senha"
+              [type]="confirmacaoVisivel() ? 'text' : 'password'"
+              class="form-control"
+              autocomplete="new-password"
+              [ngModel]="confirmacao()"
+              (ngModelChange)="confirmacao.set($event)"
+              (blur)="confirmacaoTocado.set(true)"
+              [readOnly]="enviando()"
+              [attr.aria-invalid]="erroConfirmacao() ? 'true' : null"
+              [attr.aria-describedby]="erroConfirmacao() ? 'cadastro-confirmacao-erro' : null"
+            />
+            <button
+              type="button"
+              class="campo-senha__toggle"
+              [attr.aria-label]="confirmacaoVisivel() ? 'Ocultar senha' : 'Mostrar senha'"
+              [attr.aria-pressed]="confirmacaoVisivel()"
+              [disabled]="enviando()"
+              (click)="confirmacaoVisivel.set(!confirmacaoVisivel())"
+            >
+              <svg
+                class="campo-senha__icone"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                @if (confirmacaoVisivel()) {
+                  <path d="M3 3l18 18" />
+                  <path d="M10.6 10.7a2.4 2.4 0 0 0 3.4 3.3" />
+                  <path d="M9.9 5.2A9.7 9.7 0 0 1 12 5c5 0 9 4.3 9 7 0 .9-.5 2.1-1.3 3.2M6.1 6.7C3.9 8.1 3 9.9 3 12c0 2.7 4 7 9 7 1.6 0 3-.3 4.3-.9" />
+                } @else {
+                  <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                  <circle cx="12" cy="12" r="2.8" />
+                }
+              </svg>
+            </button>
+          </div>
+          @if (erroConfirmacao()) {
+            <p class="campo__erro" id="cadastro-confirmacao-erro">{{ erroConfirmacao() }}</p>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="enviando()"
+          [attr.aria-busy]="enviando()"
+        >
+          {{ enviando() ? 'Criando conta…' : 'Criar conta' }}
+        </button>
+      </form>
+
+      <div class="d-flex align-items-center gap-2 my-3" aria-hidden="true">
+        <hr class="flex-grow-1 m-0" />
+        <span class="text-muted small">ou</span>
+        <hr class="flex-grow-1 m-0" />
+      </div>
+
+      <button
+        id="cadastro-google"
+        type="button"
+        class="btn btn-outline w-100"
+        (click)="entrarComGoogle()"
+        [disabled]="enviando() || criandoGoogle()"
+        [attr.aria-busy]="criandoGoogle()"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.3H12v4.5h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.6 2.8c2.2-2 3.8-5 3.8-8.8z" />
+          <path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.8-2.9c-1 .7-2.4 1.2-4.1 1.2-3.1 0-5.8-2.1-6.8-5l-3.7 2.9C3.5 21.4 7.5 24 12 24z" />
+          <path fill="#FBBC05" d="M5.2 14.4c-.2-.7-.4-1.5-.4-2.4s.1-1.7.4-2.4L1.5 6.7C.5 8.6 0 10.2 0 12s.5 3.4 1.4 4.9l3.8-2.5z" />
+          <path fill="#EA4335" d="M12 4.7c1.8 0 3 .8 3.7 1.4l3.3-3.2C17.9 1.1 15.2 0 12 0 7.5 0 3.5 2.6 1.4 6.9l3.8 2.9c1-2.9 3.7-5.1 6.8-5.1z" />
+        </svg>
+        {{ criandoGoogle() ? 'Conectando…' : 'Cadastrar com Google' }}
+      </button>
+
+      <footer class="auth-split__footer">
+        <p>
+          Já tem uma conta?
+          <a routerLink="/entrar">Entrar</a>
+        </p>
+      </footer>
+    </div>
+  </section>
+
+  <aside class="auth-split__media" aria-label="Depoimento de cliente do Inklu">
+    <img
+      class="auth-split__foto"
+      src="/Inklu_visual/banner_login.jpg"
+      alt=""
+      width="1400"
+      height="900"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </aside>
+</main>

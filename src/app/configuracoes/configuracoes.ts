@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   LucideBell,
   LucideChevronRight,
   LucideFileText,
-  LucideGlobe,
   LucideHelpCircle,
   LucideHome,
   LucideLock,
@@ -46,7 +47,19 @@ interface SettingsMenuItem {
 export class Configuracoes {
   activeSection: SettingsSection = 'geral';
 
-  constructor(readonly theme: ThemeService) {}
+  private readonly rota = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor(readonly theme: ThemeService) {
+    // Permite chegar direto a uma seção pela URL — é assim que o link
+    // "Ajuda" da navbar abre a seção Suporte.
+    this.rota.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((parametros) => {
+        const secao = parametros.get('secao');
+        if (this.ehSecao(secao)) this.activeSection = secao;
+      });
+  }
 
   readonly menuItems: SettingsMenuItem[] = [
     { id: 'geral', label: 'Geral', icon: 'home' },
@@ -63,5 +76,9 @@ export class Configuracoes {
   onThemeChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value as ThemeMode;
     this.theme.setMode(value);
+  }
+
+  private ehSecao(valor: string | null): valor is SettingsSection {
+    return this.menuItems.some((item) => item.id === valor);
   }
 }

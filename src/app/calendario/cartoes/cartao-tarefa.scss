@@ -1,0 +1,144 @@
+// ─── Card de tarefa do calendário — bloco sólido (Mês) / faixa superior (Semana) ───
+// Tokens consumidos: --ds-*, --cal-* (herdados do :host de calendario.scss).
+
+.ct {
+  --ev-cor: var(--cal-muted);
+  --ev-soft: var(--cal-quiet);
+
+  &--aula {
+    --ev-cor: var(--cal-accent);
+    --ev-soft: var(--ds-primary-soft);
+  }
+
+  &--prova {
+    --ev-cor: var(--ds-danger);
+    --ev-soft: var(--ds-danger-soft);
+  }
+
+  &--entrega {
+    --ev-cor: var(--ds-warning);
+    --ev-soft: var(--ds-warning-soft);
+  }
+
+  &--reuniao {
+    --ev-cor: var(--ds-info);
+    --ev-soft: color-mix(in srgb, var(--ds-info) 12%, transparent);
+  }
+
+  &--relatorio {
+    --ev-cor: var(--ds-success);
+    --ev-soft: var(--ds-success-soft);
+  }
+
+  &--arrastando {
+    opacity: 0.4;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.ct__titulo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ct--semana .ct__titulo {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+// ─── Mês: pílula sólida colorida ───
+.ct--mes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ev-cor);
+  color: #fff;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  text-align: start;
+  cursor: grab;
+  transition:
+    filter 120ms var(--cal-ease),
+    transform 120ms var(--cal-ease);
+
+  &:hover {
+    filter: brightness(0.92);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cal-ink);
+    outline-offset: 2px;
+  }
+
+  .ct__hora {
+    flex: 0 0 auto;
+    opacity: 0.85;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ct__titulo {
+    font-weight: 600;
+  }
+}
+
+// ─── Semana: cartão com faixa superior ───
+.ct--semana {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--cal-line);
+  border-top: 4px solid var(--ev-cor);
+  border-radius: 8px;
+  background: var(--ds-surface);
+  color: var(--cal-ink);
+  font: inherit;
+  text-align: start;
+  cursor: grab;
+  transition:
+    background-color 120ms var(--cal-ease),
+    box-shadow 120ms var(--cal-ease);
+
+  &:hover {
+    background: var(--ev-soft);
+    box-shadow: 0 2px 6px rgb(15 23 42 / 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ev-cor);
+    outline-offset: 1px;
+  }
+
+  .ct__hora {
+    color: var(--ev-cor);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ct__titulo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .ct__turma {
+    color: var(--cal-muted);
+    font-size: 0.75rem;
+  }
+}

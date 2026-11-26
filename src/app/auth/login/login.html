@@ -1,0 +1,183 @@
+<main class="auth-split" aria-labelledby="login-titulo">
+  <section class="auth-split__form-col">
+    <div class="auth-split__form-stack">
+      <header class="auth-split__brand auth-split__brand--compact">
+        <img
+          src="/Inklu_visual/Inklu_logo_and_typo.svg"
+          class="auth-split__brand-logo"
+          width="3486"
+          height="842"
+          alt="Inklu"
+        />
+      </header>
+
+      <h1 id="login-titulo" class="auth-split__heading" tabindex="-1">Bem-vindo de volta</h1>
+      <p class="auth-split__sub">Bem-vindo de volta! Por favor, insira seus detalhes.</p>
+
+      @if (sessaoExpirada()) {
+        <div class="alert alert-warning auth-alert" role="status">
+          {{ 'Sua sessão expirou. Entre novamente.' }}
+        </div>
+      }
+
+      @if (estado().estado === 'bloqueado') {
+        <div id="login-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ 'Muitas tentativas. Tente de novo em ' + tempoRestante() }}
+        </div>
+      }
+
+      @if (estado().estado === 'email_nao_verificado') {
+        <div id="login-alerta" class="alert alert-warning auth-alert" role="alert" tabindex="-1">
+          <p>Confirme seu e-mail para continuar</p>
+          <button type="button" class="btn btn-link p-0" (click)="reenviarVerificacao()">
+            Reenviar e-mail de verificação
+          </button>
+        </div>
+      } @else if (
+        estado().mensagem &&
+        estado().estado !== 'bloqueado' &&
+        estado().estado !== 'enviando'
+      ) {
+        <div id="login-alerta" class="alert alert-danger auth-alert" role="alert" tabindex="-1">
+          {{ estado().mensagem }}
+        </div>
+      }
+
+      <p class="visually-hidden" aria-live="polite">{{ anuncio() }}</p>
+
+      <form
+        class="auth-form"
+        novalidate
+        [attr.aria-busy]="enviando()"
+        (ngSubmit)="entrar()"
+      >
+        <div class="campo">
+          <label class="form-label" for="login-email">E-mail</label>
+          <input
+            id="login-email"
+            name="email"
+            placeholder="e-mail"
+            type="email"
+            class="form-control"
+            autocomplete="username"
+            spellcheck="false"
+            autofocus
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            (blur)="erroEmail.set(null)"
+            [readOnly]="enviando() || bloqueado()"
+            [attr.aria-invalid]="erroEmail() ? 'true' : null"
+            [attr.aria-describedby]="erroEmail() ? 'login-email-erro' : null"
+          />
+          @if (erroEmail()) {
+            <p class="campo__erro" id="login-email-erro">{{ erroEmail() }}</p>
+          }
+        </div>
+
+        <div class="campo">
+          <label class="form-label" for="login-senha">Senha</label>
+          <div class="campo-senha">
+            <input
+              id="login-senha"
+              placeholder="senha"
+              name="senha"
+              [type]="senhaVisivel() ? 'text' : 'password'"
+              class="form-control"
+              autocomplete="current-password"
+              [ngModel]="senha()"
+              (ngModelChange)="senha.set($event)"
+              [readOnly]="enviando() || bloqueado()"
+              [attr.aria-invalid]="erroSenha() ? 'true' : null"
+              [attr.aria-describedby]="erroSenha() ? 'login-senha-erro' : null"
+            />
+            <button
+              type="button"
+              class="campo-senha__toggle"
+              [attr.aria-label]="senhaVisivel() ? 'Ocultar senha' : 'Mostrar senha'"
+              [attr.aria-pressed]="senhaVisivel()"
+              [disabled]="enviando()"
+              (click)="senhaVisivel.set(!senhaVisivel())"
+            >
+              <svg
+                class="campo-senha__icone"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                @if (senhaVisivel()) {
+                  <path d="M3 3l18 18" />
+                  <path d="M10.6 10.7a2.4 2.4 0 0 0 3.4 3.3" />
+                  <path d="M9.9 5.2A9.7 9.7 0 0 1 12 5c5 0 9 4.3 9 7 0 .9-.5 2.1-1.3 3.2M6.1 6.7C3.9 8.1 3 9.9 3 12c0 2.7 4 7 9 7 1.6 0 3-.3 4.3-.9" />
+                } @else {
+                  <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                  <circle cx="12" cy="12" r="2.8" />
+                }
+              </svg>
+            </button>
+          </div>
+          @if (erroSenha()) {
+            <p class="campo__erro" id="login-senha-erro">{{ erroSenha() }}</p>
+          }
+          <p class="campo__acao">
+            <a id="login-senha-esqueci" routerLink="/recuperar-senha">Esqueci minha senha</a>
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="enviando() || bloqueado()"
+          [attr.aria-busy]="enviando()"
+        >
+          {{ enviando() ? 'Entrando…' : 'Entrar' }}
+        </button>
+      </form>
+
+      <div class="d-flex align-items-center gap-2 my-3" aria-hidden="true">
+        <hr class="flex-grow-1 m-0" />
+        <span class="text-muted small">ou</span>
+        <hr class="flex-grow-1 m-0" />
+      </div>
+
+      <button
+        id="login-google"
+        type="button"
+        class="btn btn-outline w-100"
+        (click)="entrarComGoogle()"
+        [disabled]="enviando() || bloqueado() || entrandoGoogle()"
+        [attr.aria-busy]="entrandoGoogle()"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.3H12v4.5h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.6 2.8c2.2-2 3.8-5 3.8-8.8z" />
+          <path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.8-2.9c-1 .7-2.4 1.2-4.1 1.2-3.1 0-5.8-2.1-6.8-5l-3.7 2.9C3.5 21.4 7.5 24 12 24z" />
+          <path fill="#FBBC05" d="M5.2 14.4c-.2-.7-.4-1.5-.4-2.4s.1-1.7.4-2.4L1.5 6.7C.5 8.6 0 10.2 0 12s.5 3.4 1.4 4.9l3.8-2.5z" />
+          <path fill="#EA4335" d="M12 4.7c1.8 0 3 .8 3.7 1.4l3.3-3.2C17.9 1.1 15.2 0 12 0 7.5 0 3.5 2.6 1.4 6.9l3.8 2.9c1-2.9 3.7-5.1 6.8-5.1z" />
+        </svg>
+        {{ entrandoGoogle() ? 'Conectando…' : 'Continuar com Google' }}
+      </button>
+
+      <footer class="auth-split__footer">
+        <p>
+          Não tem uma conta?
+          <a routerLink="/cadastro">Criar conta grátis</a>
+        </p>
+      </footer>
+    </div>
+  </section>
+
+  <aside class="auth-split__media" aria-label="Depoimento de cliente do Inklu">
+    <img
+      class="auth-split__foto"
+      src="/Inklu_visual/banner_login.jpg"
+      alt=""
+      width="1400"
+      height="900"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </aside>
+</main>

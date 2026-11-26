@@ -1,79 +1,227 @@
-<nav class="p-2 d-flex flex-column h-screen justify-content-between">
-    <div class="mainContent w-100">
-        <div class="logoContainer d-flex w-100 flex-row justify-content-between align-items-center">
-            <div class="logo-wrapper" [class.hidden]="isCollapsed">
-                <img src="/Inklu_visual/Inklu_logo_and_typo.svg" class="img-fluid w-50" alt="Logo da Inklu">
-            </div>
-            <button (click)="toggleNavbar()" class="p-2 rounded border closeNavBar bg-white ratio ratio-1x1">
-                <svg lucideArrowLeftFromLine class="text-primary" [size]="24" [strokeWidth]="2" [class.rotated]="isCollapsed"></svg>
-            </button>
-        </div>
+<nav class="sidebar" aria-label="Navegação principal">
+  <div class="sidebar__header">
+    <a class="brand" routerLink="/" aria-label="Inklu — página inicial">
+      <img class="brand__mark" src="/Inklu_visual/Inklu_logo_and_typo.svg" alt="" height="24" />
+    </a>
 
-        <ul class="d-flex flex-column justify-content-between m-0 px-0 pt-2 gap-2">
+    <button
+      class="icon-button sidebar__toggle"
+      type="button"
+      (click)="toggleNavbar()"
+      [attr.aria-expanded]="!isCollapsed"
+      aria-controls="nav-principal"
+      [attr.aria-label]="isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'"
+    >
+      @if (isCollapsed) {
+        <svg lucidePanelLeftOpen [size]="16" [strokeWidth]="1.8"></svg>
+      } @else {
+        <svg lucidePanelLeftClose [size]="16" [strokeWidth]="1.8"></svg>
+      }
+    </button>
+  </div>
+
+  <div class="conta-wrap">
+    <button
+      class="conta"
+      type="button"
+      (click)="alternarConta()"
+      [attr.aria-expanded]="contaAberta"
+      aria-haspopup="menu"
+      [attr.aria-label]="'Conta de ' + nome() + ' — abrir menu de contas'"
+    >
+      <span class="conta__avatar" aria-hidden="true">{{ iniciais() }}</span>
+      <span class="conta__texto">
+        <span class="conta__funcao">{{ funcao() }}</span>
+        <span class="conta__nome">{{ nome() }}</span>
+      </span>
+      <svg class="conta__chevron" lucideChevronsUpDown [size]="16" [strokeWidth]="1.75"></svg>
+    </button>
+
+    @if (contaAberta) {
+      <div class="conta-menu" role="menu" aria-label="Trocar de conta">
+        <ul class="conta-menu__lista">
+          @if (contas().length > 0) {
+            @for (conta of contas(); track conta.id) {
+              <li>
+                <button
+                  class="conta-item"
+                  type="button"
+                  role="menuitem"
+                  (click)="trocarConta(conta.id)"
+                  [class.conta-item--ativa]="conta.id === contextoId()"
+                >
+                  <span class="conta__avatar" aria-hidden="true">{{ iniciaisConta(conta.escolaNome) }}</span>
+                  <span class="conta__texto">
+                    <span class="conta__nome">{{ conta.escolaNome }}</span>
+                    <span class="conta__funcao">{{ conta.funcao }}</span>
+                  </span>
+                  @if (conta.id === contextoId()) {
+                    <span class="conta-item__selo">
+                      <svg lucideCheck [size]="13" [strokeWidth]="2.5"></svg>
+                      Conectado
+                    </span>
+                  }
+                </button>
+              </li>
+            }
+          } @else {
             <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none" routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{ exact: true }">
-                    <svg lucideHome [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Inicio</span>
-                </a>
+              <div class="conta-item conta-item--ativa">
+                <span class="conta__avatar" aria-hidden="true">{{ iniciais() }}</span>
+                <span class="conta__texto">
+                  <span class="conta__nome">{{ nome() }}</span>
+                  <span class="conta__funcao">{{ funcao() }}</span>
+                </span>
+                <span class="conta-item__selo">
+                  <svg lucideCheck [size]="13" [strokeWidth]="2.5"></svg>
+                  Conectado
+                </span>
+              </div>
             </li>
-            <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/tarefas" routerLinkActive="nav-active">
-                    <svg lucideCalendarCheck [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Tarefas</span>
-                </a>
-            </li>
-            <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/alunos" routerLinkActive="nav-active">
-                    <svg lucideUser [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Alunos</span>
-                </a>
-            </li>
-            <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/calendario" routerLinkActive="nav-active">
-                    <svg lucideCalendar [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Calendário</span>
-                </a>
-            </li>
-            <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/documentos" routerLinkActive="nav-active">
-                    <svg lucideFileText [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Documentos</span>
-                </a>
-            </li>
-            <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/turmas" routerLinkActive="nav-active">
-                    <svg lucideFolder [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Turmas</span>
-                </a>
-            </li>
-            <li>
-                <a class="btn w-100 px-3 py-2 justify-content-start shadow-none fs-6" routerLink="/materias" routerLinkActive="nav-active">
-                    <svg lucideBookOpen [size]="24" [strokeWidth]="2"></svg>
-                    <span [class.hidden]="isCollapsed">Matérias</span>
-                </a>
-            </li>
+          }
         </ul>
-    </div>
 
-    <div class="buttonContainer d-flex flex-column gap-2">
-        <button class="btn btn-primary" type="button" (click)="openDocumentoModal()">
-            <svg lucidePlus [size]="24" [strokeWidth]="2"></svg>
-            <span [class.hidden]="isCollapsed">Adicionar Documento</span>
-        </button>
-        <a class="w-100" routerLink="/configuracoes">
-        <button class="btn btn-white border w-100 text">
-            <svg lucideSettings [size]="24" [strokeWidth]="2"></svg>
-            <span [class.hidden]="isCollapsed">Configurações</span>
-        </button>
-        </a>
-    </div>
+        <div class="conta-menu__acoes">
+          <a class="conta-menu__btn" routerLink="/contexto" (click)="fecharConta()">
+            <svg lucidePlus [size]="15" [strokeWidth]="2"></svg>
+            Adicionar nova conta
+          </a>
+          <button class="conta-menu__btn conta-menu__btn--upgrade" type="button" role="menuitem" (click)="abrirUpgrade()">
+            <svg lucideGraduationCap [size]="15" [strokeWidth]="1.8"></svg>
+            Fazer upgrade para escola
+          </button>
+          <button
+            class="conta-menu__btn conta-menu__btn--sair"
+            type="button"
+            role="menuitem"
+            (click)="sair()"
+          >
+            <svg lucideLogOut [size]="15" [strokeWidth]="2"></svg>
+            Sair da conta
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 
-        <app-modal-documento
-            class="modal-documento-host"
-            [isOpen]="isDocumentoModalOpen"
-            [localOnly]="true"
-            [folders]="folderOptions()"
-            (closed)="closeDocumentoModal()"
-            (filesAdded)="onDocumentoFilesAdded($event)"
-        ></app-modal-documento>
+  <div class="busca">
+    <svg class="busca__icone" lucideSearch [size]="16" [strokeWidth]="2"></svg>
+    <input
+      #campoBusca
+      id="nav-busca"
+      class="busca__campo"
+      type="search"
+      name="busca-menu"
+      placeholder="Pesquisar"
+      autocomplete="off"
+      spellcheck="false"
+      aria-keyshortcuts="/"
+      [value]="busca()"
+      (input)="onBusca($event)"
+      (keydown.escape)="limparBusca()"
+    />
+    @if (busca()) {
+      <button
+        class="busca__limpar"
+        type="button"
+        (click)="limparBusca()"
+        aria-label="Limpar busca"
+      >
+        <svg lucideX [size]="14" [strokeWidth]="2.5"></svg>
+      </button>
+    } @else {
+      <kbd class="busca__atalho" aria-hidden="true">/</kbd>
+    }
+  </div>
+
+  <button class="icone-busca-atalho" type="button" (click)="abrirBusca()" aria-label="Pesquisar no menu">
+    <svg lucideSearch [size]="16" [strokeWidth]="1.8"></svg>
+  </button>
+
+  <div class="sidebar__corpo" id="nav-principal">
+    @for (grupo of gruposVisiveis(); track grupo.id; let primeiro = $first) {
+      <section class="grupo" [class.grupo--primeiro]="primeiro">
+        <h2 class="grupo__titulo" [id]="'nav-grupo-' + grupo.id">{{ grupo.titulo }}</h2>
+        <ul class="grupo__lista" [attr.aria-labelledby]="'nav-grupo-' + grupo.id">
+          @for (item of grupo.itens; track item.rota) {
+            <li>
+              <a
+                class="item"
+                [routerLink]="item.rota"
+                routerLinkActive="item--ativo"
+                [routerLinkActiveOptions]="opcoesLink(item)"
+                ariaCurrentWhenActive="page"
+                [attr.title]="isCollapsed ? item.rotulo : null"
+                (click)="limparBusca()"
+              >
+                @switch (item.icone) {
+                  @case ('inicio') {
+                    <svg class="item__icone item__icone--solido" lucideHome [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                  @case ('tarefas') {
+                    <svg class="item__icone" lucideCalendarCheck [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                  @case ('calendario') {
+                    <svg class="item__icone" lucideCalendar [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                  @case ('alunos') {
+                    <svg class="item__icone" lucideUsers [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                  @case ('turmas') {
+                    <svg class="item__icone" lucideIdCard [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                  @case ('materias') {
+                    <svg class="item__icone" lucideBookOpen [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                  @case ('documentos') {
+                    <svg class="item__icone" lucideFile [size]="16" [strokeWidth]="1.8"></svg>
+                  }
+                }
+                <span class="item__rotulo">{{ item.rotulo }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (semResultados()) {
+      <p class="busca-vazia" role="status">
+        Nenhum item do menu corresponde a “{{ busca() }}”.
+      </p>
+    }
+  </div>
+
+  <div class="sidebar__rodape">
+    <button
+      class="btn-acao"
+      type="button"
+      aria-label="Adicionar documento"
+      (click)="openDocumentoModal()"
+    >
+      <span class="btn-acao__rotulo">Adicionar documento</span>
+      <svg class="btn-acao__icone" lucidePlus [size]="16" [strokeWidth]="1.8"></svg>
+    </button>
+
+    <div class="rodape__links">
+      <a class="link-util" routerLink="/configuracoes" [attr.title]="isCollapsed ? 'Configurações' : null">
+        <svg lucideSettings [size]="17" [strokeWidth]="2"></svg>
+        <span class="link-util__rotulo">Configurações</span>
+      </a>
+    </div>
+  </div>
 </nav>
+
+<app-modal-upgrade-escola
+  [isOpen]="isUpgradeModalOpen"
+  (closed)="closeUpgradeModal()"
+></app-modal-upgrade-escola>
+
+<app-modal-documento
+  class="modal-documento-host"
+  [isOpen]="isDocumentoModalOpen"
+  [localOnly]="true"
+  [folders]="folderOptions()"
+  (closed)="closeDocumentoModal()"
+  (filesAdded)="onDocumentoFilesAdded($event)"
+></app-modal-documento>

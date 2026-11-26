@@ -1,0 +1,46 @@
+@if (isOpen) {
+  <div class="upgrade-overlay" (click)="onBackdropClick($event)" role="presentation">
+    <div
+      class="upgrade-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-titulo"
+    >
+      <div class="upgrade-media" aria-hidden="true">
+        <img
+          class="upgrade-media__img"
+          src="/upgrade-escola/desk-tablet.jpg"
+          alt=""
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <div class="upgrade-body">
+        <h2 id="upgrade-titulo" class="upgrade-titulo">
+          Sua escola merece<br />mais organização
+        </h2>
+
+        <ul class="upgrade-lista">
+          <li>Acesso para todos os seus professores</li>
+          <li>Tecnologia de IA para adaptação de materiais e analises</li>
+          <li>Organização e Backups de documentos, atividades e PAEE e PEI</li>
+          <li>Segurança centralizada para seus dados</li>
+          <li>Suporte a qualquer momento</li>
+        </ul>
+
+        <div class="upgrade-acoes">
+          <button class="btn btn-cancelar" type="button" (click)="close()">
+            Cancelar
+          </button>
+          <a
+            class="btn btn-upgrade"
+            routerLink="/escola/cadastro"
+            (click)="close()"
+          >
+            Fazer Upgrade
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+}

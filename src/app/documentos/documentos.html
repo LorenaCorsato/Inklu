@@ -1,5 +1,5 @@
 <nav
-  class="documentos-breadcrumb p-2 border-bottom d-flex align-items-center gap-2"
+  class="documentos-breadcrumb w-100 m-0 p-2 border-bottom d-flex align-items-center gap-2"
   aria-label="Caminho da pasta"
 >
   @if (currentFolder()) {
@@ -45,81 +45,98 @@
 
 <div class="MainContent">
   <div class="Header">
-    <div class="headerRow page-heading d-flex flex-row justify-content-between">
-      <h2>Documentos</h2>
-      <div class="ButtonsContainer">
-        <button class="btn btn-primary" type="button" (click)="openFileDialog()">
-          <svg lucidePlus [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
-          Adicionar documento
-        </button>
-      </div>
-    </div>
     <div class="headerRow documents-toolbar">
       <label class="search-field">
         <svg lucideSearch [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
         <input
           type="search"
-          aria-label="Pesquisar arquivos e pastas"
-          placeholder="Pesquisar arquivos e pastas"
+          aria-label="Buscar Documento"
+          placeholder="Buscar Documento"
           [value]="searchTerm()"
           (input)="updateSearch($event)"
         />
       </label>
 
       <div class="toolbar-actions">
-        <label class="sort-control">
-          <span>Ordenar por</span>
-          <select
-            [value]="sortOrder()"
-            (change)="updateSort($event)"
-            aria-label="Ordenar documentos"
-          >
-            <option value="recent">Mais recente</option>
-            <option value="type">Tipo de arquivo</option>
-            <option value="name">Nome</option>
-            <option value="modified">Última modificação</option>
-          </select>
-        </label>
-
         <div class="view-toggle" role="group" aria-label="Tipo de visualização">
+          <span
+            class="view-toggle-indicator"
+            [class.view-toggle-indicator--list]="viewMode() === 'list'"
+            aria-hidden="true"
+          ></span>
           <button
             type="button"
-            class="icon-button"
+            class="view-toggle-button"
             [class.active]="viewMode() === 'grid'"
             aria-label="Visualização em grade"
             [attr.aria-pressed]="viewMode() === 'grid'"
             (click)="viewMode.set('grid')"
           >
             <svg lucideLayoutGrid [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+            <span>Grade</span>
           </button>
           <button
             type="button"
-            class="icon-button"
+            class="view-toggle-button view-toggle-button--icon"
             [class.active]="viewMode() === 'list'"
             aria-label="Visualização em lista"
             [attr.aria-pressed]="viewMode() === 'list'"
             (click)="viewMode.set('list')"
           >
             <svg lucideList [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+            <span>Lista</span>
           </button>
         </div>
 
-        <button type="button" class="toolbar-button create-folder" (click)="openFolderDialog()">
-          <svg lucideFolderPlus [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
-          <span>Adicionar pasta</span>
-        </button>
+        <label class="toolbar-select">
+          <span class="sr-only">Ordenar documentos</span>
+          <select
+            [value]="sortOrder()"
+            (change)="updateSort($event)"
+            aria-label="Ordenar documentos"
+          >
+            <option value="recent">Tamanho</option>
+            <option value="type">Tipo de arquivo</option>
+            <option value="name">Nome</option>
+            <option value="modified">Última modificação</option>
+          </select>
+          <svg lucideChevronDown [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        </label>
+
+        <label class="toolbar-select">
+          <span class="sr-only">Filtrar por tipo de arquivo</span>
+          <select [value]="fileType()" (change)="updateFileType($event)" aria-label="Filtrar por tipo">
+            <option value="all">Todos os tipos</option>
+            <option value="document">Documentos</option>
+            <option value="image">Imagens</option>
+            <option value="spreadsheet">Planilhas</option>
+            <option value="other">Outros</option>
+          </select>
+          <svg lucideChevronDown [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        </label>
 
         <button
           type="button"
-          class="toolbar-button filter-button"
+          class="toolbar-button filter-button filter-button--icon"
           [class.filter-button--active]="hasActiveFilters()"
           (click)="filterOpen.set(true)"
+          aria-label="Abrir filtros de período"
+          title="Filtros"
         >
           <svg lucideSlidersHorizontal [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
-          <span>Filtrar</span>
           @if (filterCount() > 0) {
             <span class="filter-count" aria-hidden="true">{{ filterCount() }}</span>
           }
+        </button>
+
+        <button type="button" class="btn-new-folder" (click)="openFolderDialog()">
+          <svg lucideFolder [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          <span>Nova pasta</span>
+        </button>
+
+        <button class="btn-add-document" type="button" (click)="openFileDialog()">
+          <svg lucideUpload [size]="18" [strokeWidth]="2" aria-hidden="true"></svg>
+          Adicionar documento
         </button>
       </div>
     </div>
@@ -129,10 +146,7 @@
 <div class="documents-body">
   @if (visibleFolders().length > 0) {
     <section class="documents-section">
-      <h3 class="section-title">
-        Pastas
-        <span class="section-count">{{ visibleFolders().length }}</span>
-      </h3>
+      <h3 class="section-title">Pastas</h3>
 
       <div
         class="folder-list"
@@ -140,78 +154,18 @@
         [class.folder-list-list]="viewMode() === 'list'"
       >
         @for (folder of visibleFolders(); track folder.id) {
-          <article
-            class="folder-card"
-            role="button"
-            tabindex="0"
-            [attr.aria-label]="'Abrir pasta ' + folder.name"
-            (click)="goToFolder(folder.id)"
-            (keydown.enter)="goToFolder(folder.id)"
-            (keydown.space)="goToFolder(folder.id); $event.preventDefault()"
-          >
-            <div class="folder-art" aria-hidden="true">
-              <span class="folder-shape" [style.backgroundColor]="folder.color"></span>
-            </div>
-            <div class="folder-details">
-              <div class="folder-copy">
-                <h3>{{ folder.name }}</h3>
-                <p>{{ folderSummary(folder.id) }}</p>
-              </div>
-              <div class="item-options" (click)="$event.stopPropagation()">
-                <button
-                  type="button"
-                  class="item-menu-button"
-                  [attr.aria-label]="'Mais opções para ' + folder.name"
-                  [attr.aria-expanded]="openItemMenu() === folder.id"
-                  [attr.aria-controls]="'item-menu-' + folder.id"
-                  aria-haspopup="menu"
-                  (click)="toggleItemMenu(folder.id, $event)"
-                >
-                  <svg lucideEllipsis [size]="20" [strokeWidth]="2.5" aria-hidden="true"></svg>
-                </button>
-                @if (openItemMenu() === folder.id) {
-                  <div class="item-dropdown-menu" role="menu" [id]="'item-menu-' + folder.id">
-                    <button
-                      type="button"
-                      class="item-dropdown-item"
-                      role="menuitem"
-                      (click)="openFileDialog(folder.id)"
-                    >
-                      <svg lucideFilePlus [size]="16" aria-hidden="true"></svg>
-                      Adicionar arquivo
-                    </button>
-                    <button
-                      type="button"
-                      class="item-dropdown-item"
-                      role="menuitem"
-                      (click)="openRenameDialog('folder', folder.id)"
-                    >
-                      <svg lucidePencilLine [size]="16" aria-hidden="true"></svg>
-                      Renomear
-                    </button>
-                    <button
-                      type="button"
-                      class="item-dropdown-item"
-                      role="menuitem"
-                      (click)="openMoveDialog('folder', folder.id)"
-                    >
-                      <svg lucideFolderInput [size]="16" aria-hidden="true"></svg>
-                      Mover
-                    </button>
-                    <button
-                      type="button"
-                      class="item-dropdown-item item-dropdown-item--danger"
-                      role="menuitem"
-                      (click)="askDelete('folder', folder.id)"
-                    >
-                      <svg lucideTrash2 [size]="16" aria-hidden="true"></svg>
-                      Excluir
-                    </button>
-                  </div>
-                }
-              </div>
-            </div>
-          </article>
+          <app-pasta-card
+            [folder]="folder"
+            [summary]="folderSummary(folder.id)"
+            [shared]="isSharedFolder(folder.name)"
+            [menuOpen]="openItemMenu() === folder.id"
+            (open)="goToFolder($event)"
+            (menuToggle)="toggleItemMenu($event.id, $event.event)"
+            (addFile)="openFileDialog($event)"
+            (rename)="openRenameDialog('folder', $event)"
+            (move)="openMoveDialog('folder', $event)"
+            (remove)="askDelete('folder', $event)"
+          />
         }
       </div>
     </section>
@@ -219,92 +173,38 @@
 
   @if (visibleFiles().length > 0) {
     <section class="documents-section">
-      <h3 class="section-title">
-        Arquivos
-        <span class="section-count">{{ visibleFiles().length }}</span>
-      </h3>
+      <h3 class="section-title">Arquivos</h3>
 
       <div
         class="file-list"
         [class.file-list-grid]="viewMode() === 'grid'"
         [class.file-list-list]="viewMode() === 'list'"
       >
+        @if (viewMode() === 'list') {
+          <div class="file-list-header" aria-hidden="true">
+            <span></span>
+            <span>Nome do arquivo</span>
+            <span>Pasta</span>
+            <span>Data</span>
+            <span></span>
+          </div>
+        }
         @for (file of visibleFiles(); track file.id) {
-          <article
-            class="file-card"
-            [attr.role]="isEditable(file) ? 'button' : null"
-            [attr.tabindex]="isEditable(file) ? 0 : null"
-            [attr.aria-label]="isEditable(file) ? 'Abrir ' + file.name + ' no editor' : null"
-            [title]="isEditable(file) ? 'Abrir no editor' : file.name"
-            (click)="openEditor(file.id)"
-            (keydown.enter)="openEditor(file.id)"
-            (keydown.space)="openEditor(file.id); $event.preventDefault()"
-          >
-            <span class="file-badge" [attr.data-category]="categoryOf(file)">{{
-              fileBadge(file)
-            }}</span>
-            <div class="file-details">
-              <h4 [title]="file.name">{{ file.name }}</h4>
-              <p>{{ formatSize(file.size) }} • {{ formatDate(file.modifiedAt) }}</p>
-              @if (file.description) {
-                <p class="file-note">{{ file.description }}</p>
-              }
-            </div>
-
-            <div class="item-options" (click)="$event.stopPropagation()">
-              <button
-                type="button"
-                class="item-menu-button"
-                [attr.aria-label]="'Mais opções para ' + file.name"
-                [attr.aria-expanded]="openItemMenu() === file.id"
-                [attr.aria-controls]="'item-menu-' + file.id"
-                aria-haspopup="menu"
-                (click)="toggleItemMenu(file.id, $event)"
-              >
-                <svg lucideEllipsis [size]="20" [strokeWidth]="2.5" aria-hidden="true"></svg>
-              </button>
-              @if (openItemMenu() === file.id) {
-                <div class="item-dropdown-menu" role="menu" [id]="'item-menu-' + file.id">
-                  <button
-                    type="button"
-                    class="item-dropdown-item"
-                    role="menuitem"
-                    (click)="openRenameDialog('file', file.id)"
-                  >
-                    <svg lucidePencilLine [size]="16" aria-hidden="true"></svg>
-                    Renomear
-                  </button>
-                  <button
-                    type="button"
-                    class="item-dropdown-item"
-                    role="menuitem"
-                    (click)="openEditDialog(file)"
-                  >
-                    <svg lucideSquarePen [size]="16" aria-hidden="true"></svg>
-                    Editar
-                  </button>
-                  <button
-                    type="button"
-                    class="item-dropdown-item"
-                    role="menuitem"
-                    (click)="openMoveDialog('file', file.id)"
-                  >
-                    <svg lucideFolderInput [size]="16" aria-hidden="true"></svg>
-                    Mover
-                  </button>
-                  <button
-                    type="button"
-                    class="item-dropdown-item item-dropdown-item--danger"
-                    role="menuitem"
-                    (click)="askDelete('file', file.id)"
-                  >
-                    <svg lucideTrash2 [size]="16" aria-hidden="true"></svg>
-                    Remover
-                  </button>
-                </div>
-              }
-            </div>
-          </article>
+          <app-arquivo-card
+            [file]="file"
+            [origin]="folderNameOf(file)"
+            [dateTime]="formatDateTime(file.modifiedAt)"
+            [category]="categoryOf(file)"
+            [editable]="isEditable(file)"
+            [menuOpen]="openItemMenu() === file.id"
+            [layout]="viewMode()"
+            (open)="openEditor($event)"
+            (menuToggle)="toggleItemMenu($event.id, $event.event)"
+            (rename)="openRenameDialog('file', $event)"
+            (edit)="openEditDialog($event)"
+            (move)="openMoveDialog('file', $event)"
+            (remove)="askDelete('file', $event)"
+          />
         }
       </div>
     </section>

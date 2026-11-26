@@ -1,17 +1,28 @@
 <div class="app-shell d-flex flex-row w-100">
-  <!-- A navbar é ocultada na rota do editor (tela cheia) -->
-  @if (!isEditorRoute()) {
+  <!-- A navbar é ocultada nas telas de autenticação e no editor (tela cheia) -->
+  @if (!isEditorRoute() && !isAuthRoute()) {
     <app-navbar></app-navbar>
   }
 
   <div
-    class="app-content w-100 overflow-hidden"
-    [class.ds-surface]="!isEditorRoute()"
-    [class.m-2]="!isEditorRoute()"
-    [class.rounded]="!isEditorRoute()"
-    [class.ds-border]="!isEditorRoute()"
-    [class.border]="!isEditorRoute()"
+    class="app-content w-100"
+    [class.overflow-hidden]="!isAuthRoute()"
+    [class.app-content--auth]="isAuthRoute()"
+    [class.ds-surface]="!isEditorRoute() && !isAuthRoute()"
+    [class.m-2]="!isEditorRoute() && !isAuthRoute()"
+    [class.rounded]="!isEditorRoute() && !isAuthRoute()"
+    [class.ds-border]="!isEditorRoute() && !isAuthRoute()"
+    [class.border]="!isEditorRoute() && !isAuthRoute()"
   >
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<app-toast
+  [isOpen]="toast.aberto()"
+  [message]="toast.mensagem()"
+  [type]="toast.tipo()"
+  (closed)="toast.fechar()"
+/>
+
+<app-verificacao-email-modal />

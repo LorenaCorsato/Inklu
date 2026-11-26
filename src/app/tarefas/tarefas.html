@@ -1,16 +1,275 @@
-<div class="tarefas-breadcrumb p-2 border-bottom d-flex align-items-center gap-2">
-  <p class="mb-0 text-muted">Tarefas</p>
-</div>
+<nav class="tarefas-breadcrumb" aria-label="Caminho da página">
+  <span>Tarefas</span>
+</nav>
 
-<div class="coming-soon-page d-flex flex-column align-items-center justify-content-center h-100">
-  <div class="coming-soon-card text-center">
-    <div class="coming-soon-icon mb-4">
-      <svg lucideConstruction [size]="64" [strokeWidth]="1.5"></svg>
+<div class="tarefas-layout">
+  <!-- ─── Coluna esquerda: lista de tarefas ─────────────────────────── -->
+  <aside class="lista" aria-label="Lista de tarefas">
+    <label class="busca">
+      <svg lucideSearch [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+      <input
+        type="search"
+        aria-label="Buscar tarefas"
+        placeholder="Buscar"
+        [value]="busca()"
+        (input)="atualizarBusca($event)"
+      />
+      @if (busca()) {
+        <button type="button" class="busca__limpar" aria-label="Limpar busca" (click)="limparBusca()">
+          <svg lucideX [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        </button>
+      }
+    </label>
+
+    <div class="filtros" role="group" aria-label="Filtrar tarefas">
+      @for (opcao of filtros; track opcao.id) {
+        <button
+          type="button"
+          class="filtro"
+          [class.filtro--ativo]="filtro() === opcao.id"
+          [attr.aria-pressed]="filtro() === opcao.id"
+          (click)="definirFiltro(opcao.id)"
+        >
+          {{ opcao.rotulo }}
+        </button>
+      }
     </div>
-    <h1 class="coming-soon-title fw-bold mb-2">Em construção</h1>
-    <p class="coming-soon-text text-muted mb-0">
-      Essa página ainda está sendo construída ou será construída.<br>
-      Volte depois para ver ela completa!
-    </p>
-  </div>
+
+    <div class="lista__corpo">
+      @for (secao of secoes(); track secao.nome) {
+        <section class="secao">
+          <h2 class="secao__titulo">{{ secao.nome }}</h2>
+
+          @for (tarefa of secao.itens; track tarefa.id) {
+            <button
+              type="button"
+              class="card"
+              [class.card--selecionado]="selecionadaId() === tarefa.id"
+              [attr.aria-current]="selecionadaId() === tarefa.id ? 'true' : null"
+              (click)="selecionar(tarefa.id)"
+            >
+              <span class="card__conteudo">
+                <span class="card__topo">
+                  <span class="estado-linha">
+                    <span
+                      class="ponto"
+                      [class]="'ponto ponto--' + tarefa.prioridade"
+                      aria-hidden="true"
+                    ></span>
+                    {{ tarefa.status }}
+                  </span>
+                  <span class="card__prazo">{{ tarefa.prazo }}</span>
+                </span>
+                <span class="card__titulo">{{ tarefa.titulo }}</span>
+                <span class="card__responsavel">
+                  <span class="avatar" aria-hidden="true">C</span>
+                  {{ tarefa.responsavel }}
+                </span>
+              </span>
+            </button>
+          }
+        </section>
+      } @empty {
+        <p class="lista__vazia">Nenhuma tarefa encontrada para os filtros atuais.</p>
+      }
+    </div>
+  </aside>
+
+  <!-- ─── Coluna direita: detalhes da tarefa ────────────────────────── -->
+  @if (selecionada(); as tarefa) {
+    <main class="detalhe">
+      <header class="detalhe__topo">
+        <nav class="detalhe__breadcrumb" aria-label="Caminho da tarefa">
+          <span>Tarefas</span>
+          <svg lucideChevronRight [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+          <span class="detalhe__breadcrumb-atual">{{ tarefa.titulo }}</span>
+        </nav>
+
+        <div class="acoes">
+          <button type="button" class="btn btn--secundario" (click)="abrirModalAjuste()">
+            <svg lucideAlertTriangle [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            Solicitar ajuste
+          </button>
+          <button type="button" class="btn btn--primario" (click)="aprovar()">
+            <svg lucideCheck [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            Aprovar e assinar
+          </button>
+        </div>
+      </header>
+
+      <div class="detalhe__corpo">
+        <h1 class="detalhe__titulo">{{ tarefa.titulo }}</h1>
+
+        <p class="entregue-por">
+          <svg lucideInbox [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+          Enviado por <strong>{{ tarefa.destinatario }}</strong>
+        </p>
+
+        <ul class="metadados" aria-label="Informações da tarefa">
+          <li>
+            <svg lucideCalendarDays [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            Entrega: {{ tarefa.entregueEm }}
+          </li>
+          <li>
+            <svg lucideUsers [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            Responsável: {{ tarefa.responsavel }}
+          </li>
+          <li>
+            <svg lucideFileText [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            Turma: {{ tarefa.turma }}
+          </li>
+        </ul>
+
+        <p class="descricao">{{ tarefa.descricao }}</p>
+
+        <div class="progresso" role="group" aria-label="Progresso das subtarefas">
+          <div class="progresso__trilha" aria-hidden="true">
+            <span class="progresso__preenchimento" [style.width.%]="progresso()"></span>
+          </div>
+          <p class="progresso__texto">{{ progresso() }}% concluído</p>
+        </div>
+
+        @if (tarefa.aprovada || tarefa.ajusteSolicitado) {
+          <div class="estado" [class.estado--aprovada]="tarefa.aprovada" role="status">
+            <p class="estado__linha">
+              @if (tarefa.aprovada) {
+                <svg lucideCheck [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                Tarefa aprovada e PDF assinado
+              } @else {
+                <svg lucideAlertTriangle [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                Ajuste solicitado ao responsável
+              }
+            </p>
+            @if (!tarefa.aprovada && tarefa.ajusteDetalhe) {
+              <p class="estado__detalhe">{{ tarefa.ajusteDetalhe }}</p>
+            }
+          </div>
+        }
+
+        <div class="colunas">
+          <section class="bloco" aria-labelledby="subtitulo-subtarefas">
+            <h2 class="bloco__titulo" id="subtitulo-subtarefas">Subtarefas por aluno</h2>
+            <ul class="subtarefas">
+              @for (sub of tarefa.subtarefas; track sub.id) {
+                <li>
+                  <label class="subtarefa" [class.subtarefa--feita]="sub.concluida">
+                    <input type="checkbox" [checked]="sub.concluida" (change)="alternarSubtarefa(sub.id)" />
+                    <span class="subtarefa__caixa" aria-hidden="true">
+                      @if (sub.concluida) {
+                        <svg lucideCheck [size]="12" [strokeWidth]="3"></svg>
+                      }
+                    </span>
+                    <span>{{ sub.titulo }}</span>
+                  </label>
+                </li>
+              }
+            </ul>
+            <form class="nova-subtarefa" (submit)="adicionarSubtarefa($event)">
+              <input
+                type="text"
+                aria-label="Nova subtarefa"
+                placeholder="Adicionar subtarefa"
+                [value]="novaSubtarefa()"
+                (input)="atualizarNovaSubtarefa($event)"
+              />
+              <button type="submit" aria-label="Adicionar subtarefa" [disabled]="!novaSubtarefa().trim()">
+                <svg lucidePlus [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+              </button>
+            </form>
+          </section>
+
+          <section class="bloco" aria-labelledby="subtitulo-documentos">
+            <div class="bloco__cabecalho">
+              <h2 class="bloco__titulo bloco__titulo--linha" id="subtitulo-documentos">
+                Documentos anexados
+                <span class="bloco__contagem" aria-label="{{ tarefa.documentos.length }} documentos">{{
+                  tarefa.documentos.length
+                }}</span>
+              </h2>
+              <button type="button" class="btn-adicionar" (click)="adicionarDocumento()">
+                <svg lucidePlus [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                Adicionar
+              </button>
+            </div>
+
+            @if (tarefa.documentos.length > 0) {
+              <ul class="documentos" aria-label="Documentos da tarefa">
+                @for (doc of tarefa.documentos; track doc.id) {
+                  <li class="documento">
+                    <span class="documento__folha" aria-hidden="true">
+                      <svg lucideFileText [size]="16" [strokeWidth]="2"></svg>
+                      <span class="documento__orelha"></span>
+                    </span>
+                    <span class="documento__info">
+                      <span class="documento__nome" [title]="doc.nome">{{ doc.nome }}</span>
+                      <span class="documento__meta">{{ doc.tamanho }} · {{ doc.formato }}</span>
+                    </span>
+                    <button
+                      type="button"
+                      class="documento__remover"
+                      [attr.aria-label]="'Remover ' + doc.nome"
+                      (click)="removerDocumento(doc.id)"
+                    >
+                      <svg lucideTrash2 [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <button type="button" class="documentos__vazio" (click)="adicionarDocumento()">
+                <svg lucideUpload [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+                <span class="documentos__vazio-texto">
+                  <strong>Nenhum documento anexado</strong>
+                  <span>Clique para anexar o PDF da tarefa</span>
+                </span>
+              </button>
+            }
+          </section>
+        </div>
+
+        <section class="colaboracao" aria-labelledby="subtitulo-colaboracao">
+          <h2 class="bloco__titulo" id="subtitulo-colaboracao">Colaboração entre professores</h2>
+
+          @if (tarefa.comentarios.length > 0) {
+            <ul class="comentarios">
+              @for (comentario of tarefa.comentarios; track comentario.id) {
+                <li class="comentario" [class.comentario--meu]="comentario.meu">
+                  <span class="avatar avatar--maior" aria-hidden="true">{{ comentario.iniciais }}</span>
+                  <div class="comentario__corpo">
+                    <p class="comentario__cabecalho">
+                      <strong>{{ comentario.autor }}</strong>
+                      <span>· {{ comentario.quando }}</span>
+                    </p>
+                    <p class="comentario__texto">{{ comentario.texto }}</p>
+                  </div>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="comentarios__vazio">Nenhum comentário ainda. Inicie a conversa abaixo.</p>
+          }
+
+          <form class="comentar" (submit)="enviarComentario($event)">
+            <textarea
+              aria-label="Escrever comentário"
+              rows="1"
+              placeholder="Escrever comentário"
+              [value]="novoComentario()"
+              (input)="atualizarNovoComentario($event)"
+            ></textarea>
+            <button type="submit" aria-label="Enviar comentário" [disabled]="!novoComentario().trim()">
+              <svg lucideSend [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+            </button>
+          </form>
+        </section>
+      </div>
+    </main>
+  }
+
+  <app-modal-solicitar-ajuste
+    [isOpen]="modalAjusteAberto()"
+    [tarefaTitulo]="selecionada()?.titulo ?? ''"
+    (closed)="fecharModalAjuste()"
+    (confirmed)="confirmarAjuste($event)"
+  />
 </div>
